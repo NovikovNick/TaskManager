@@ -57,7 +57,8 @@ public class TaskServiceImpl implements TaskService {
             .map(task -> TaskViewModel.builder()
                 .id(task.getId())
                 .status(getDayStatuses(task))
-                .content(task.getTitle())
+                .title(task.getTitle())
+                .description(task.getDescription())
                 .build())
             .collect(Collectors.toList());
     }
@@ -65,7 +66,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void createTask(CreateTaskRequest request) {
         Task task = Task.builder()
-            .title(request.getTask())
+            .title(request.getTitle())
+            .description(request.getDescription())
             .priority(taskPriorityRepository.incrementAndGetMaxPriority())
             .createdAt(ZonedDateTime.now())
             .build();
@@ -92,8 +94,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void update(UpdateTaskRequest request) {
-        Task task = taskJpaRepository.getOne(request.getTaskId());
-        task.setTitle(request.getContent());
+        Task task = taskJpaRepository.getOne(request.getId());
+        task.setTitle(request.getTitle());
+        task.setDescription(request.getDescription());
+        task.setModifiedAt(ZonedDateTime.now());
         taskJpaRepository.save(task);
     }
 

@@ -4,12 +4,12 @@ import {bindActionCreators} from 'redux';
 
 import * as Store from "../store/ReduxActions";
 import * as REST from "../rest/rest";
-import TaskCreateModalForm from "../component/TaskCreateModalForm";
 import $ from 'jquery';
-import {faDownload, faPen, faPlus, faSyncAlt, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faDownload, faPen, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
+import TaskModalForm from "../component/TaskModalForm";
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -51,9 +51,16 @@ class TaskItem extends Component {
 
     changeText = (e) => {
         const {task, changeTaskTitle} = this.props;
-        task.content = e.target.value;
+        task.title = e.target.value;
 
         changeTaskTitle(task)
+    }
+
+    handleEdit = (e) => {
+        const {task, handleEdit} = this.props;
+        task.content = e.target.value;
+
+        handleEdit(task)
     }
 
     render() {
@@ -100,10 +107,10 @@ class TaskItem extends Component {
 
                 <div className="running-list-task">
                          <span>
-                             <span className="pl-1"><FontAwesomeIcon icon={faPen}/></span>
+                             <span className="pl-1"><FontAwesomeIcon onClick={this.handleEdit} icon={faPen}/></span>
                              <span className="pl-1"><FontAwesomeIcon onClick={this.handleRemove} icon={faTrash}/></span>
                         </span>
-                    <input type={"text"} onChange={this.changeText} value={task.content}></input>
+                    <input type={"text"} onChange={this.changeText} value={task.title}></input>
                 </div>
             </div>
         );
@@ -115,7 +122,10 @@ class RunningList extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {...props};
+        this.state = {
+            taskFormData: {},
+            ...props
+        };
         this.onDragEnd = this.onDragEnd.bind(this);
         this.loadTaskList();
     }
@@ -153,11 +163,41 @@ class RunningList extends Component {
     }
 
     createTask = (value) => {
+
         const that = this;
-        REST.createTask(value).then(() => {
-            $('#modalLoginForm').modal('hide');
+        REST.createTask(value.formData).then(() => {
+            $('#createTaskModalForm').modal('hide');
             that.loadTaskList();
         })
+    }
+
+
+    handleEdit = (task) => {
+        console.log(task)
+        this.setState({
+            taskFormData: {
+                id: task.id,
+                title: task.title,
+                description: task.description || ""
+            }
+        });
+        $('#updateTaskModalForm').modal('show');
+    }
+
+    updateTask = (value) => {
+
+        const that = this;
+        REST.updateTask(value.formData).then(() => {
+            $('#updateTaskModalForm').modal('hide');
+            this.setState({taskFormData: {}});
+            that.loadTaskList();
+        })
+
+    }
+    handleChangeTaskTitle = (task) => {
+        const that = this;
+        REST.updateTask(task)
+            .then(() => that.loadTaskList())
     }
 
     handleRemove = (task, index) => {
@@ -172,20 +212,16 @@ class RunningList extends Component {
             .then(() => that.loadTaskList())
     }
 
-    handleChangeTaskTitle = (task) => {
-        const that = this;
-        REST.changeTaskTitle(task.id, task.content)
-            .then(() => that.loadTaskList())
-    }
 
     render() {
-        //console.log(this.state)
-        const {taskList} = this.state;
+
+        const {taskList, taskFormData} = this.state;
 
         return (
             <div className="metalheart-running-list">
 
-                <TaskCreateModalForm onClickHandler={this.createTask}/>
+                <TaskModalForm id={"createTaskModalForm"} onSubmit={this.createTask}/>
+                <TaskModalForm id={"updateTaskModalForm"} formData={taskFormData} onSubmit={this.updateTask}/>
 
                 <div className="metalheart-running-list-header text-center">
                     <div className="row">
@@ -205,7 +241,7 @@ class RunningList extends Component {
                             <button
                                 className="btn btn-default"
                                 data-toggle="modal"
-                                data-target="#modalLoginForm">
+                                data-target="#createTaskModalForm">
                                 <FontAwesomeIcon icon={faPlus}/>
                             </button>
 
@@ -268,6 +304,7 @@ class RunningList extends Component {
                                                     handleRemove={this.handleRemove}
                                                     changeStatus={this.changeStatus}
                                                     changeTaskTitle={this.handleChangeTaskTitle}
+                                                    handleEdit={this.handleEdit}
                                                 />
                                             </div>
                                         )}

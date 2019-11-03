@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class TaskViewModel {
 
     private Integer id;
-    private String content;
+    private String title;
+    private String description;
     private List<String> status;
 }

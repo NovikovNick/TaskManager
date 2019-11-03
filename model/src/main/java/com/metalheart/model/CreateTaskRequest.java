@@ -7,7 +7,7 @@ import lombok.Data;
 public class CreateTaskRequest {
 
     @NotNull
-    private String task;
+    private String title;
 
     private String description;
 }

@@ -46,7 +46,7 @@ export function getTaskList() {
     return rest('/taskmanager/task/list', settings)
 }
 
-export function createTask(task) {
+export function createTask(formData) {
     const settings = {
         method: 'POST',
         cache: 'no-cache',
@@ -55,9 +55,21 @@ export function createTask(task) {
             'Accept': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({
-            task: task
-        })
+        body: JSON.stringify(formData)
+    };
+    return rest('/taskmanager/task', settings)
+}
+
+export function updateTask(formData) {
+    const settings = {
+        method: 'PUT',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(formData)
     };
     return rest('/taskmanager/task', settings)
 }
@@ -125,21 +137,4 @@ export function deleteTask(taskId) {
         credentials: 'include'
     };
     return rest("taskmanager/task/" + taskId, settings)
-}
-
-export function changeTaskTitle(taskId, content) {
-    const settings = {
-        method: 'PUT',
-        cache: 'no-cache',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-            taskId: taskId,
-            content: content
-        })
-    };
-    return rest("taskmanager/task", settings)
 }

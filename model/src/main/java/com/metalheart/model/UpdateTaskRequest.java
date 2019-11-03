@@ -7,8 +7,10 @@ import lombok.Data;
 public class UpdateTaskRequest {
 
     @NotNull
-    private Integer taskId;
+    private Integer id;
 
     @NotNull
-    private String content;
+    private String title;
+
+    private String description;
 }

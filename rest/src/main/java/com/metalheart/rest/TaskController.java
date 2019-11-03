@@ -45,7 +45,6 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("x", "created"));
     }
 
-
     @PostMapping(path = EndPoint.CHANGE_TASK_STATUS, consumes = APPLICATION_JSON_VALUE, produces =
         APPLICATION_JSON_VALUE)
     public ResponseEntity changeStatus(@Valid @RequestBody ChangeTaskStatusRequest request) {
@@ -79,7 +78,7 @@ public class TaskController {
         path = EndPoint.UPDATE_TASK,
         consumes = APPLICATION_JSON_VALUE,
         produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity increaseTaskPriority(@Valid @RequestBody UpdateTaskRequest request) {
+    public ResponseEntity updateTask(@Valid @RequestBody UpdateTaskRequest request) {
 
         taskService.update(request);
 
