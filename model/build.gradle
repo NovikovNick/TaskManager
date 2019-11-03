@@ -1,0 +1,9 @@
+dependencies{
+    
+    compile project(":db")
+    
+    compile 'javax.persistence:javax.persistence-api:2.2'
+    compile 'javax.validation:validation-api:2.0.1.Final'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: "$commonsLangVersion"
+    compile group: "org.springframework.boot", name: "spring-boot-starter-web", version: "$springBootVersion"
+}

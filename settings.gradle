@@ -1,0 +1,8 @@
+rootProject.name = 'taskmanager'
+include 'service'
+include 'model'
+include 'app'
+include 'rest'
+include 'repository'
+include 'db'
+

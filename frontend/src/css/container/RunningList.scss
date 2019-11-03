@@ -1,0 +1,106 @@
+$length: 20px;
+$running-list-min-width: 600px;
+$borderColor: #eee;
+$headerColor: #435d7d;
+$throwLine: black;
+$controlWidth:75px;
+$taskTitleWidth: calc(#{$running-list-min-width} - 140px);
+$taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
+
+.metalheart-running-list {
+
+  width: $running-list-min-width;
+
+  .metalheart-running-list-header {
+    background: $headerColor;
+    color: #fff;
+  }
+
+  .running-list-row {
+
+    height: $length;
+    line-height: $length;
+
+    .running-list-cell {
+
+      width: $length;
+      height: $length;
+      line-height: $length;
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 12px;
+      /*border-bottom: 1px solid $borderColor;
+      border-left: 1px solid $borderColor;*/
+
+      background-image: url("/grid.png");
+      background-position: left bottom;
+
+      &:hover {
+        background: #ffe404;
+      }
+
+      &.NONE {
+      }
+
+      &.TO_DO {
+        border: 1px solid $throwLine;
+      }
+
+      &.CANCELED::before{
+        content: "x"
+      }
+
+      &.IN_PROGRESS {
+        background: $throwLine;
+      }
+
+      &.DONE {
+        background: $throwLine;
+      }
+
+      &.DONE + .DONE {
+        background-image: url("/grid.png");
+        background-position: left bottom;
+      }
+
+      &.CANCELED + .CANCELED::before {
+        content: "";
+      }
+
+      &.DONE + .DONE .line-through, &.CANCELED + .CANCELED .line-through {
+        border-bottom: solid 1px $throwLine;
+        height: 50%;
+        width: 100%;
+      }
+
+      &.DONE + .running-list-task input, &.CANCELED + .running-list-task input{
+       text-decoration: line-through;
+      }
+    }
+
+    .running-list-task {
+      width: $taskTitleWidth;
+      height: $length;
+      line-height: $length;
+      display: inline-block;
+      border-left: 1px solid $borderColor;
+
+      span {
+        float: right;
+        display: none;
+        cursor: pointer;
+      }
+
+      input{
+        width: $taskInputWidth;
+        font-size: 15px;
+        padding-left: 5px;
+        border: 0px;
+      }
+
+      &:hover span {
+        display: inline-block;
+      }
+    }
+  }
+}

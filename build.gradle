@@ -1,0 +1,34 @@
+allprojects {
+    group 'com.metalheart'
+    version '1.0.0'
+
+    apply plugin: 'java'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    sourceCompatibility = "11"
+    targetCompatibility = "11"
+}
+
+subprojects {
+    dependencies {
+
+        annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+        compile group: "org.projectlombok", name: "lombok", version: "$lombokVersion"
+
+        compile group: "org.springframework", name: "spring-context", version: "$springVersion"
+        testCompile (group: "org.springframework.boot", name: "spring-boot-starter-test", version: "$springBootVersion") {
+            exclude(module: "spring-boot-starter-logging")
+        }
+
+        testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+        testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+    }
+}
+
+buildscript {
+    repositories { mavenCentral() }
+}

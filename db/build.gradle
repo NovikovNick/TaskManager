@@ -1,0 +1,29 @@
+buildscript {
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath group: 'org.postgresql', name: 'postgresql', version: "$postgreSqlVersion"
+        classpath group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+        classpath group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
+        classpath group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
+        classpath group: 'javax.activation', name: 'javax.activation-api', version: '1.2.0'
+    }
+}
+
+
+plugins {
+    id "org.flywaydb.flyway" version "5.2.4"
+}
+
+dependencies {
+    
+    compile group: "org.springframework.boot", name: "spring-boot-starter-data-jpa", version: "$springBootVersion"
+    
+    compile group: 'org.flywaydb', name: 'flyway-core', version:"$flywayDbVersion"
+    compile group: "org.springframework.boot", name: "spring-boot-starter-jdbc", version:"$springBootVersion"
+    compile group: "org.postgresql", name: "postgresql", version:"$postgreSqlVersion"
+}

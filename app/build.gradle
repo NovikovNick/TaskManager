@@ -1,0 +1,19 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion") }
+}
+
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    compile project(":rest")
+}
+
+libsDirName = './../../docker'
+
+bootJar {
+    archiveName = "app.jar"
+}
