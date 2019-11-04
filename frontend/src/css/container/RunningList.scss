@@ -1,9 +1,9 @@
 $length: 20px;
-$running-list-min-width: 600px;
+$running-list-min-width: 450px;
 $borderColor: #eee;
 $headerColor: #435d7d;
 $throwLine: black;
-$controlWidth:75px;
+$controlWidth:45px;
 $taskTitleWidth: calc(#{$running-list-min-width} - 140px);
 $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
 
@@ -14,6 +14,11 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
   .metalheart-running-list-header {
     background: $headerColor;
     color: #fff;
+
+    h2{
+      font-size: 23px;
+      padding-top: 7px;
+    }
   }
 
   .running-list-row {

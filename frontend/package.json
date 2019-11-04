@@ -23,8 +23,6 @@
     "react": "^16.11.0",
     "react-avatar-edit": "^0.8.3",
     "react-beautiful-dnd": "^12.0.0",
-    "react-dnd": "^9.4.0",
-    "react-dnd-html5-backend": "^9.4.0",
     "react-dom": "^16.11.0",
     "react-flip-move": "^3.0.3",
     "react-i18next": "^10.11.5",

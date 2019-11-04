@@ -1,7 +1,6 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import {initReactI18next} from 'react-i18next';
-import React from "react";
 
 i18n
 //.use(Backend)
@@ -18,12 +17,11 @@ i18n
                     "fri": "fri",
                     "sat": "sat",
                     "san": "san",
-
-                    "NONE": "NONE",
-                    "TO_DO": "TO_DO",
-                    "IN_PROGRESS": "IN_PROGRESS",
-                    "CANCELED": "CANCELED",
-                    "DONE": "DONE"
+                    "NONE": "Postpone",
+                    "TO_DO": "To do",
+                    "IN_PROGRESS": "Track time",
+                    "CANCELED": "Cancel",
+                    "DONE": "Finish"
                 }
             },
             ru: {
@@ -34,7 +32,12 @@ i18n
                     "thu": "чт",
                     "fri": "пт",
                     "sat": "сб",
-                    "san": "вс"
+                    "san": "вс",
+                    "NONE": "Отложить",
+                    "TO_DO": "Запланировать",
+                    "IN_PROGRESS": "В процессе",
+                    "CANCELED": "Отменить",
+                    "DONE": "Закончить"
                 }
             }
         },
