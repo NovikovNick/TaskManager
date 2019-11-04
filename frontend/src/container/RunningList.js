@@ -4,7 +4,6 @@ import {bindActionCreators} from 'redux';
 
 import * as Store from "../store/ReduxActions";
 import * as REST from "../rest/rest";
-import $ from 'jquery';
 import {faDownload, faPen, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
@@ -126,6 +125,11 @@ class RunningList extends Component {
             taskFormData: {},
             ...props
         };
+
+        this.createTaskForm = React.createRef();
+        this.updateTaskForm = React.createRef();
+
+
         this.onDragEnd = this.onDragEnd.bind(this);
         this.loadTaskList();
     }
@@ -162,13 +166,19 @@ class RunningList extends Component {
             });
     }
 
+    showCreateTaskForm = () => {
+        this.createTaskForm.current.show();
+    }
+
     createTask = (value) => {
 
         const that = this;
-        REST.createTask(value.formData).then(() => {
-            $('#createTaskModalForm').modal('hide');
-            that.loadTaskList();
-        })
+        REST.createTask(value.formData)
+            .then(() => {
+                that.createTaskForm.current.hide()
+                that.loadTaskList();
+            })
+            .catch(error => that.createTaskForm.current.error(error))
     }
 
 
@@ -181,17 +191,20 @@ class RunningList extends Component {
                 description: task.description || ""
             }
         });
-        $('#updateTaskModalForm').modal('show');
+        this.updateTaskForm.current.show();
     }
 
     updateTask = (value) => {
 
         const that = this;
-        REST.updateTask(value.formData).then(() => {
-            $('#updateTaskModalForm').modal('hide');
-            this.setState({taskFormData: {}});
-            that.loadTaskList();
-        })
+        REST.updateTask(value.formData)
+            .then(() => {
+                that.updateTaskForm.current.hide();
+                this.setState({taskFormData: {}});
+                that.loadTaskList();
+            })
+            .catch(error => that.updateTaskForm.current.error(error))
+
 
     }
     handleChangeTaskTitle = (task) => {
@@ -220,8 +233,9 @@ class RunningList extends Component {
         return (
             <div className="metalheart-running-list">
 
-                <TaskModalForm id={"createTaskModalForm"} onSubmit={this.createTask}/>
-                <TaskModalForm id={"updateTaskModalForm"} formData={taskFormData} onSubmit={this.updateTask}/>
+                <TaskModalForm ref={this.createTaskForm} id={"createTaskModalForm"} onSubmit={this.createTask}/>
+                <TaskModalForm ref={this.updateTaskForm} id={"updateTaskModalForm"} formData={taskFormData}
+                               onSubmit={this.updateTask}/>
 
                 <div className="metalheart-running-list-header text-center">
                     <div className="row">
@@ -239,9 +253,7 @@ class RunningList extends Component {
                             </button>
 
                             <button
-                                className="btn btn-default"
-                                data-toggle="modal"
-                                data-target="#createTaskModalForm">
+                                className="btn btn-default" onClick={this.showCreateTaskForm}>
                                 <FontAwesomeIcon icon={faPlus}/>
                             </button>
 
