@@ -6,9 +6,9 @@ import * as Store from "../store/ReduxActions";
 import * as REST from "../rest/rest";
 
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
-import TaskModalForm from "../component/TaskModalForm";
 import RunningListItem from "../component/RunningListItem";
 import RunningListHeader from "../component/RunningListHeader";
+import {CreateTaskModalForm, UpdateTaskModalForm} from "../component/TaskModalForm";
 
 
 const getItemStyle = (isDragging, draggableStyle) => ({
@@ -22,11 +22,23 @@ class RunningList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            taskFormData: {},
+            createTaskForm: {
+                uiSchema: {active: false},
+                formData: {title: '', description: ''},
+                onSubmit: REST.createTask,
+                onSuccess: this.onCreateTask,
+                closeForm: this.toggleCreateTaskForm
+            },
+            updateTaskForm: {
+                uiSchema: {active: false},
+                formData: {title: '', description: ''},
+                onSubmit: REST.updateTask,
+                onSuccess: this.onUpdateTask,
+                closeForm: this.toggleUpdateTaskForm
+            },
             ...props
         };
 
-        this.createTaskForm = React.createRef();
         this.updateTaskForm = React.createRef();
 
         this.loadTaskList();
@@ -63,44 +75,38 @@ class RunningList extends Component {
             });
     }
 
-    showCreateTaskForm = () => {
-        this.createTaskForm.current.show();
+
+    toggleCreateTaskForm = () => {
+        const {createTaskForm} = this.state
+        createTaskForm.uiSchema.active = !createTaskForm.uiSchema.active;
+        this.setState({createTaskForm: createTaskForm})
     }
 
-    createTask = (value) => {
-
-        const that = this;
-        REST.createTask(value.formData)
-            .then(() => {
-                that.createTaskForm.current.hide()
-                that.loadTaskList();
-            })
-            .catch(error => that.createTaskForm.current.error(error))
+    onCreateTask = () => {
+        this.toggleCreateTaskForm();
+        this.loadTaskList();
     }
 
-    handleEdit = (task) => {
-        console.log(task)
-        this.setState({
-            taskFormData: {
-                id: task.id,
-                title: task.title,
-                description: task.description || ""
-            }
-        });
-        this.updateTaskForm.current.show();
+
+    toggleUpdateTaskForm = (task = {}) => {
+
+        const {updateTaskForm} = this.state
+        updateTaskForm.uiSchema.active = !updateTaskForm.uiSchema.active;
+
+        updateTaskForm.formData = {
+            id: task.id || "",
+            title: task.title || "",
+            description: task.description || ""
+        };
+        this.setState({updateTaskForm: updateTaskForm})
     }
 
-    updateTask = (value) => {
+    onUpdateTask = () => {
 
-        const that = this;
-        REST.updateTask(value.formData)
-            .then(() => {
-                that.updateTaskForm.current.hide();
-                this.setState({taskFormData: {}});
-                that.loadTaskList();
-            })
-            .catch(error => that.updateTaskForm.current.error(error))
+        this.toggleUpdateTaskForm();
+        this.loadTaskList();
     }
+
 
     handleChangeTaskTitle = (task) => {
         const that = this;
@@ -120,24 +126,20 @@ class RunningList extends Component {
             .then(() => that.loadTaskList())
     }
 
+
     render() {
 
-        const {taskList, taskFormData} = this.state;
+        const {taskList, createTaskForm, updateTaskForm} = this.state;
 
         return (
             <div className="metalheart-running-list">
 
-                <TaskModalForm ref={this.createTaskForm}
-                               id={"createTaskModalForm"}
-                               onSubmit={this.createTask}/>
+                <UpdateTaskModalForm schema={updateTaskForm}/>
 
-                <TaskModalForm ref={this.updateTaskForm}
-                               id={"updateTaskModalForm"}
-                               formData={taskFormData}
-                               onSubmit={this.updateTask}/>
+                <CreateTaskModalForm schema={createTaskForm}/>
 
                 <RunningListHeader onLoadTaskList={this.loadTaskList}
-                                   onOpenCreateTaskForm={this.showCreateTaskForm}/>
+                                   onOpenCreateTaskForm={this.toggleCreateTaskForm}/>
 
                 <DragDropContext onDragEnd={this.onDragEnd}>
                     <Droppable droppableId="droppable">
@@ -165,7 +167,7 @@ class RunningList extends Component {
                                                     handleRemove={this.handleRemove}
                                                     changeStatus={this.changeStatus}
                                                     changeTaskTitle={this.handleChangeTaskTitle}
-                                                    handleEdit={this.handleEdit}
+                                                    handleEdit={this.toggleUpdateTaskForm}
                                                 />
                                             </div>
                                         )}

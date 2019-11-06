@@ -1,84 +1,111 @@
 import React from 'react';
+import {useTranslation} from "react-i18next";
+import {Formik} from 'formik';
+import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
 
-import Form from "react-jsonschema-form";
-import $ from "jquery";
 
-const schema = {
-    title: "Create new task",
-    type: "object",
-    properties: {
-        title: {type: "string", title: "Title"},
-        description: {type: "string", title: "Description"},
+export function UpdateTaskModalForm({schema}) {
+
+    schema.uiSchema.lang = {
+        title: 'update_task_title',
+        submit: 'update_task_submit_btn',
     }
-};
-const uiSchema = {
-    "title": {
-        "ui:widget": "text",
-        "ui:title": "Task title",
-    },
-    "description": {
-        "ui:widget": "textarea"
-    }
+
+    return (<TaskModalForm schema={schema}/>);
 }
-const log = (type) => console.log.bind(console, type);
 
-export default class TaskModalForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.form = React.createRef();
-        this.modal = React.createRef();
+export function CreateTaskModalForm({schema}) {
+    schema.uiSchema.lang = {
+        title: 'create_task_title',
+        submit: 'create_task_submit_btn',
     }
 
-    show = () => {
-        $(this.modal.current).modal('show')
-        this.form.current.setState({errorSchema: {}});
-    }
+    return (<TaskModalForm schema={schema}/>);
+}
 
-    hide = () => {
-        $(this.modal.current).modal('hide')
-        this.form.current.setState({errorSchema: {}});
-    }
+export function TaskModalForm({id, schema}) {
 
-    error = (errorSchema) => {
-        this.form.current.setState({errorSchema: errorSchema});
-    }
+    const {t} = useTranslation();
 
-    render() {
+    const onSubmit = (values, {setErrors, resetForm}) => {
 
-        const {id, formData, onSubmit} = this.props;
+        schema.onSubmit(values)
+            .then(res => {
+                schema.onSuccess(res);
+                resetForm({})
+            })
+            .catch(setErrors);
+    };
 
-        return (
+    return (
+        <Formik
+            enableReinitialize
+            initialValues={schema.formData}
+            onSubmit={onSubmit}>
 
-            <div ref={this.modal}
-                 id={id}
-                 className="modal fade"
-                 tabIndex="-1"
-                 role="dialog"
-                 aria-labelledby="myModalLabel"
-                 aria-hidden="true">
+            {({
+                  handleChange,
+                  handleSubmit,
+                  values,
+                  errors,
+                  touched,
+                  resetForm
+              }) => (
 
-                <div className="modal-dialog"
-                     style={{maxWidth: "600px"}}
-                     role="document">
+                <Modal show={schema.uiSchema.active} onHide={() => {
+                    resetForm({})
+                    schema.closeForm();
+                }}>
+                    <Form noValidate onSubmit={handleSubmit}>
 
-                    <div className="modal-content">
+                        <Modal.Header closeButton>
+                            <Modal.Title>{t(schema.uiSchema.lang.title)}</Modal.Title>
+                        </Modal.Header>
 
-                        <div className="modal-body">
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <Form
-                                ref={this.form}
-                                schema={schema}
-                                uiSchema={uiSchema}
-                                formData={formData}
-                                onSubmit={onSubmit}
-                                onError={log("errors")}
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+                        <Modal.Body>
+
+                            <Form.Group as={Row} controlId="validationFormik01">
+                                <Form.Label column sm="3">{t('title')}</Form.Label>
+                                <Col sm={'9'}>
+                                    <Form.Control
+                                        name="title"
+                                        onChange={handleChange}
+                                        defaultValue={values.title}
+                                        isValid={touched.title && !errors.title}
+                                        isInvalid={!!errors.title}
+                                    />
+                                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.title}
+                                    </Form.Control.Feedback>
+                                </Col>
+                            </Form.Group>
+
+                            <Form.Group as={Row} controlId="validationFormik02">
+                                <Form.Label column sm="3">{t('description')}</Form.Label>
+                                <Col sm={'9'}>
+                                    <Form.Control
+                                        as="textarea"
+                                        name="description"
+                                        onChange={handleChange}
+                                        defaultValue={values.description}
+                                        isValid={touched.description && !errors.description}
+                                        isInvalid={!!errors.description}
+                                    />
+                                    <Form.Control.Feedback type="valid">{t('Looks good!')}</Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.description}
+                                    </Form.Control.Feedback>
+                                </Col>
+                            </Form.Group>
+
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button type="submit">{t('Create task')}</Button>
+                        </Modal.Footer>
+                    </Form>
+                </Modal>
+            )}
+        </Formik>
+    );
 }

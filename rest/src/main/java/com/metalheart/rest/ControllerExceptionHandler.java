@@ -33,8 +33,8 @@ public class ControllerExceptionHandler {
     @ExceptionHandler
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map handle(MethodArgumentNotValidException exception,
-                      HttpServletRequest httpRequest) {
+    public Map<String, List<String>> handle(MethodArgumentNotValidException exception,
+                                            HttpServletRequest httpRequest) {
 
         // todo: final Locale locale = httpRequest.getLocale();
 
@@ -42,14 +42,10 @@ public class ControllerExceptionHandler {
         final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         final List<FormValidationErrorViewModel.ParameterValidationError> errors = Lists.newArrayList();
 
-        Map res = new HashMap();
+        Map<String, List<String>> res = new HashMap<>();
 
         for (final FieldError fieldError : fieldErrors) {
-
-            Map<String, List<String>> err = new HashMap<>();
-            err.put("__errors", asList(fieldError.getDefaultMessage()));
-            res.put(fieldError.getField(), err);
-
+            res.put(fieldError.getField(), asList(fieldError.getDefaultMessage()));
         }
 
         return res;

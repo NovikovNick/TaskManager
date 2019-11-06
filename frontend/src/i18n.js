@@ -21,7 +21,19 @@ i18n
                     "TO_DO": "To do",
                     "IN_PROGRESS": "Track time",
                     "CANCELED": "Cancel",
-                    "DONE": "Finish"
+                    "DONE": "Finish",
+                    "Update task":"Update task",
+                    "Create task":"Create task",
+                    "title":"Title",
+                    "description":"Description",
+
+                    "update_task_title":"Update task",
+                    "update_task_submit_btn":"Save",
+
+                    "create_task_title":"Create task",
+                    "create_task_submit_btn":"Create",
+
+                    "Looks good!":"Correct"
                 }
             },
             ru: {
@@ -37,7 +49,19 @@ i18n
                     "TO_DO": "Запланировать",
                     "IN_PROGRESS": "В процессе",
                     "CANCELED": "Отменить",
-                    "DONE": "Закончить"
+                    "DONE": "Закончить",
+                    "Update task":"Сохранить изменения",
+                    "Create task":"Создать задачу",
+                    "title":"Название",
+                    "description":"Описание",
+
+                    "update_task_title":"Редактирование задачи",
+                    "update_task_submit_btn":"Сохранить",
+
+                    "create_task_title":"Создать задачу",
+                    "create_task_submit_btn":"Создать",
+
+                    "Looks good!":"Корректно"
                 }
             }
         },
