@@ -61,15 +61,16 @@ export default function RunningListItem({index, task, handleRemove, changeStatus
             }
 
             <div className="running-list-task">
-                         <span>
-                             <span className="pl-1">
-                                 <FontAwesomeIcon onClick={handleEditFunction} icon={faPen}/>
-                             </span>
-                             <span className="pl-1">
-                                 <FontAwesomeIcon onClick={e => handleRemove(task)} icon={faTrash}/>
-                             </span>
-                        </span>
+
                 <input type={"text"} onChange={changeText} value={task.title}></input>
+                <span>
+                     <span className="pl-1">
+                         <FontAwesomeIcon onClick={handleEditFunction} icon={faPen}/>
+                     </span>
+                     <span className="pl-1">
+                         <FontAwesomeIcon onClick={e => handleRemove(task)} icon={faTrash}/>
+                     </span>
+                </span>
             </div>
         </div>
     );
