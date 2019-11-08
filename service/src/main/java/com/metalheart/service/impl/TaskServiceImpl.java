@@ -1,14 +1,14 @@
 package com.metalheart.service.impl;
 
-import com.metalheart.model.ChangeTaskPriorityRequest;
-import com.metalheart.model.ChangeTaskStatusRequest;
-import com.metalheart.model.CreateTaskRequest;
-import com.metalheart.model.Task;
-import com.metalheart.model.TaskStatus;
-import com.metalheart.model.TaskViewModel;
-import com.metalheart.model.UpdateTaskRequest;
-import com.metalheart.model.WeekWorkLog;
-import com.metalheart.model.WeekWorkLogPK;
+import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
+import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
+import com.metalheart.model.rest.request.CreateTaskRequest;
+import com.metalheart.model.jpa.Task;
+import com.metalheart.model.jpa.TaskStatus;
+import com.metalheart.model.rest.response.TaskViewModel;
+import com.metalheart.model.rest.request.UpdateTaskRequest;
+import com.metalheart.model.jpa.WeekWorkLog;
+import com.metalheart.model.jpa.WeekWorkLogPK;
 import com.metalheart.repository.inmemory.ITaskPriorityRepository;
 import com.metalheart.repository.jpa.TaskJpaRepository;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
@@ -22,9 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static com.metalheart.model.TaskStatus.CANCELED;
-import static com.metalheart.model.TaskStatus.DONE;
-import static com.metalheart.model.TaskStatus.NONE;
+import static com.metalheart.model.jpa.TaskStatus.CANCELED;
+import static com.metalheart.model.jpa.TaskStatus.DONE;
+import static com.metalheart.model.jpa.TaskStatus.NONE;
 
 @Slf4j
 @Component

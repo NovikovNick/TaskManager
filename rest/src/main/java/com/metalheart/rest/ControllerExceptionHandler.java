@@ -1,7 +1,7 @@
 package com.metalheart.rest;
 
 import com.google.common.collect.Lists;
-import com.metalheart.model.FormValidationErrorViewModel;
+import com.metalheart.model.rest.response.FormValidationErrorViewModel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;

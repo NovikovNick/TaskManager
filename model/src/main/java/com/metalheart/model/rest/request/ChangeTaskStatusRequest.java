@@ -1,5 +1,6 @@
-package com.metalheart.model;
+package com.metalheart.model.rest.request;
 
+import com.metalheart.model.jpa.TaskStatus;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 

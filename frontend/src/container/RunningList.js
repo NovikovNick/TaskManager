@@ -39,8 +39,6 @@ class RunningList extends Component {
             ...props
         };
 
-        this.updateTaskForm = React.createRef();
-
         this.loadTaskList();
     }
 
@@ -50,19 +48,24 @@ class RunningList extends Component {
             return;
         }
 
-        const taskList = Array.from(this.state.taskList);
-        const [removed] = taskList.splice(result.source.index, 1);
-        taskList.splice(result.destination.index, 0, removed);
+        const startIndex = result.source.index;
+        const endIndex = result.destination.index;
 
+        const {runningList} = this.state;
+
+        // reorder
+        const taskList = Array.from(runningList.tasks);
+        const [removed] = taskList.splice(startIndex, 1);
+        taskList.splice(endIndex, 0, removed);
+
+        // save state
+        this.setState({runningList: runningList});
+        runningList.tasks = taskList;
+        this.state.actions.setRunningList(runningList);
+
+        // send request and update tasks to check state
         const that = this;
-        that.setTaskList(taskList);
-        REST.changePriority(result.source.index, result.destination.index)
-            .then((taskList) => that.setTaskList(taskList))
-    }
-
-    setTaskList = (taskList) => {
-        this.setState({taskList: taskList});
-        this.state.actions.setTaskList(taskList);
+        REST.changePriority(startIndex, endIndex).then(that.loadTaskList)
     }
 
     loadTaskList = () => {
@@ -70,8 +73,9 @@ class RunningList extends Component {
         const that = this;
 
         REST.getTaskList()
-            .then(taskList => {
-                that.setTaskList(taskList);
+            .then(runningList => {
+                that.setState({runningList: runningList});
+                that.state.actions.setRunningList(runningList);
             });
     }
 
@@ -129,7 +133,7 @@ class RunningList extends Component {
 
     render() {
 
-        const {taskList, createTaskForm, updateTaskForm} = this.state;
+        const {runningList, createTaskForm, updateTaskForm} = this.state;
 
         return (
             <div className="metalheart-running-list">
@@ -138,54 +142,60 @@ class RunningList extends Component {
 
                 <CreateTaskModalForm schema={createTaskForm}/>
 
-                <RunningListHeader onLoadTaskList={this.loadTaskList}
+                <RunningListHeader calendar={runningList.calendar}
+                                   onLoadTaskList={this.loadTaskList}
                                    onOpenCreateTaskForm={this.toggleCreateTaskForm}/>
 
-                <DragDropContext onDragEnd={this.onDragEnd}>
-                    <Droppable droppableId="droppable">
-                        {(provided, snapshot) => (
-                            <div
-                                {...provided.droppableProps}
-                                ref={provided.innerRef}
-                            >
-                                {taskList.map((task, index) => (
-                                    <Draggable key={task.id} draggableId={task.id + ''} index={index}>
-                                        {(provided, snapshot) => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                style={getItemStyle(
-                                                    snapshot.isDragging,
-                                                    provided.draggableProps.style
-                                                )}
-                                            >
-                                                <RunningListItem
-                                                    key={task.id}
-                                                    index={index}
-                                                    task={task}
-                                                    handleRemove={this.handleRemove}
-                                                    changeStatus={this.changeStatus}
-                                                    changeTaskTitle={this.handleChangeTaskTitle}
-                                                    handleEdit={this.toggleUpdateTaskForm}
-                                                />
-                                            </div>
-                                        )}
-                                    </Draggable>
-                                ))}
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
-                </DragDropContext>
+                <div style={{'position': 'relative'}}>
 
+                    <DragDropContext onDragEnd={this.onDragEnd}>
+                        <Droppable droppableId="droppable">
+                            {(provided, snapshot) => (
+                                <div
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
+                                >
+                                    {runningList.tasks.map((task, index) => (
+                                        <Draggable key={task.id} draggableId={task.id + ''} index={index}>
+                                            {(provided, snapshot) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    style={getItemStyle(
+                                                        snapshot.isDragging,
+                                                        provided.draggableProps.style
+                                                    )}
+                                                >
+                                                    <RunningListItem
+                                                        key={task.id}
+                                                        index={index}
+                                                        task={task}
+                                                        handleRemove={this.handleRemove}
+                                                        changeStatus={this.changeStatus}
+                                                        changeTaskTitle={this.handleChangeTaskTitle}
+                                                        handleEdit={this.toggleUpdateTaskForm}
+                                                    />
+                                                </div>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    {provided.placeholder}
+                                </div>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
+
+                    <div className={"overlay"}></div>
+
+                </div>
             </div>
         )
     }
 }
 
 const mapStateToProps = state => ({
-    taskList: state.task.taskList
+    runningList: state.task.runningList
 });
 
 const mapDispatchToProps = dispatch => ({

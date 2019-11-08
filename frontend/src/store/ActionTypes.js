@@ -1,4 +1,2 @@
-export const SET_TASK_LIST = 'SET_TASK_LIST';
-
-export const MOVE_KNIGHT = 'MOVE_KNIGHT';
+export const SET_RUNNING_LIST = 'SET_RUNNING_LIST';
 

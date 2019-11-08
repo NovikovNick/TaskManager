@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Slf4j
 @Configuration
-@EntityScan(basePackages = "com.metalheart.model")
+@EntityScan(basePackages = "com.metalheart.model.jpa")
 @EnableJpaRepositories(value = "com.metalheart.repository.jpa")
 @ComponentScan("com.metalheart.repository")
 @EnableTransactionManagement

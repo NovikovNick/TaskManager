@@ -1,4 +1,4 @@
-package com.metalheart.model;
+package com.metalheart.model.jpa;
 
 import java.time.ZonedDateTime;
 import javax.persistence.Column;

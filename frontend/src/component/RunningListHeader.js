@@ -2,7 +2,7 @@ import React from "react";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useTranslation} from "react-i18next";
-import {faDownload, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faChevronLeft, faChevronRight, faSyncAlt, faPlus} from "@fortawesome/free-solid-svg-icons";
 
 function Cell({value}) {
     return (
@@ -12,64 +12,57 @@ function Cell({value}) {
     );
 }
 
-function RunningListDaysHeader() {
+function RunningListDaysHeader({calendar}) {
 
     const {t} = useTranslation()
 
     return (
         <div className={'running-list-calendar'}>
 
-            <Cell value={"04"}/>
-            <Cell value={"05"}/>
-            <Cell value={"06"}/>
-            <Cell value={"07"}/>
-            <Cell value={"08"}/>
-            <Cell value={"09"}/>
-            <Cell value={"10"}/>
+            {calendar.weekDates.map((day, i) => <Cell key={i} value={day}/>)}
 
             <br/>
 
-            <Cell value={t('mon')}/>
-            <Cell value={t('tue')}/>
-            <Cell value={t('wed')}/>
-            <Cell value={t('thu')}/>
-            <Cell value={t('fri')}/>
-            <Cell value={t('sat')}/>
-            <Cell value={t('san')}/>
+            {['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'san'].map((day, i) => <Cell key={i} value={t(day)}/>)}
 
         </div>
     );
 }
 
-export default function RunningListHeader({onLoadTaskList, onOpenCreateTaskForm}) {
+export default function RunningListHeader({calendar, onLoadTaskList, onOpenCreateTaskForm}) {
 
     return (
-        <div>
-            <div className="metalheart-running-list-header">
-                <RunningListDaysHeader/>
+        <div className="metalheart-running-list-header">
+            <RunningListDaysHeader calendar={calendar}/>
 
-                <div className={'running-list-title'}>
-                    <h2>Running List</h2>
-                </div>
-
-                <div className={'running-list-controls'}>
-
-                    <button
-                        className="btn btn-default"
-                        onClick={onLoadTaskList}>
-                        <FontAwesomeIcon icon={faDownload}/>
-                    </button>
-
-                    <button
-                        className="btn btn-default"
-                        onClick={onOpenCreateTaskForm}>
-                        <FontAwesomeIcon icon={faPlus}/>
-                    </button>
-
-                </div>
+            <div className={'running-list-title'}>
+                <h2>Running List</h2>
             </div>
 
-        </div>
+            <div className={'running-list-controls'}>
 
+                <button className="btn btn-default">
+                    <FontAwesomeIcon icon={faChevronLeft}/>
+                </button>
+
+                <button className="btn btn-default">
+                    <FontAwesomeIcon icon={faChevronRight}/>
+                </button>
+
+
+                <button
+                    className="btn btn-default"
+                    onClick={onLoadTaskList}>
+                    <FontAwesomeIcon icon={faSyncAlt}/>
+                </button>
+
+                <button
+                    className="btn btn-default"
+                    onClick={onOpenCreateTaskForm}>
+                    <FontAwesomeIcon icon={faPlus}/>
+                </button>
+
+            </div>
+        </div>
     );
 }

@@ -1,7 +1,7 @@
 package com.metalheart.repository.jpa;
 
-import com.metalheart.model.WeekWorkLog;
-import com.metalheart.model.WeekWorkLogPK;
+import com.metalheart.model.jpa.WeekWorkLog;
+import com.metalheart.model.jpa.WeekWorkLogPK;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

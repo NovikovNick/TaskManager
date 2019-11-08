@@ -20,12 +20,12 @@ toast.configure();
 export function getTaskList() {
     REST.getTaskList()
         .then(taskList => {
-            store.dispatch(Store.setTaskList(taskList));
+            store.dispatch(Store.setRunningList(taskList));
         });
 }
 
 export function setTaskList(taskList) {
-    store.dispatch(Store.setTaskList(taskList));
+    store.dispatch(Store.setRunningList(taskList));
 }
 
 export default function App() {

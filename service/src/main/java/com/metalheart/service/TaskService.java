@@ -1,10 +1,10 @@
 package com.metalheart.service;
 
-import com.metalheart.model.ChangeTaskPriorityRequest;
-import com.metalheart.model.ChangeTaskStatusRequest;
-import com.metalheart.model.CreateTaskRequest;
-import com.metalheart.model.TaskViewModel;
-import com.metalheart.model.UpdateTaskRequest;
+import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
+import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
+import com.metalheart.model.rest.request.CreateTaskRequest;
+import com.metalheart.model.rest.response.TaskViewModel;
+import com.metalheart.model.rest.request.UpdateTaskRequest;
 import java.util.List;
 
 public interface TaskService {
