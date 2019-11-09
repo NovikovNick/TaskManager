@@ -142,11 +142,7 @@ class RunningList extends Component {
 
                 <CreateTaskModalForm schema={createTaskForm}/>
 
-                <RunningListHeader calendar={runningList.calendar}
-                                   onLoadTaskList={this.loadTaskList}
-                                   onOpenCreateTaskForm={this.toggleCreateTaskForm}/>
-
-                <div style={{'position': 'relative'}}>
+                <div style={{'position': 'relative', 'margin-top': '40px'}}>
 
                     <DragDropContext onDragEnd={this.onDragEnd}>
                         <Droppable droppableId="droppable">
@@ -189,6 +185,12 @@ class RunningList extends Component {
                     <div className={"overlay"}></div>
 
                 </div>
+
+                <RunningListHeader calendar={runningList.calendar}
+                                   onLoadTaskList={this.loadTaskList}
+                                   onOpenCreateTaskForm={this.toggleCreateTaskForm}/>
+
+
             </div>
         )
     }
