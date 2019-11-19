@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FormValidationErrorViewModel {
 
-    List<ParameterValidationError> errors;
+    private List<ParameterValidationError> errors;
 
     @Data
     @NoArgsConstructor

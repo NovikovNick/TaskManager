@@ -79,6 +79,56 @@ class RunningList extends Component {
             });
     }
 
+    onArchive = () => {
+
+        const that = this;
+
+        REST.archive()
+            .then(runningList => {
+                that.setState({runningList: runningList});
+                that.state.actions.setRunningList(runningList);
+            });
+    }
+
+    onNext = () => {
+        const {year, week} = this.state.runningList;
+        const that = this;
+
+        REST.getNextTaskList(year, week)
+            .then(runningList => {
+                that.setState({runningList: runningList});
+                that.state.actions.setRunningList(runningList);
+            });
+    }
+
+    onPrev = () => {
+        const {year, week} = this.state.runningList;
+        const that = this;
+
+        REST.getPrevTaskList(year, week)
+            .then(runningList => {
+                that.setState({runningList: runningList});
+                that.state.actions.setRunningList(runningList);
+            });
+    }
+
+    onUndo = () => {
+        const that = this;
+        REST.undo()
+            .then(runningList => {
+                that.setState({runningList: runningList});
+                that.state.actions.setRunningList(runningList);
+            });
+    }
+
+    onRedo = () => {
+        const that = this;
+        REST.redo()
+            .then(runningList => {
+                that.setState({runningList: runningList});
+                that.state.actions.setRunningList(runningList);
+            });
+    }
 
     toggleCreateTaskForm = () => {
         const {createTaskForm} = this.state
@@ -182,13 +232,26 @@ class RunningList extends Component {
                         </Droppable>
                     </DragDropContext>
 
-                    <div className={"overlay"}></div>
+                    <div className={"overlay"} style={{display: runningList.editable ? 'none' : 'block'}}></div>
 
                 </div>
 
                 <RunningListHeader calendar={runningList.calendar}
                                    onLoadTaskList={this.loadTaskList}
-                                   onOpenCreateTaskForm={this.toggleCreateTaskForm}/>
+                                   onOpenCreateTaskForm={this.toggleCreateTaskForm}
+
+                                   canArchive={runningList.editable}
+                                   hasNext={runningList.hasNext}
+                                   hasPrev={runningList.hasPrevious}
+                                   canUndo={runningList.canUndo}
+                                   canRedo={runningList.canRedo}
+
+                                   onUndo={this.onUndo}
+                                   onRedo={this.onRedo}
+                                   onArchive={this.onArchive}
+                                   onNext={this.onNext}
+                                   onPrev={this.onPrev}
+                />
 
 
             </div>

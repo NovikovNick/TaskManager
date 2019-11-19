@@ -34,6 +34,7 @@ public class RestConfiguration implements WebMvcConfigurer {
             .addResourceLocations("classpath:/META-INF/resources/");
 
         registry.addResourceHandler(
+            "/webjars/**",
             "/images/**",
             "/css/**",
             "/js/**")

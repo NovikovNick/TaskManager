@@ -12,6 +12,15 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RunningListViewModel {
 
-    CalendarViewModel calendar;
-    List<TaskViewModel> tasks;
+    private Integer year;
+    private Integer week;
+
+    private Boolean editable;
+    private Boolean hasNext;
+    private Boolean hasPrevious;
+    private Boolean canUndo;
+    private Boolean canRedo;
+
+    private CalendarViewModel calendar;
+    private List<TaskViewModel> tasks;
 }

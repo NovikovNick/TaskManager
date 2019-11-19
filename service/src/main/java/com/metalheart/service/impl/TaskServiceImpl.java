@@ -1,17 +1,19 @@
 package com.metalheart.service.impl;
 
+import com.metalheart.model.action.RunningListAction;
+import com.metalheart.model.jpa.Task;
+import com.metalheart.model.jpa.TaskStatus;
+import com.metalheart.model.jpa.WeekWorkLog;
+import com.metalheart.model.jpa.WeekWorkLogPK;
 import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
-import com.metalheart.model.jpa.Task;
-import com.metalheart.model.jpa.TaskStatus;
-import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
-import com.metalheart.model.jpa.WeekWorkLog;
-import com.metalheart.model.jpa.WeekWorkLogPK;
+import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.repository.inmemory.ITaskPriorityRepository;
 import com.metalheart.repository.jpa.TaskJpaRepository;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
+import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.TaskService;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -35,6 +37,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private WeekWorkLogJpaRepository weekWorkLogJpaRepository;
+
+    @Autowired
+    private RunningListCommandManager runningListCommandManager;
 
     @Autowired
     private ITaskPriorityRepository taskPriorityRepository;
@@ -76,7 +81,25 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void delete(Integer taskId) {
-        taskJpaRepository.deleteById(taskId);
+
+        runningListCommandManager.execute(new RunningListAction() {
+
+            private Task task;
+
+            @Override
+            public void execute() {
+
+                if (task == null) {
+                    task = taskJpaRepository.getOne(taskId);
+                }
+                taskJpaRepository.delete(task);
+            }
+
+            @Override
+            public void undo() {
+                task = taskJpaRepository.save(task);
+            }
+        });
     }
 
     @Override

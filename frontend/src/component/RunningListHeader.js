@@ -2,7 +2,8 @@ import React from "react";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useTranslation} from "react-i18next";
-import {faChevronLeft, faChevronRight, faSyncAlt, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faChevronLeft, faChevronRight, faSyncAlt, faPlus, faSave, faUndo, faRedo} from "@fortawesome/free-solid-svg-icons";
+import Button from "react-bootstrap/Button";
 
 function Cell({value}) {
     return (
@@ -29,7 +30,13 @@ function RunningListDaysHeader({calendar}) {
     );
 }
 
-export default function RunningListHeader({calendar, onLoadTaskList, onOpenCreateTaskForm}) {
+export default function RunningListHeader({
+                                              calendar,
+                                              onLoadTaskList,
+                                              onOpenCreateTaskForm,
+                                              canUndo, canRedo, canArchive, hasNext, hasPrev,
+                                              onUndo, onRedo, onArchive, onNext, onPrev
+                                          }) {
 
     return (
         <div className="metalheart-running-list-header">
@@ -41,26 +48,33 @@ export default function RunningListHeader({calendar, onLoadTaskList, onOpenCreat
 
             <div className={'running-list-controls'}>
 
-                <button className="btn btn-default">
+                <Button variant="outline-light" disabled={!canUndo} onClick={onUndo}>
+                    <FontAwesomeIcon icon={faUndo}/>
+                </Button>
+
+                <Button variant="outline-light" disabled={!canRedo} onClick={onRedo}>
+                    <FontAwesomeIcon icon={faRedo}/>
+                </Button>
+
+                <Button variant="outline-light" disabled={!canArchive} onClick={onArchive}>
+                    <FontAwesomeIcon icon={faSave}/>
+                </Button>
+
+                <Button variant="outline-light" disabled={!hasNext} onClick={onNext}>
                     <FontAwesomeIcon icon={faChevronLeft}/>
-                </button>
+                </Button>
 
-                <button className="btn btn-default">
+                <Button variant="outline-light" disabled={!hasPrev} onClick={onPrev}>
                     <FontAwesomeIcon icon={faChevronRight}/>
-                </button>
+                </Button>
 
-
-                <button
-                    className="btn btn-default"
-                    onClick={onLoadTaskList}>
+                <Button variant="outline-light" onClick={onLoadTaskList}>
                     <FontAwesomeIcon icon={faSyncAlt}/>
-                </button>
+                </Button>
 
-                <button
-                    className="btn btn-default"
-                    onClick={onOpenCreateTaskForm}>
+                <Button variant="outline-light" onClick={onOpenCreateTaskForm}>
                     <FontAwesomeIcon icon={faPlus}/>
-                </button>
+                </Button>
 
             </div>
         </div>

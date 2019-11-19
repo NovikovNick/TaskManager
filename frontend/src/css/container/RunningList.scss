@@ -7,16 +7,16 @@ $controlWidth: 45px;
 $taskTitleWidth: calc(#{$running-list-min-width} - 140px);
 $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
 
-@mixin linear-gradient($direction, $fromColor, $toColor){
+@mixin linear-gradient($direction, $fromColor, $toColor) {
 
   background-color: $toColor;
   background-image: -webkit-gradient(linear, $direction, from($fromColor), to($toColor));
   background-image: -webkit-linear-gradient($direction, $fromColor, $toColor);
-  background-image:    -moz-linear-gradient($direction, $fromColor, $toColor);
-  background-image:     -ms-linear-gradient($direction, $fromColor, $toColor);
-  background-image:      -o-linear-gradient($direction, $fromColor, $toColor);
-  background-image:         linear-gradient($direction, $fromColor, $toColor);
-  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,StartColorStr='#{$fromColor}', EndColorStr='#{$toColor}');
+  background-image: -moz-linear-gradient($direction, $fromColor, $toColor);
+  background-image: -ms-linear-gradient($direction, $fromColor, $toColor);
+  background-image: -o-linear-gradient($direction, $fromColor, $toColor);
+  background-image: linear-gradient($direction, $fromColor, $toColor);
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1, StartColorStr='#{$fromColor}', EndColorStr='#{$toColor}');
 }
 
 .metalheart-running-list {
@@ -26,12 +26,12 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
   position: relative;
 
   .metalheart-running-list-header {
-    background: linear-gradient(bottom, $headerColor, lighten($headerColor,10%));
+    background: linear-gradient(bottom, $headerColor, lighten($headerColor, 10%));
     color: #fff;
     height: 40px;
-    box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.5);
+    box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.5);
     position: absolute;
-    top:-40px;
+    top: -40px;
     width: 100%;
 
 
@@ -56,7 +56,7 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
       display: inline-block;
       width: 100%;
       margin-left: -140px;
-      margin-right: -165px;
+      margin-right: -280px;
       padding-left: 150px;
       vertical-align: top;
 
@@ -69,6 +69,22 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
     .running-list-controls {
       display: inline-block;
       vertical-align: top;
+
+      .btn-outline-light {
+        color: black;
+        border-color: transparent;
+
+        &:hover {
+          color: white;
+          background: transparent;
+        }
+
+        &:disabled {
+          color: black;
+          opacity: 0.2;
+        }
+      }
+
     }
 
 
@@ -173,7 +189,7 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: $headerColor;
+    background: linear-gradient(left, $headerColor, #fff);
     opacity: 0.1;
     z-index: 2;
     cursor: pointer;

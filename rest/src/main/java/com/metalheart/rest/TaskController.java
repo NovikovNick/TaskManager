@@ -8,6 +8,7 @@ import com.metalheart.model.rest.request.UpdateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TaskService;
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,6 @@ public class TaskController {
 
     @Autowired
     private RunningListService runningListService;
-
-    @GetMapping(path = EndPoint.GET_TASK_LIST, produces = APPLICATION_JSON_VALUE)
-    public RunningListViewModel getTaskList() {
-
-        return runningListService.getRunningList();
-    }
 
     @PostMapping(path = EndPoint.CREATE_TASK, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel createTask(@Valid @RequestBody CreateTaskRequest request) {

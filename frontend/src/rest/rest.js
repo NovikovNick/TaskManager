@@ -138,3 +138,60 @@ export function deleteTask(taskId) {
     };
     return rest("taskmanager/task/" + taskId, settings)
 }
+
+export function getNextTaskList(year, week) {
+    const settings = {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-cache'
+    };
+    return rest('/taskmanager/runninglist/archive/next?year=' + year + '&week=' + week, settings);
+}
+
+export function getPrevTaskList(year, week) {
+    const settings = {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-cache'
+    };
+    return rest('/taskmanager/runninglist/archive/prev?year=' + year + '&week=' + week, settings);
+}
+
+export function archive() {
+    const settings = {
+        method: 'POST',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        credentials: 'include',
+    };
+    return rest('/taskmanager/runninglist/archive', settings);
+}
+
+export function undo() {
+    const settings = {
+        method: 'DELETE',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        credentials: 'include',
+    };
+    return rest('/taskmanager/runninglist', settings);
+}
+
+export function redo() {
+    const settings = {
+        method: 'POST',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        credentials: 'include',
+    };
+    return rest('/taskmanager/runninglist', settings);
+}
