@@ -85,19 +85,25 @@ public class TaskServiceImpl implements TaskService {
         runningListCommandManager.execute(new RunningListAction() {
 
             private Task task;
+            private List<WeekWorkLog> workLogs;
 
             @Override
             public void execute() {
 
                 if (task == null) {
                     task = taskJpaRepository.getOne(taskId);
+                    workLogs = weekWorkLogJpaRepository.findAllByTaskId(taskId);
                 }
                 taskJpaRepository.delete(task);
+                weekWorkLogJpaRepository.deleteAll(workLogs);
             }
 
             @Override
             public void undo() {
                 task = taskJpaRepository.save(task);
+
+                workLogs.forEach(workLog -> workLog.getId().setTaskId(task.getId()));
+                workLogs = weekWorkLogJpaRepository.saveAll(workLogs);
             }
         });
     }
