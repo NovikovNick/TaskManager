@@ -102,9 +102,10 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
       line-height: $length;
       display: inline-block;
       vertical-align: middle;
-      font-size: 12px;
-      /*border-bottom: 1px solid $borderColor;
-      border-left: 1px solid $borderColor;*/
+      text-align: center;
+      font-size: $length;
+
+      position: relative;
 
       background-image: url("/grid.png");
       background-position: left bottom;
@@ -120,25 +121,37 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
         border: 1px solid $throwLine;
       }
 
-      &.CANCELED::before {
-        content: "x"
-      }
 
       &.IN_PROGRESS {
         background: $throwLine;
       }
 
       &.DONE {
+
         background: $throwLine;
+
+        & + .DONE {
+          background-image: url("/grid.png");
+          background-position: left bottom;
+        }
       }
 
-      &.DONE + .DONE {
-        background-image: url("/grid.png");
-        background-position: left bottom;
+      &.CANCELED {
+
+        &::before {
+          content: "\2715"
+        }
+
+        & + .CANCELED::before {
+          content: "";
+        }
       }
 
-      &.CANCELED + .CANCELED::before {
-        content: "";
+      .line-through {
+        position: absolute;
+        top: 0px;
+        width: 100%;
+        cursor: pointer;
       }
 
       &.DONE + .DONE .line-through, &.CANCELED + .CANCELED .line-through {
