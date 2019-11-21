@@ -2,17 +2,16 @@ package com.metalheart.test.unit.service;
 
 
 import com.metalheart.model.jpa.RunningListArchivePK;
-import com.metalheart.service.RunningListService;
-import com.metalheart.service.impl.RunningListServiceImpl;
+import com.metalheart.service.impl.DateServiceImpl;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class RunningListServiceTest {
+public class DateServiceImplTest {
 
-    RunningListService runningListService = new RunningListServiceImpl();
+    DateServiceImpl runningListService = new DateServiceImpl();
 
     @Test
     public void test() {

@@ -13,21 +13,13 @@ import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.repository.jpa.RunningListArchiveRepository;
 import com.metalheart.repository.jpa.TaskJpaRepository;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
+import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListService;
 import java.io.IOException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.IsoFields;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,8 +34,6 @@ import static com.metalheart.model.jpa.TaskStatus.TO_DO;
 @Slf4j
 @Component
 public class RunningListServiceImpl implements RunningListService {
-
-    private static DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("dd");
 
     @Autowired
     private RunningListArchiveRepository runningListArchiveRepository;
@@ -60,78 +50,56 @@ public class RunningListServiceImpl implements RunningListService {
     @Autowired
     private WeekWorkLogJpaRepository weekWorkLogJpaRepository;
 
+    @Autowired
+    private DateService dateService;
+
     @Override
     public RunningListViewModel getRunningList() {
 
-        RunningListArchivePK pk = getWeekId(ZonedDateTime.now());
-        Integer week = pk.getWeek();
-        Integer year = pk.getYear();
+        RunningListArchivePK weekId = dateService.getCurrentWeekId();
 
-        CalendarViewModel calendar = getCalendar();
-
+        CalendarViewModel calendar = dateService.getCalendar();
 
         return RunningListViewModel.builder()
             .calendar(calendar)
             .tasks(getTaskList(calendar))
             .editable(true)
             .hasNext(false)
-            .hasPrevious(hasPrevious(getZonedDateTime(year, week)))
+            .hasPrevious(hasPreviousArchive(weekId))
             .canUndo(runningListCommandManager.canUndo())
             .canRedo(runningListCommandManager.canRedo())
-            .year(year)
-            .week(week)
+            .year(weekId.getYear())
+            .week(weekId.getWeek())
             .build();
-    }
-
-
-    private List<TaskViewModel> getTaskList(CalendarViewModel calendar) {
-
-        return taskJpaRepository.findAllByOrderByPriorityAsc().stream()
-            .map(task -> TaskViewModel.builder()
-                .id(task.getId())
-                .status(getDayStatuses(task, calendar.getCurrentDay()))
-                .title(task.getTitle())
-                .description(task.getDescription())
-                .build())
-            .collect(Collectors.toList());
     }
 
     @Override
     public RunningListViewModel getPrev(Integer year, Integer week) {
 
-        ZonedDateTime desiredDate = getZonedDateTime(year, week).minusWeeks(1);
+        RunningListArchivePK weekId = RunningListArchivePK.builder().year(year).week(week).build();
+        RunningListArchivePK prevWeekId = dateService.getPreviousWeekId(weekId);
 
-        RunningListViewModel runningListViewModel = getRunningListViewModel(getWeekId(desiredDate));
-        runningListViewModel.setEditable(false);
-        runningListViewModel.setHasPrevious(hasPrevious(desiredDate));
-        runningListViewModel.setHasNext(hasNext(desiredDate));
-        return runningListViewModel;
+        return getArchive(prevWeekId);
     }
+
 
     @Override
     public RunningListViewModel getNext(Integer year, Integer week) {
 
+        RunningListArchivePK weekId = RunningListArchivePK.builder().year(year).week(week).build();
+        RunningListArchivePK nextWeekId = dateService.getNextWeekId(weekId);
 
-        ZonedDateTime desiredDate = getZonedDateTime(year, week).plusWeeks(1);
-
-        RunningListArchivePK weekId = getWeekId(desiredDate);
-
-        if (weekId.equals(getWeekId(ZonedDateTime.now()))) {
+        if (dateService.getCurrentWeekId().equals(nextWeekId)) {
             return getRunningList();
         }
 
-        RunningListViewModel runningListViewModel = getRunningListViewModel(weekId);
-        runningListViewModel.setEditable(false);
-        runningListViewModel.setHasPrevious(hasPrevious(desiredDate));
-        runningListViewModel.setHasNext(hasNext(desiredDate));
-        return runningListViewModel;
+        return getArchive(nextWeekId);
     }
 
     @Override
     public void archive() {
 
-        ZonedDateTime now = ZonedDateTime.now();
-        RunningListArchivePK weekId = getWeekId(now);
+        RunningListArchivePK weekId = dateService.getCurrentWeekId();
         if (runningListArchiveRepository.existsById(weekId)) {
             throw new RuntimeException("archive already exist! weekId = " + weekId);
         }
@@ -152,17 +120,6 @@ public class RunningListServiceImpl implements RunningListService {
     }
 
     @Override
-    public RunningListArchivePK getWeekId(ZonedDateTime zonedDateTime) {
-        zonedDateTime = zonedDateTime.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
-        Integer week = zonedDateTime.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
-        int year = zonedDateTime.getYear();
-        return RunningListArchivePK.builder()
-            .year(year)
-            .week(week)
-            .build();
-    }
-
-    @Override
     public RunningListViewModel redo() {
         runningListCommandManager.redo();
         return getRunningList();
@@ -172,6 +129,34 @@ public class RunningListServiceImpl implements RunningListService {
     public RunningListViewModel undo() {
         runningListCommandManager.undo();
         return getRunningList();
+    }
+
+
+    /* CONVENIENCE */
+
+    private RunningListViewModel getArchive(RunningListArchivePK weekId) {
+        RunningListViewModel runningListViewModel = getRunningListViewModel(weekId);
+        runningListViewModel.setEditable(false);
+        runningListViewModel.setHasPrevious(hasPreviousArchive(weekId));
+        runningListViewModel.setHasNext(hasNextArchive(weekId));
+        return runningListViewModel;
+    }
+
+    private boolean hasPreviousArchive(RunningListArchivePK weekId) {
+        return isArchiveExist(dateService.getPreviousWeekId(weekId));
+    }
+
+    private boolean hasNextArchive(RunningListArchivePK weekId) {
+        RunningListArchivePK nextWeekId = dateService.getNextWeekId(weekId);
+        if (dateService.getCurrentWeekId().equals(nextWeekId)) {
+            return true;
+        }
+
+        return isArchiveExist(nextWeekId);
+    }
+
+    private boolean isArchiveExist(RunningListArchivePK weekId) {
+        return runningListArchiveRepository.existsById(weekId);
     }
 
     private RunningListViewModel getRunningListViewModel(RunningListArchivePK weekId) {
@@ -184,42 +169,16 @@ public class RunningListServiceImpl implements RunningListService {
         }
     }
 
-    private CalendarViewModel getCalendar() {
+    private List<TaskViewModel> getTaskList(CalendarViewModel calendar) {
 
-        var builder = CalendarViewModel.builder();
-
-        ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime monday = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-
-        List<String> weekDates = IntStream.range(0, 7)
-            .mapToObj((i) -> DAY_FORMATTER.format(monday.plusDays(i)))
+        return taskJpaRepository.findAllByOrderByPriorityAsc().stream()
+            .map(task -> TaskViewModel.builder()
+                .id(task.getId())
+                .status(getDayStatuses(task, calendar.getCurrentDay()))
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .build())
             .collect(Collectors.toList());
-
-        return builder
-            .currentDay(now.getDayOfWeek().getValue() - 1)
-            .weekDates(weekDates)
-            .build();
-    }
-
-    private boolean hasNext(ZonedDateTime desiredDate) {
-
-        RunningListArchivePK weekId = getWeekId(desiredDate.plusWeeks(1));
-
-        if (weekId.equals(getWeekId(ZonedDateTime.now()))) {
-            return true;
-        }
-
-        return runningListArchiveRepository.existsById(weekId);
-    }
-
-    private boolean hasPrevious(ZonedDateTime desiredDate) {
-        return runningListArchiveRepository.existsById(getWeekId(desiredDate.minusWeeks(1)));
-    }
-
-    private ZonedDateTime getZonedDateTime(Integer year, Integer week) {
-        return ZonedDateTime.of(LocalDate.ofYearDay(year, 1), LocalTime.now(), ZoneId.systemDefault())
-            .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
-            .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
     }
 
     private List<String> getDayStatuses(Task task, Integer currentDay) {
