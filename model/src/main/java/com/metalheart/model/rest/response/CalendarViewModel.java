@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CalendarViewModel {
 
-    private String currentDay;
+    private Integer currentDay;
     private List<String> weekDates;
 }

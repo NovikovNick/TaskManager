@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface TaskService {
 
-    List<TaskViewModel> getTaskList();
-
     void createTask(CreateTaskRequest request);
 
     void delete(Integer taskId);

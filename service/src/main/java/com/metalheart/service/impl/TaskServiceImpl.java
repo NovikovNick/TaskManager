@@ -56,19 +56,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskViewModel> getTaskList() {
-
-        return taskJpaRepository.findAllByOrderByPriorityAsc().stream()
-            .map(task -> TaskViewModel.builder()
-                .id(task.getId())
-                .status(getDayStatuses(task))
-                .title(task.getTitle())
-                .description(task.getDescription())
-                .build())
-            .collect(Collectors.toList());
-    }
-
-    @Override
     public void createTask(CreateTaskRequest request) {
         Task task = Task.builder()
             .title(request.getTitle())
@@ -142,64 +129,10 @@ public class TaskServiceImpl implements TaskService {
         saveTaskList(tasks);
     }
 
-
-    private List<String> getDayStatuses(Task task) {
-        List<WeekWorkLog> taskWorkLog = weekWorkLogJpaRepository.findAllByTaskId(task.getId());
-
-        List<String> res = new ArrayList<>();
-
-        TaskStatus previous = NONE;
-        for (int day = 0; day < 7; day++) {
-            TaskStatus status = getStatus(taskWorkLog, day);
-
-            if (NONE.equals(status) && previous.equals(NONE)) {
-
-                res.add(NONE.toString());
-
-            } else if (NONE.equals(status) && previous.equals(DONE)) {
-
-                res.add(DONE.toString());
-
-            } else if (DONE.equals(status)) {
-
-                if (!DONE.equals(previous)) {
-                    previous = DONE;
-                }
-                res.add(DONE.toString());
-
-            } else if (NONE.equals(status) && previous.equals(CANCELED)) {
-
-                res.add(CANCELED.toString());
-
-            } else if (CANCELED.equals(status)) {
-
-                if (!CANCELED.equals(previous)) {
-                    previous = CANCELED;
-                }
-                res.add(CANCELED.toString());
-
-            } else {
-
-                res.add(status.toString());
-            }
-
-        }
-        return res;
-    }
-
     private void saveTaskList(List<Task> taskList) {
         for (int i = 0; i < taskList.size(); i++) {
             taskList.get(i).setPriority(i);
         }
         taskJpaRepository.saveAll(taskList);
-    }
-
-    private TaskStatus getStatus(List<WeekWorkLog> taskWorkLog, int day) {
-        for (WeekWorkLog log : taskWorkLog) {
-            if (log.getId().getDayIndex() == day) {
-                return log.getStatus();
-            }
-        }
-        return NONE;
     }
 }

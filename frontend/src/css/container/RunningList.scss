@@ -121,6 +121,9 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
         border: 1px solid $throwLine;
       }
 
+      &.DELAYED::before {
+        content: "\1f816";
+      }
 
       &.IN_PROGRESS {
         background: $throwLine;

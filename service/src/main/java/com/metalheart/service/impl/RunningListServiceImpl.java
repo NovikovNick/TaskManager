@@ -4,12 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metalheart.model.jpa.RunningListArchive;
 import com.metalheart.model.jpa.RunningListArchivePK;
+import com.metalheart.model.jpa.Task;
+import com.metalheart.model.jpa.TaskStatus;
+import com.metalheart.model.jpa.WeekWorkLog;
 import com.metalheart.model.rest.response.CalendarViewModel;
 import com.metalheart.model.rest.response.RunningListViewModel;
+import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.repository.jpa.RunningListArchiveRepository;
+import com.metalheart.repository.jpa.TaskJpaRepository;
+import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListService;
-import com.metalheart.service.TaskService;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -19,6 +24,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -26,14 +32,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static com.metalheart.model.jpa.TaskStatus.CANCELED;
+import static com.metalheart.model.jpa.TaskStatus.DELAYED;
+import static com.metalheart.model.jpa.TaskStatus.DONE;
+import static com.metalheart.model.jpa.TaskStatus.NONE;
+import static com.metalheart.model.jpa.TaskStatus.TO_DO;
+
+
 @Slf4j
 @Component
 public class RunningListServiceImpl implements RunningListService {
 
     private static DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("dd");
-
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private RunningListArchiveRepository runningListArchiveRepository;
@@ -44,6 +54,12 @@ public class RunningListServiceImpl implements RunningListService {
     @Autowired
     private RunningListCommandManager runningListCommandManager;
 
+    @Autowired
+    private TaskJpaRepository taskJpaRepository;
+
+    @Autowired
+    private WeekWorkLogJpaRepository weekWorkLogJpaRepository;
+
     @Override
     public RunningListViewModel getRunningList() {
 
@@ -51,9 +67,12 @@ public class RunningListServiceImpl implements RunningListService {
         Integer week = pk.getWeek();
         Integer year = pk.getYear();
 
+        CalendarViewModel calendar = getCalendar();
+
+
         return RunningListViewModel.builder()
-            .calendar(getCalendar())
-            .tasks(taskService.getTaskList())
+            .calendar(calendar)
+            .tasks(getTaskList(calendar))
             .editable(true)
             .hasNext(false)
             .hasPrevious(hasPrevious(getZonedDateTime(year, week)))
@@ -62,6 +81,19 @@ public class RunningListServiceImpl implements RunningListService {
             .year(year)
             .week(week)
             .build();
+    }
+
+
+    private List<TaskViewModel> getTaskList(CalendarViewModel calendar) {
+
+        return taskJpaRepository.findAllByOrderByPriorityAsc().stream()
+            .map(task -> TaskViewModel.builder()
+                .id(task.getId())
+                .status(getDayStatuses(task, calendar.getCurrentDay()))
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .build())
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -164,7 +196,7 @@ public class RunningListServiceImpl implements RunningListService {
             .collect(Collectors.toList());
 
         return builder
-            .currentDay(DAY_FORMATTER.format(now))
+            .currentDay(now.getDayOfWeek().getValue() - 1)
             .weekDates(weekDates)
             .build();
     }
@@ -188,5 +220,62 @@ public class RunningListServiceImpl implements RunningListService {
         return ZonedDateTime.of(LocalDate.ofYearDay(year, 1), LocalTime.now(), ZoneId.systemDefault())
             .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
             .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+    }
+
+    private List<String> getDayStatuses(Task task, Integer currentDay) {
+        List<WeekWorkLog> taskWorkLog = weekWorkLogJpaRepository.findAllByTaskId(task.getId());
+
+        List<String> res = new ArrayList<>();
+
+        TaskStatus previous = NONE;
+        for (int day = 0; day < 7; day++) {
+            TaskStatus status = getStatus(taskWorkLog, day);
+
+            if (NONE.equals(status) && previous.equals(NONE)) {
+
+                res.add(NONE.toString());
+
+            } else if (NONE.equals(status) && previous.equals(DONE)) {
+
+                res.add(DONE.toString());
+
+            } else if (DONE.equals(status)) {
+
+                if (!DONE.equals(previous)) {
+                    previous = DONE;
+                }
+                res.add(DONE.toString());
+
+            } else if (NONE.equals(status) && previous.equals(CANCELED)) {
+
+                res.add(CANCELED.toString());
+
+            } else if (CANCELED.equals(status)) {
+
+                if (!CANCELED.equals(previous)) {
+                    previous = CANCELED;
+                }
+                res.add(CANCELED.toString());
+
+            } else if (TO_DO.equals(status) && currentDay > day) {
+
+                res.add(DELAYED.toString());
+
+            } else {
+
+                res.add(status.toString());
+            }
+
+        }
+        return res;
+    }
+
+    private TaskStatus getStatus(List<WeekWorkLog> taskWorkLog, int day) {
+        for (WeekWorkLog log : taskWorkLog) {
+            if (log.getId().getDayIndex() == day) {
+                return log.getStatus();
+            }
+        }
+        return NONE;
     }
 }
