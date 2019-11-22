@@ -1,6 +1,6 @@
 package com.metalheart.service.impl;
 
-import com.metalheart.model.jpa.RunningListArchivePK;
+import com.metalheart.model.WeekId;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.jpa.WeekWorkLog;
@@ -49,7 +49,7 @@ public class RunningListServiceImpl implements RunningListService {
     @Override
     public RunningListViewModel getRunningList() {
 
-        RunningListArchivePK weekId = dateService.getCurrentWeekId();
+        WeekId weekId = dateService.getCurrentWeekId();
 
         CalendarViewModel calendar = dateService.getCalendar();
 

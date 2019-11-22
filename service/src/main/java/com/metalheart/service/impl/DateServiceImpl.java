@@ -1,6 +1,6 @@
 package com.metalheart.service.impl;
 
-import com.metalheart.model.jpa.RunningListArchivePK;
+import com.metalheart.model.WeekId;
 import com.metalheart.model.rest.response.CalendarViewModel;
 import com.metalheart.service.DateService;
 import java.time.DayOfWeek;
@@ -22,17 +22,17 @@ public class DateServiceImpl implements DateService {
     private static DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("dd");
 
     @Override
-    public RunningListArchivePK getCurrentWeekId() {
+    public WeekId getCurrentWeekId() {
         return getWeekId(ZonedDateTime.now());
     }
 
     @Override
-    public RunningListArchivePK getNextWeekId(RunningListArchivePK weekId) {
+    public WeekId getNextWeekId(WeekId weekId) {
         return getWeekId(toZonedDateTime(weekId).plusWeeks(1));
     }
 
     @Override
-    public RunningListArchivePK getPreviousWeekId(RunningListArchivePK weekId) {
+    public WeekId getPreviousWeekId(WeekId weekId) {
         return getWeekId(toZonedDateTime(weekId).minusWeeks(1));
     }
 
@@ -54,17 +54,14 @@ public class DateServiceImpl implements DateService {
             .build();
     }
 
-    public RunningListArchivePK getWeekId(ZonedDateTime zonedDateTime) {
+    public WeekId getWeekId(ZonedDateTime zonedDateTime) {
         zonedDateTime = zonedDateTime.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
         Integer week = zonedDateTime.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
         int year = zonedDateTime.getYear();
-        return RunningListArchivePK.builder()
-            .year(year)
-            .week(week)
-            .build();
+        return new WeekId(year, week);
     }
 
-    public ZonedDateTime toZonedDateTime(RunningListArchivePK weekId) {
+    public ZonedDateTime toZonedDateTime(WeekId weekId) {
 
         Integer year = weekId.getYear();
         Integer week = weekId.getWeek();
@@ -73,5 +70,4 @@ public class DateServiceImpl implements DateService {
             .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
             .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
     }
-
 }

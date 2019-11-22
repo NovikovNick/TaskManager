@@ -1,7 +1,6 @@
 package com.metalheart.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.metalheart.model.WeekId;
 import com.metalheart.model.jpa.RunningListArchive;
 import com.metalheart.model.jpa.RunningListArchivePK;
 import com.metalheart.model.rest.response.RunningListViewModel;
@@ -9,9 +8,9 @@ import com.metalheart.repository.jpa.RunningListArchiveRepository;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListService;
-import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -22,19 +21,19 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
     private RunningListArchiveRepository runningListArchiveRepository;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private RunningListService runningListService;
 
     @Autowired
     private DateService dateService;
 
+    @Autowired
+    private ConversionService conversionService;
+
     @Override
     public RunningListViewModel getPrev(Integer year, Integer week) {
 
-        RunningListArchivePK weekId = RunningListArchivePK.builder().year(year).week(week).build();
-        RunningListArchivePK prevWeekId = dateService.getPreviousWeekId(weekId);
+        WeekId weekId = new WeekId(year, week);
+        WeekId prevWeekId = dateService.getPreviousWeekId(weekId);
 
         return getArchive(prevWeekId);
     }
@@ -43,8 +42,8 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
     @Override
     public RunningListViewModel getNext(Integer year, Integer week) {
 
-        RunningListArchivePK weekId = RunningListArchivePK.builder().year(year).week(week).build();
-        RunningListArchivePK nextWeekId = dateService.getNextWeekId(weekId);
+        WeekId weekId = new WeekId(year, week);
+        WeekId nextWeekId = dateService.getNextWeekId(weekId);
 
         if (dateService.getCurrentWeekId().equals(nextWeekId)) {
             return runningListService.getRunningList();
@@ -56,32 +55,29 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
     @Override
     public void archive() {
 
-        RunningListArchivePK weekId = dateService.getCurrentWeekId();
-        if (runningListArchiveRepository.existsById(weekId)) {
+        WeekId weekId = dateService.getCurrentWeekId();
+        if (isArchiveExist(weekId)) {
             throw new RuntimeException("archive already exist! weekId = " + weekId);
         }
 
         RunningListViewModel runningList = runningListService.getRunningList();
 
-        try {
-            RunningListArchive archive = runningListArchiveRepository.save(RunningListArchive.builder()
-                .id(weekId)
-                .archive(objectMapper.writeValueAsString(runningList))
-                .build());
-            log.info("Archive has been saved {}", archive);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        RunningListArchive archive = runningListArchiveRepository.save(RunningListArchive.builder()
+            .id(conversionService.convert(weekId, RunningListArchivePK.class))
+            .archive(conversionService.convert(runningList, String.class))
+            .build());
+
+        log.info("Archive has been saved {}", archive);
     }
 
     @Override
-    public boolean hasPreviousArchive(RunningListArchivePK weekId) {
+    public boolean hasPreviousArchive(WeekId weekId) {
         return isArchiveExist(dateService.getPreviousWeekId(weekId));
     }
 
 
-    private boolean hasNextArchive(RunningListArchivePK weekId) {
-        RunningListArchivePK nextWeekId = dateService.getNextWeekId(weekId);
+    private boolean hasNextArchive(WeekId weekId) {
+        WeekId nextWeekId = dateService.getNextWeekId(weekId);
         if (dateService.getCurrentWeekId().equals(nextWeekId)) {
             return true;
         }
@@ -89,7 +85,7 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
         return isArchiveExist(nextWeekId);
     }
 
-    private RunningListViewModel getArchive(RunningListArchivePK weekId) {
+    private RunningListViewModel getArchive(WeekId weekId) {
         RunningListViewModel runningListViewModel = getRunningListViewModel(weekId);
         runningListViewModel.setEditable(false);
         runningListViewModel.setHasPrevious(hasPreviousArchive(weekId));
@@ -97,17 +93,14 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
         return runningListViewModel;
     }
 
-    private boolean isArchiveExist(RunningListArchivePK weekId) {
-        return runningListArchiveRepository.existsById(weekId);
+    private boolean isArchiveExist(WeekId weekId) {
+        var pk = conversionService.convert(weekId, RunningListArchivePK.class);
+        return runningListArchiveRepository.existsById(pk);
     }
 
-    private RunningListViewModel getRunningListViewModel(RunningListArchivePK weekId) {
-        RunningListArchive archive = runningListArchiveRepository.getOne(weekId);
-
-        try {
-            return objectMapper.readValue(archive.getArchive(), RunningListViewModel.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private RunningListViewModel getRunningListViewModel(WeekId weekId) {
+        var pk = conversionService.convert(weekId, RunningListArchivePK.class);
+        RunningListArchive archive = runningListArchiveRepository.getOne(pk);
+        return conversionService.convert(archive, RunningListViewModel.class);
     }
 }

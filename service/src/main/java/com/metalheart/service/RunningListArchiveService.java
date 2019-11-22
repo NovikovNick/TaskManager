@@ -1,6 +1,6 @@
 package com.metalheart.service;
 
-import com.metalheart.model.jpa.RunningListArchivePK;
+import com.metalheart.model.WeekId;
 import com.metalheart.model.rest.response.RunningListViewModel;
 
 public interface RunningListArchiveService {
@@ -11,5 +11,5 @@ public interface RunningListArchiveService {
 
     void archive();
 
-    boolean hasPreviousArchive(RunningListArchivePK weekId);
+    boolean hasPreviousArchive(WeekId weekId);
 }

@@ -1,4 +1,4 @@
-package com.metalheart.model.action;
+package com.metalheart.model;
 
 public interface RunningListAction {
 

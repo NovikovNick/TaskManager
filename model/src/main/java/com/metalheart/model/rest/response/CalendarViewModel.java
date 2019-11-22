@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Current day number and list of weed dates
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

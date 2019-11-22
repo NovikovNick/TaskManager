@@ -1,15 +1,31 @@
 package com.metalheart.service;
 
-import com.metalheart.model.jpa.RunningListArchivePK;
+import com.metalheart.model.WeekId;
 import com.metalheart.model.rest.response.CalendarViewModel;
 
+/**
+ * Service to provide operations with {@link WeekId} and {@link CalendarViewModel} and other related to date and time
+ * structures.
+ */
 public interface DateService {
 
-    RunningListArchivePK getCurrentWeekId();
+    /**
+     * @return {@link WeekId} for current week
+     */
+    WeekId getCurrentWeekId();
 
-    RunningListArchivePK getNextWeekId(RunningListArchivePK weekId);
+    /**
+     * @return {@link WeekId} for next week
+     */
+    WeekId getNextWeekId(WeekId weekId);
 
-    RunningListArchivePK getPreviousWeekId(RunningListArchivePK weekId);
+    /**
+     * @return {@link WeekId} for previous week
+     */
+    WeekId getPreviousWeekId(WeekId weekId);
 
+    /**
+     * @return {@link CalendarViewModel} for current week
+     */
     CalendarViewModel getCalendar();
 }

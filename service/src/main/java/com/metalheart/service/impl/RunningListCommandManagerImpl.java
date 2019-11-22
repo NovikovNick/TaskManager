@@ -1,10 +1,9 @@
 package com.metalheart.service.impl;
 
-import com.metalheart.model.action.RunningListAction;
+import com.metalheart.model.RunningListAction;
 import com.metalheart.service.RunningListCommandManager;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Queue;
 import org.springframework.stereotype.Component;
 
 @Component

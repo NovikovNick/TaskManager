@@ -1,6 +1,6 @@
 package com.metalheart.service;
 
-import com.metalheart.model.action.RunningListAction;
+import com.metalheart.model.RunningListAction;
 
 public interface RunningListCommandManager {
 
@@ -10,9 +10,9 @@ public interface RunningListCommandManager {
 
     boolean canRedo();
 
-    boolean canUndo();
-
     void undo();
+
+    boolean canUndo();
 
     void clear();
 }
