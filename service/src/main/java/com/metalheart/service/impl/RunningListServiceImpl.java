@@ -1,8 +1,5 @@
 package com.metalheart.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.metalheart.model.jpa.RunningListArchive;
 import com.metalheart.model.jpa.RunningListArchivePK;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
@@ -10,13 +7,12 @@ import com.metalheart.model.jpa.WeekWorkLog;
 import com.metalheart.model.rest.response.CalendarViewModel;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.model.rest.response.TaskViewModel;
-import com.metalheart.repository.jpa.RunningListArchiveRepository;
 import com.metalheart.repository.jpa.TaskJpaRepository;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.DateService;
+import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListService;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,10 +32,7 @@ import static com.metalheart.model.jpa.TaskStatus.TO_DO;
 public class RunningListServiceImpl implements RunningListService {
 
     @Autowired
-    private RunningListArchiveRepository runningListArchiveRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    private RunningListArchiveService archiveService;
 
     @Autowired
     private RunningListCommandManager runningListCommandManager;
@@ -65,7 +58,7 @@ public class RunningListServiceImpl implements RunningListService {
             .tasks(getTaskList(calendar))
             .editable(true)
             .hasNext(false)
-            .hasPrevious(hasPreviousArchive(weekId))
+            .hasPrevious(archiveService.hasPreviousArchive(weekId))
             .canUndo(runningListCommandManager.canUndo())
             .canRedo(runningListCommandManager.canRedo())
             .year(weekId.getYear())
@@ -73,101 +66,6 @@ public class RunningListServiceImpl implements RunningListService {
             .build();
     }
 
-    @Override
-    public RunningListViewModel getPrev(Integer year, Integer week) {
-
-        RunningListArchivePK weekId = RunningListArchivePK.builder().year(year).week(week).build();
-        RunningListArchivePK prevWeekId = dateService.getPreviousWeekId(weekId);
-
-        return getArchive(prevWeekId);
-    }
-
-
-    @Override
-    public RunningListViewModel getNext(Integer year, Integer week) {
-
-        RunningListArchivePK weekId = RunningListArchivePK.builder().year(year).week(week).build();
-        RunningListArchivePK nextWeekId = dateService.getNextWeekId(weekId);
-
-        if (dateService.getCurrentWeekId().equals(nextWeekId)) {
-            return getRunningList();
-        }
-
-        return getArchive(nextWeekId);
-    }
-
-    @Override
-    public void archive() {
-
-        RunningListArchivePK weekId = dateService.getCurrentWeekId();
-        if (runningListArchiveRepository.existsById(weekId)) {
-            throw new RuntimeException("archive already exist! weekId = " + weekId);
-        }
-
-        RunningListViewModel runningList = getRunningList();
-
-        try {
-            RunningListArchive archive = runningListArchiveRepository.save(RunningListArchive.builder()
-                .id(weekId)
-                .archive(objectMapper.writeValueAsString(runningList))
-                .build());
-            log.info("Archive has been saved {}", archive);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-
-    }
-
-    @Override
-    public RunningListViewModel redo() {
-        runningListCommandManager.redo();
-        return getRunningList();
-    }
-
-    @Override
-    public RunningListViewModel undo() {
-        runningListCommandManager.undo();
-        return getRunningList();
-    }
-
-
-    /* CONVENIENCE */
-
-    private RunningListViewModel getArchive(RunningListArchivePK weekId) {
-        RunningListViewModel runningListViewModel = getRunningListViewModel(weekId);
-        runningListViewModel.setEditable(false);
-        runningListViewModel.setHasPrevious(hasPreviousArchive(weekId));
-        runningListViewModel.setHasNext(hasNextArchive(weekId));
-        return runningListViewModel;
-    }
-
-    private boolean hasPreviousArchive(RunningListArchivePK weekId) {
-        return isArchiveExist(dateService.getPreviousWeekId(weekId));
-    }
-
-    private boolean hasNextArchive(RunningListArchivePK weekId) {
-        RunningListArchivePK nextWeekId = dateService.getNextWeekId(weekId);
-        if (dateService.getCurrentWeekId().equals(nextWeekId)) {
-            return true;
-        }
-
-        return isArchiveExist(nextWeekId);
-    }
-
-    private boolean isArchiveExist(RunningListArchivePK weekId) {
-        return runningListArchiveRepository.existsById(weekId);
-    }
-
-    private RunningListViewModel getRunningListViewModel(RunningListArchivePK weekId) {
-        RunningListArchive archive = runningListArchiveRepository.getOne(weekId);
-
-        try {
-            return objectMapper.readValue(archive.getArchive(), RunningListViewModel.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private List<TaskViewModel> getTaskList(CalendarViewModel calendar) {
 

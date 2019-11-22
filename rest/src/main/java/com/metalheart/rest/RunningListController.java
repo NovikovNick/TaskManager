@@ -2,6 +2,8 @@ package com.metalheart.rest;
 
 import com.metalheart.EndPoint;
 import com.metalheart.model.rest.response.RunningListViewModel;
+import com.metalheart.service.RunningListArchiveService;
+import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,13 @@ public class RunningListController {
     @Autowired
     private RunningListService runningListService;
 
+    @Autowired
+    private RunningListCommandManager commandManager;
+
+    @Autowired
+    private RunningListArchiveService archiveService;
+
+
     @GetMapping(path = EndPoint.GET_TASK_LIST, produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel getTaskList() {
 
@@ -32,7 +41,7 @@ public class RunningListController {
         produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel archive() {
 
-        runningListService.archive();
+        archiveService.archive();
 
         return runningListService.getRunningList();
     }
@@ -42,7 +51,7 @@ public class RunningListController {
         produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel getNextArchive(@RequestParam Integer year, @RequestParam Integer week) {
 
-        return runningListService.getNext(year, week);
+        return archiveService.getNext(year, week);
     }
 
     @GetMapping(
@@ -50,20 +59,22 @@ public class RunningListController {
         produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel getPrevArchive(@RequestParam Integer year, @RequestParam Integer week) {
 
-        return runningListService.getPrev(year, week);
+        return archiveService.getPrev(year, week);
     }
 
     @DeleteMapping(
         path = EndPoint.RUNNING_LIST_UNDO,
         produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel undo() {
-        return runningListService.undo();
+        commandManager.undo();
+        return runningListService.getRunningList();
     }
 
     @PostMapping(
         path = EndPoint.RUNNING_LIST_REDO,
         produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel redo() {
-        return runningListService.redo();
+        commandManager.redo();
+        return runningListService.getRunningList();
     }
 }
