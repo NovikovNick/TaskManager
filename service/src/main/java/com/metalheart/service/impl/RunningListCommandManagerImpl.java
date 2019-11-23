@@ -1,5 +1,7 @@
 package com.metalheart.service.impl;
 
+import com.metalheart.exception.UnableToRedoException;
+import com.metalheart.exception.UnableToUndoException;
 import com.metalheart.model.RunningListAction;
 import com.metalheart.service.RunningListCommandManager;
 import java.util.ArrayDeque;
@@ -24,14 +26,24 @@ public class RunningListCommandManagerImpl implements RunningListCommandManager 
     }
 
     @Override
-    public void undo() {
+    public void undo() throws UnableToUndoException {
+
+        if (!canUndo()) {
+            throw new UnableToUndoException();
+        }
+
         RunningListAction action = actionStackNormal.pollFirst();
         action.undo();
         actionStackReverse.addFirst(action);
     }
 
     @Override
-    public void redo() {
+    public void redo() throws UnableToRedoException {
+
+        if (!canRedo()) {
+            throw new UnableToRedoException();
+        }
+
         RunningListAction action = actionStackReverse.pollFirst();
         action.execute();
         actionStackNormal.addFirst(action);

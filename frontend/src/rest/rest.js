@@ -43,7 +43,7 @@ export function getTaskList() {
         credentials: 'include',
         cache: 'no-cache'
     };
-    return rest('/taskmanager/task/list', settings)
+    return rest('taskmanager/runninglist', settings)
 }
 
 export function createTask(formData) {

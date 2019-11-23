@@ -1,5 +1,7 @@
 package com.metalheart.service.impl;
 
+import com.metalheart.exception.NoSuchRunningListArchiveException;
+import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.model.WeekId;
 import com.metalheart.model.jpa.RunningListArchive;
 import com.metalheart.model.jpa.RunningListArchivePK;
@@ -30,19 +32,16 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
     private ConversionService conversionService;
 
     @Override
-    public RunningListViewModel getPrev(Integer year, Integer week) {
+    public RunningListViewModel getPrev(WeekId weekId) throws NoSuchRunningListArchiveException {
 
-        WeekId weekId = new WeekId(year, week);
         WeekId prevWeekId = dateService.getPreviousWeekId(weekId);
 
         return getArchive(prevWeekId);
     }
 
-
     @Override
-    public RunningListViewModel getNext(Integer year, Integer week) {
+    public RunningListViewModel getNext(WeekId weekId) throws NoSuchRunningListArchiveException {
 
-        WeekId weekId = new WeekId(year, week);
         WeekId nextWeekId = dateService.getNextWeekId(weekId);
 
         if (dateService.getCurrentWeekId().equals(nextWeekId)) {
@@ -53,11 +52,11 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
     }
 
     @Override
-    public void archive() {
+    public void archive() throws RunningListArchiveAlreadyExistException {
 
         WeekId weekId = dateService.getCurrentWeekId();
         if (isArchiveExist(weekId)) {
-            throw new RuntimeException("archive already exist! weekId = " + weekId);
+            throw new RunningListArchiveAlreadyExistException(weekId);
         }
 
         RunningListViewModel runningList = runningListService.getRunningList();
@@ -85,7 +84,12 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
         return isArchiveExist(nextWeekId);
     }
 
-    private RunningListViewModel getArchive(WeekId weekId) {
+    private RunningListViewModel getArchive(WeekId weekId) throws NoSuchRunningListArchiveException {
+
+        if (!isArchiveExist(weekId)) {
+            throw new NoSuchRunningListArchiveException(weekId);
+        }
+
         RunningListViewModel runningListViewModel = getRunningListViewModel(weekId);
         runningListViewModel.setEditable(false);
         runningListViewModel.setHasPrevious(hasPreviousArchive(weekId));
