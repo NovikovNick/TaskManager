@@ -1,7 +1,7 @@
 package com.metalheart.test.unit.service;
 
 
-import com.metalheart.model.jpa.RunningListArchivePK;
+import com.metalheart.model.WeekId;
 import com.metalheart.service.impl.DateServiceImpl;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DateServiceImplTest {
+public class DateServiceTest {
 
     DateServiceImpl runningListService = new DateServiceImpl();
 
@@ -24,11 +24,10 @@ public class DateServiceImplTest {
 
             now = now.plusHours(i);
 
-            List<RunningListArchivePK> ids = new ArrayList<>(hoursInTenYears);
+            List<WeekId> ids = new ArrayList<>(hoursInTenYears);
             for (int j = 0; j < 100; j++) {
 
-                RunningListArchivePK weekId =
-                    runningListService.getWeekId(ZonedDateTime.now().plusWeeks(j));
+                WeekId weekId = runningListService.getWeekId(ZonedDateTime.now().plusWeeks(j));
 
                 Assert.assertFalse( weekId + " already exist in " + ids, ids.contains(weekId));
 

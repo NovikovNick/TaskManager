@@ -1,8 +1,8 @@
 package com.metalheart.model;
 
-public interface RunningListAction {
+public interface RunningListAction<T> {
 
-    void execute();
+    T execute();
 
     void undo();
 

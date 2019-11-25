@@ -1,6 +1,8 @@
 package com.metalheart.service.impl;
 
 import com.metalheart.model.RunningListAction;
+import com.metalheart.model.TaskModel;
+import com.metalheart.model.jooq.tables.records.TaskRecord;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.jpa.WeekWorkLog;
@@ -9,17 +11,22 @@ import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
-import com.metalheart.repository.inmemory.ITaskPriorityRepository;
+import com.metalheart.repository.inmemory.TaskPriorityRepository;
+import com.metalheart.repository.jooq.TaskJooqRepository;
 import com.metalheart.repository.jpa.TaskJpaRepository;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.TaskService;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -29,19 +36,28 @@ public class TaskServiceImpl implements TaskService {
     private TaskJpaRepository taskJpaRepository;
 
     @Autowired
+    private TaskJooqRepository taskJooqRepository;
+
+    @Autowired
     private WeekWorkLogJpaRepository weekWorkLogJpaRepository;
 
     @Autowired
     private RunningListCommandManager runningListCommandManager;
 
     @Autowired
-    private ITaskPriorityRepository taskPriorityRepository;
+    private TaskPriorityRepository taskPriorityRepository;
+
+    @Autowired
+    private ConversionService conversionService;
+
+    @Autowired
+    private TaskService self;
 
 
     @PostConstruct
     public void reorder() {
 
-        List<Task> taskList = taskJpaRepository.findAllByOrderByPriorityAsc();
+        List<Task> taskList = getAllTasks();
         int maxPriority = taskList.size();
         taskPriorityRepository.setMaxPriority(maxPriority);
 
@@ -49,41 +65,97 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void createTask(CreateTaskRequest request) {
-        Task task = Task.builder()
-            .title(request.getTitle())
-            .description(request.getDescription())
-            .priority(taskPriorityRepository.incrementAndGetMaxPriority())
-            .createdAt(ZonedDateTime.now())
-            .build();
-        taskJpaRepository.save(task);
+    public List<Task> getAllTasks() {
+        return taskJpaRepository.findAllByOrderByPriorityAsc();
+    }
+
+    @Override
+    public Task createTask(CreateTaskRequest request) {
+
+        return runningListCommandManager.execute(new RunningListAction<>() {
+
+            private TaskRecord task;
+
+            @Override
+            public Task execute() {
+                if (this.task == null) {
+
+                    TaskRecord record = new TaskRecord();
+                    record.setTitle(request.getTitle());
+                    record.setDescription(request.getDescription());
+                    record.setCreatedAt(OffsetDateTime.now());
+                    record.setPriority(taskPriorityRepository.incrementAndGetMaxPriority());
+
+                    this.task = record;
+
+                    taskJooqRepository.save(record);
+                    log.info("New task has been created {}", this.task);
+
+                } else {
+
+                    taskJooqRepository.save(this.task);
+                    log.info("Undone operation of task creating was redone {}", this.task);
+                }
+                return conversionService.convert(this.task, Task.class);
+            }
+
+            @Override
+            public void undo() {
+
+                taskJpaRepository.deleteById(this.task.getId());
+                log.info("Operation of task creating was undone {}", this.task);
+            }
+        });
+
+    }
+
+    @Transactional
+    @Override
+    public TaskModel getTask(Integer taskId) {
+        Task task = taskJpaRepository.getOne(taskId);
+
+        return (TaskModel) conversionService.convert(
+            task,
+            TypeDescriptor.valueOf(Task.class),
+            TypeDescriptor.valueOf(TaskModel.class));
     }
 
     @Override
     public void delete(Integer taskId) {
 
-        runningListCommandManager.execute(new RunningListAction() {
+        runningListCommandManager.execute(new RunningListAction<Void>() {
 
-            private Task task;
+            private TaskModel removedTask;
+
             private List<WeekWorkLog> workLogs;
 
             @Override
-            public void execute() {
+            public Void execute() {
 
-                if (task == null) {
-                    task = taskJpaRepository.getOne(taskId);
+                if (removedTask == null) {
+
+                    removedTask = self.getTask(taskId);
                     workLogs = weekWorkLogJpaRepository.findAllByTaskId(taskId);
+
+                    taskJpaRepository.deleteById(taskId);
+                    weekWorkLogJpaRepository.deleteAll(workLogs);
+
+                    log.info("Task has been removed {}", removedTask);
+                } else {
+
+                    taskJpaRepository.deleteById(removedTask.getId());
+                    weekWorkLogJpaRepository.deleteAll(workLogs);
+                    log.info("Undone operation of task removing was redone {}", removedTask);
                 }
-                taskJpaRepository.delete(task);
-                weekWorkLogJpaRepository.deleteAll(workLogs);
+                return null;
             }
 
             @Override
             public void undo() {
-                task = taskJpaRepository.save(task);
 
-                workLogs.forEach(workLog -> workLog.getId().setTaskId(task.getId()));
+                taskJooqRepository.save(conversionService.convert(removedTask, TaskRecord.class));
                 workLogs = weekWorkLogJpaRepository.saveAll(workLogs);
+                log.info("Operation of task removing was undone {}", removedTask);
             }
         });
     }
@@ -113,7 +185,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void reorderTask(ChangeTaskPriorityRequest request) {
 
-        List<Task> tasks = taskJpaRepository.findAllByOrderByPriorityAsc();
+        List<Task> tasks = getAllTasks();
 
         Task moved = tasks.get(request.getStartIndex());
 

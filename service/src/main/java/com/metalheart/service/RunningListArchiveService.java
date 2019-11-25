@@ -11,7 +11,12 @@ public interface RunningListArchiveService {
 
     RunningListViewModel getNext(WeekId weekId) throws NoSuchRunningListArchiveException;
 
-    void archive() throws RunningListArchiveAlreadyExistException;
-
     boolean hasPreviousArchive(WeekId weekId);
+
+    /**
+     * Can be undone
+     * @param weekId
+     * @throws RunningListArchiveAlreadyExistException
+     */
+    void archive(WeekId weekId) throws RunningListArchiveAlreadyExistException;
 }

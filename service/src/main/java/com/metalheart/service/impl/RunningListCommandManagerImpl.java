@@ -3,28 +3,27 @@ package com.metalheart.service.impl;
 import com.metalheart.exception.UnableToRedoException;
 import com.metalheart.exception.UnableToUndoException;
 import com.metalheart.model.RunningListAction;
+import com.metalheart.repository.inmemory.RunningListCommandRepository;
 import com.metalheart.service.RunningListCommandManager;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class RunningListCommandManagerImpl implements RunningListCommandManager {
 
-    private Deque<RunningListAction> actionStackNormal;
-
-    private Deque<RunningListAction> actionStackReverse;
-
-    public RunningListCommandManagerImpl() {
-        clear();
-    }
+    @Autowired
+    private RunningListCommandRepository commandRepository;
 
     @Override
-    public void execute(RunningListAction action) {
-        action.execute();
-        actionStackNormal.addFirst(action);
+    public <T> T execute(RunningListAction<T> action) {
+
+        T res = action.execute();
+        commandRepository.addAction(action);
+        return res;
     }
 
+    @Transactional
     @Override
     public void undo() throws UnableToUndoException {
 
@@ -32,9 +31,9 @@ public class RunningListCommandManagerImpl implements RunningListCommandManager 
             throw new UnableToUndoException();
         }
 
-        RunningListAction action = actionStackNormal.pollFirst();
+        RunningListAction action = commandRepository.popDone();
         action.undo();
-        actionStackReverse.addFirst(action);
+        commandRepository.pushUndone(action);
     }
 
     @Override
@@ -44,24 +43,24 @@ public class RunningListCommandManagerImpl implements RunningListCommandManager 
             throw new UnableToRedoException();
         }
 
-        RunningListAction action = actionStackReverse.pollFirst();
+        RunningListAction action = commandRepository.popUndone();
         action.execute();
-        actionStackNormal.addFirst(action);
+        commandRepository.pushDone(action);
+
     }
 
     @Override
     public boolean canRedo() {
-        return !actionStackReverse.isEmpty();
+        return commandRepository.hasUndone();
     }
 
     @Override
     public boolean canUndo() {
-        return !actionStackNormal.isEmpty();
+        return commandRepository.hasDone();
     }
 
     @Override
     public void clear() {
-        actionStackNormal = new ArrayDeque<>();
-        actionStackReverse = new ArrayDeque<>();
+        commandRepository.clear();
     }
 }

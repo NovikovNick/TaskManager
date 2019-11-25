@@ -6,7 +6,7 @@ import com.metalheart.model.RunningListAction;
 
 public interface RunningListCommandManager {
 
-    void execute(RunningListAction action);
+    <T> T execute(RunningListAction<T> action);
 
     void redo() throws UnableToRedoException;
 

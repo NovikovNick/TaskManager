@@ -1,11 +1,11 @@
 package com.metalheart.repository.inmemory.impl;
 
-import com.metalheart.repository.inmemory.ITaskPriorityRepository;
+import com.metalheart.repository.inmemory.TaskPriorityRepository;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TaskPriorityRepository implements ITaskPriorityRepository {
+public class TaskPriorityRepositoryImpl implements TaskPriorityRepository {
 
     private AtomicInteger integer = new AtomicInteger();
 

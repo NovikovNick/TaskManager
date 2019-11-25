@@ -1,6 +1,6 @@
 package com.metalheart.repository.inmemory;
 
-public interface ITaskPriorityRepository {
+public interface TaskPriorityRepository {
     Integer incrementAndGetMaxPriority();
 
     void setMaxPriority(int newValue);

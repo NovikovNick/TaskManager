@@ -10,6 +10,9 @@ apply plugin: 'org.springframework.boot'
 
 dependencies {
     compile project(":rest")
+
+
+    testCompile "org.testcontainers:postgresql:$testContainersVersion"
 }
 
 libsDirName = './../../docker'

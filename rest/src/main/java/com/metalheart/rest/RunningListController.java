@@ -9,6 +9,7 @@ import com.metalheart.exception.UnableToUndoException;
 import com.metalheart.model.WeekId;
 import com.metalheart.model.rest.request.GetArchiveRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
+import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListService;
@@ -44,6 +45,9 @@ public class RunningListController {
     private RunningListArchiveService archiveService;
 
     @Autowired
+    private DateService dateService;
+
+    @Autowired
     private ConversionService conversionService;
 
     @GetMapping(path = EndPoint.RUNNING_LIST, produces = APPLICATION_JSON_VALUE)
@@ -66,7 +70,8 @@ public class RunningListController {
     public ResponseEntity<RunningListViewModel> archive() {
 
         try {
-            archiveService.archive();
+            WeekId weekId = dateService.getCurrentWeekId();
+            archiveService.archive(weekId);
             return ResponseEntity.ok(runningListService.getRunningList());
         } catch (RunningListArchiveAlreadyExistException e) {
             log.warn(e.getMessage(), e);

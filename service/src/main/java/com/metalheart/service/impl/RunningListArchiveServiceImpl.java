@@ -2,25 +2,28 @@ package com.metalheart.service.impl;
 
 import com.metalheart.exception.NoSuchRunningListArchiveException;
 import com.metalheart.exception.RunningListArchiveAlreadyExistException;
+import com.metalheart.model.RunningListAction;
 import com.metalheart.model.WeekId;
 import com.metalheart.model.jpa.RunningListArchive;
 import com.metalheart.model.jpa.RunningListArchivePK;
 import com.metalheart.model.rest.response.RunningListViewModel;
-import com.metalheart.repository.jpa.RunningListArchiveRepository;
+import com.metalheart.repository.jpa.RunningListArchiveJpaRepository;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
+import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
 public class RunningListArchiveServiceImpl implements RunningListArchiveService {
 
     @Autowired
-    private RunningListArchiveRepository runningListArchiveRepository;
+    private RunningListArchiveJpaRepository runningListArchiveRepository;
 
     @Autowired
     private RunningListService runningListService;
@@ -29,8 +32,12 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
     private DateService dateService;
 
     @Autowired
+    private RunningListCommandManager runningListCommandManager;
+
+    @Autowired
     private ConversionService conversionService;
 
+    @Transactional
     @Override
     public RunningListViewModel getPrev(WeekId weekId) throws NoSuchRunningListArchiveException {
 
@@ -52,21 +59,42 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
     }
 
     @Override
-    public void archive() throws RunningListArchiveAlreadyExistException {
+    public void archive(WeekId weekId) throws RunningListArchiveAlreadyExistException {
 
-        WeekId weekId = dateService.getCurrentWeekId();
         if (isArchiveExist(weekId)) {
             throw new RunningListArchiveAlreadyExistException(weekId);
         }
 
         RunningListViewModel runningList = runningListService.getRunningList();
 
-        RunningListArchive archive = runningListArchiveRepository.save(RunningListArchive.builder()
+        RunningListArchive archiveToSave = RunningListArchive.builder()
             .id(conversionService.convert(weekId, RunningListArchivePK.class))
             .archive(conversionService.convert(runningList, String.class))
-            .build());
+            .build();
 
-        log.info("Archive has been saved {}", archive);
+        runningListCommandManager.execute(new RunningListAction<Void>() {
+
+            private RunningListArchive archive;
+
+            @Override
+            public Void execute() {
+                if (this.archive == null) {
+                    this.archive = runningListArchiveRepository.save(archiveToSave);
+                    log.info("Archive has been saved {}", this.archive);
+                } else {
+                    this.archive = runningListArchiveRepository.save(archiveToSave);
+                    log.info("Undone operation of archive saving was redone {}", this.archive);
+                }
+                return null;
+            }
+
+            @Override
+            public void undo() {
+                runningListArchiveRepository.delete(this.archive);
+                log.info("Operation of archive saving was undone {}", this.archive);
+            }
+        });
+
     }
 
     @Override
