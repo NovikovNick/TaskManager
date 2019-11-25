@@ -16,7 +16,7 @@ public class TaskJooqRepositoryImpl implements TaskJooqRepository {
     private DSLContext dsl;
 
     @Override
-    public void save(TaskRecord record) {
+    public void saveAndGenerateIdIfNotPresent(TaskRecord record) {
 
         if (Objects.isNull(record.getId())) {
             record.setId(dsl.nextval(Sequences.TASK_ID_SEQ).intValue());
@@ -24,5 +24,4 @@ public class TaskJooqRepositoryImpl implements TaskJooqRepository {
 
         dsl.insertInto(Tables.TASK).set(record).execute();
     }
-
 }

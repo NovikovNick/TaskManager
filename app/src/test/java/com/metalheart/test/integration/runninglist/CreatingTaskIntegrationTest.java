@@ -2,12 +2,10 @@ package com.metalheart.test.integration.runninglist;
 
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.rest.request.CreateTaskRequest;
-import com.metalheart.repository.jpa.TaskJpaRepository;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.util.List;
-import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +14,6 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private TaskService taskService;
-
-    @Autowired
-    private TaskJpaRepository taskRepository;
 
     @Autowired
     private RunningListCommandManager commandManager;
