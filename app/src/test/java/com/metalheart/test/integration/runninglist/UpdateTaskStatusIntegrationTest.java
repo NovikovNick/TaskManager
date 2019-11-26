@@ -1,17 +1,23 @@
 package com.metalheart.test.integration.runninglist;
 
 import com.metalheart.model.jpa.Task;
-import com.metalheart.model.jpa.TaskStatus;
-import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
+import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
-import org.junit.Assert;
+import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+import static com.metalheart.model.jpa.TaskStatus.DONE;
+import static com.metalheart.model.jpa.TaskStatus.IN_PROGRESS;
+import static com.metalheart.model.jpa.TaskStatus.NONE;
+import static com.metalheart.model.jpa.TaskStatus.TO_DO;
+import static org.junit.Assert.assertEquals;
 
 public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
 
@@ -24,89 +30,83 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private RunningListService runningListService;
 
+    @MockBean
+    private DateService dateService;
+
     @Test
-    public void testCreating() {
+    public void simpleUpdateStatusTest() {
 
         // arrange
-        CreateTaskRequest createRequest = generateCreateTaskRequest("Created task");
+        CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
         Task createdTask = taskService.createTask(createRequest);
-        ChangeTaskStatusRequest updateRequest = new ChangeTaskStatusRequest();
-        updateRequest.setTaskId(createdTask.getId());
-        updateRequest.setDayIndex(0);
-        updateRequest.setStatus(TaskStatus.DONE);
+
+        setDate(this.dateService, 2019, 1, 0);
 
         // act
-        taskService.changeTaskStatus(updateRequest);
+        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, IN_PROGRESS));
 
         // assert
         RunningListViewModel runningList = runningListService.getRunningList();
-        Assert.assertTrue(runningList.getTasks().get(0).getStatus().get(0).equals(TaskStatus.DONE.toString()));
+        List<String> statuses = runningList.getTasks().get(0).getStatus();
+        assertEquals(toStingList(IN_PROGRESS, NONE, NONE, NONE, NONE, NONE, NONE), statuses);
     }
 
     @Test
     public void testUndoCreating() throws Exception {
 
         // arrange
-        CreateTaskRequest createRequest = generateCreateTaskRequest("Created task");
+        CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
         Task createdTask = taskService.createTask(createRequest);
-        ChangeTaskStatusRequest updateRequest = new ChangeTaskStatusRequest();
-        updateRequest.setTaskId(createdTask.getId());
-        updateRequest.setDayIndex(0);
-        updateRequest.setStatus(TaskStatus.DONE);
+
+        setDate(this.dateService, 2019, 1, 0);
 
         // act
-        taskService.changeTaskStatus(updateRequest);
+        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, DONE));
         commandManager.undo();
 
         // assert
         RunningListViewModel runningList = runningListService.getRunningList();
-        Assert.assertTrue(runningList.getTasks().get(0).getStatus().get(0).equals(TaskStatus.NONE.toString()));
+        List<String> statuses = runningList.getTasks().get(0).getStatus();
+        assertEquals(toStingList(NONE, NONE, NONE, NONE, NONE, NONE, NONE), statuses);
     }
 
     @Test
     public void testUndoAfterUpdateStatusOperation() throws Exception {
 
         // arrange
-        CreateTaskRequest createRequest = generateCreateTaskRequest("Created task");
+        CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
         Task createdTask = taskService.createTask(createRequest);
 
-        ChangeTaskStatusRequest todoStatusRequest = new ChangeTaskStatusRequest();
-        todoStatusRequest.setTaskId(createdTask.getId());
-        todoStatusRequest.setDayIndex(0);
-        todoStatusRequest.setStatus(TaskStatus.TO_DO);
-
-        ChangeTaskStatusRequest doneStatusRequest = new ChangeTaskStatusRequest();
-        doneStatusRequest.setTaskId(createdTask.getId());
-        doneStatusRequest.setDayIndex(0);
-        doneStatusRequest.setStatus(TaskStatus.DONE);
+        setDate(this.dateService, 2019, 1, 0);
 
         // act
-        taskService.changeTaskStatus(todoStatusRequest);
-        taskService.changeTaskStatus(doneStatusRequest);
+        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, TO_DO));
+        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, DONE));
         commandManager.undo();
 
         // assert
         RunningListViewModel runningList = runningListService.getRunningList();
-        Assert.assertTrue(runningList.getTasks().get(0).getStatus().get(0).equals(TaskStatus.TO_DO.toString()));
+        List<String> statuses = runningList.getTasks().get(0).getStatus();
+        assertEquals(toStingList(TO_DO, NONE, NONE, NONE, NONE, NONE, NONE), statuses);
     }
 
     @Test
     public void testRedoCreating() throws Exception {
 
         // arrange
-        CreateTaskRequest createRequest = generateCreateTaskRequest("Created task");
+        CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
         Task createdTask = taskService.createTask(createRequest);
-        ChangeTaskStatusRequest updateRequest = new ChangeTaskStatusRequest();
-        updateRequest.setTaskId(createdTask.getId());
-        updateRequest.setDayIndex(0);
-        updateRequest.setStatus(TaskStatus.DONE);
+
+        setDate(this.dateService, 2019, 1, 0);
 
         // act
-        taskService.changeTaskStatus(updateRequest);
+        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, DONE));
         commandManager.undo();
         commandManager.redo();
+
         // assert
         RunningListViewModel runningList = runningListService.getRunningList();
-        Assert.assertTrue(runningList.getTasks().get(0).getStatus().get(0).equals(TaskStatus.DONE.toString()));
+        List<String> statuses = runningList.getTasks().get(0).getStatus();
+        assertEquals(toStingList(DONE, DONE, DONE, DONE, DONE, DONE, DONE), statuses);
     }
 }

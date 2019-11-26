@@ -23,7 +23,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
     public void testCreating() {
 
         // arrange
-        CreateTaskRequest createRequest = generateCreateTaskRequest("Created task");
+        CreateTaskRequest createRequest = getCreateTaskRequest("Created task");
         Task createdTask = taskService.createTask(createRequest);
 
         UpdateTaskRequest updateRequest = new UpdateTaskRequest();
@@ -48,7 +48,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
     public void testUndoCreating() throws Exception {
 
         // arrange
-        CreateTaskRequest createRequest = generateCreateTaskRequest("Created task");
+        CreateTaskRequest createRequest = getCreateTaskRequest("Created task");
         Task createdTask = taskService.createTask(createRequest);
 
         UpdateTaskRequest updateRequest = new UpdateTaskRequest();
@@ -73,7 +73,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreating() throws Exception {
 
         // arrange
-        CreateTaskRequest createRequest = generateCreateTaskRequest("Created task");
+        CreateTaskRequest createRequest = getCreateTaskRequest("Created task");
         Task createdTask = taskService.createTask(createRequest);
 
         UpdateTaskRequest updateRequest = new UpdateTaskRequest();
