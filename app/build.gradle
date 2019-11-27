@@ -11,7 +11,7 @@ apply plugin: 'org.springframework.boot'
 dependencies {
     compile project(":rest")
 
-
+    testCompile("io.rest-assured:rest-assured:$restAssuredVersion")
     testCompile "org.testcontainers:postgresql:$testContainersVersion"
 }
 
