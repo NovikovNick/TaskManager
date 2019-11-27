@@ -1,8 +1,6 @@
 package com.metalheart.config;
 
 import javax.validation.Validator;
-import org.dozer.DozerBeanMapper;
-import org.dozer.Mapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -29,10 +27,5 @@ public class ServiceConfiguration {
     public Validator validator() {
         LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
         return factoryBean;
-    }
-
-    @Bean
-    public Mapper getMapper() {
-        return new DozerBeanMapper();
     }
 }

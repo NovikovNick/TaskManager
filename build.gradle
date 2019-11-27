@@ -1,7 +1,18 @@
+buildscript {
+    repositories { mavenCentral() }
+}
+
+plugins {
+    id "net.ltgt.apt" version "0.21"
+    id "net.ltgt.apt-idea" version "0.21"
+}
+
 allprojects {
     group 'com.metalheart'
     version '1.0.0'
 
+    apply plugin: 'net.ltgt.apt'
+    apply plugin: 'net.ltgt.apt-idea'
     apply plugin: 'java'
 
     repositories {
@@ -16,19 +27,23 @@ allprojects {
 subprojects {
     dependencies {
 
-        annotationProcessor("org.projectlombok:lombok:$lombokVersion")
-        compile group: "org.projectlombok", name: "lombok", version: "$lombokVersion"
-
         compile group: "org.springframework", name: "spring-context", version: "$springVersion"
         testCompile (group: "org.springframework.boot", name: "spring-boot-starter-test", version: "$springBootVersion") {
             exclude(module: "spring-boot-starter-logging")
         }
 
+        // lombok
+        annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+        compile group: "org.projectlombok", name: "lombok", version: "$lombokVersion"
+        
         testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+        
+        // mapstruct
+        implementation "org.mapstruct:mapstruct-jdk8:${mapstructVersion}"
+        annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+        testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
     }
 }
 
-buildscript {
-    repositories { mavenCentral() }
-}
