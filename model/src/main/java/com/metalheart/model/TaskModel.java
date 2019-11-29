@@ -1,10 +1,9 @@
 package com.metalheart.model;
 
+import com.metalheart.model.rest.response.TagViewModel;
 import java.time.ZonedDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import java.util.List;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 public class TaskModel {
@@ -20,4 +19,6 @@ public class TaskModel {
     private ZonedDateTime createdAt;
 
     private ZonedDateTime modifiedAt;
+
+    private List<TagViewModel> tags;
 }

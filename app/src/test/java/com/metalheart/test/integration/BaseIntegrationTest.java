@@ -8,6 +8,7 @@ import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.CalendarViewModel;
+import com.metalheart.repository.inmemory.SelectedTagRepository;
 import com.metalheart.repository.jpa.RunningListArchiveJpaRepository;
 import com.metalheart.repository.jpa.TaskJpaRepository;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
@@ -55,12 +56,16 @@ public abstract class BaseIntegrationTest {
     @Autowired
     private RunningListCommandManager commandManager;
 
+    @Autowired
+    private SelectedTagRepository selectedTagRepository;
+
     @Before
     public void cleanUp() {
         archiveJpaRepository.deleteAll();
         workLogJpaRepository.deleteAll();
         taskJpaRepository.deleteAll();
         commandManager.clear();
+        selectedTagRepository.deleteAll();
     }
 
     protected CreateTaskRequest generateRandomCreateTaskRequest() {

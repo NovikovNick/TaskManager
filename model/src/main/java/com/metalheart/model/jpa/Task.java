@@ -1,12 +1,16 @@
 package com.metalheart.model.jpa;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,4 +44,12 @@ public class Task {
 
     @Column(name = "modified_at")
     private ZonedDateTime modifiedAt;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "tag_task",
+        joinColumns =        @JoinColumn(name = "task_id",  referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id")
+    )
+    private List<Tag> tags;
 }

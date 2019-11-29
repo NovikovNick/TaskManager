@@ -22,6 +22,11 @@ public class DateServiceImpl implements DateService {
     private static DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("dd");
 
     @Override
+    public ZonedDateTime now() {
+        return ZonedDateTime.now();
+    }
+
+    @Override
     public WeekId getCurrentWeekId() {
         return getWeekId(ZonedDateTime.now());
     }

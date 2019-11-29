@@ -11,6 +11,7 @@ import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
+import com.metalheart.repository.inmemory.SelectedTagRepository;
 import com.metalheart.repository.inmemory.TaskPriorityRepository;
 import com.metalheart.repository.jooq.TaskJooqRepository;
 import com.metalheart.repository.jpa.TaskJpaRepository;
@@ -55,6 +56,8 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskService self;
 
+    @Autowired
+    private SelectedTagRepository selectedTagRepository;
 
     @PostConstruct
     public void reorder() {
@@ -68,7 +71,15 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> getAllTasks() {
-        return taskJpaRepository.findAllByOrderByPriorityAsc();
+
+        List<Integer> selectedTags = selectedTagRepository.getSelectedTags();
+
+        if (selectedTags.isEmpty()) {
+
+            return taskJpaRepository.findAllByOrderByPriorityAsc();
+        } else {
+            return taskJpaRepository.findAllByTags(selectedTags);
+        }
     }
 
     @Override

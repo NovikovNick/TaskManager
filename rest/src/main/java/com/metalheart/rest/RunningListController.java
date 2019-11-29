@@ -13,6 +13,7 @@ import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListService;
+import com.metalheart.service.TagService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -26,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -49,6 +51,9 @@ public class RunningListController {
 
     @Autowired
     private ConversionService conversionService;
+
+    @Autowired
+    private TagService tagService;
 
     @GetMapping(path = EndPoint.RUNNING_LIST, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get running list for current week", response = RunningListViewModel.class)
@@ -149,5 +154,25 @@ public class RunningListController {
             log.warn(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
         }
+    }
+
+    @PutMapping(
+        path = EndPoint.ADD_TASK_TAG,
+        produces = APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Add tag", response = RunningListViewModel.class)
+    public ResponseEntity<RunningListViewModel> addTaskTag(String tag) {
+
+        tagService.selectTag(tag);
+        return ResponseEntity.ok(runningListService.getRunningList());
+    }
+
+    @DeleteMapping(
+        path = EndPoint.REMOVE_TASK_TAG,
+        produces = APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Remove tag", response = RunningListViewModel.class)
+    public ResponseEntity<RunningListViewModel> removeTaskTag(String tag) {
+
+        tagService.removeSelectedTag(tag);
+        return ResponseEntity.ok(runningListService.getRunningList());
     }
 }
