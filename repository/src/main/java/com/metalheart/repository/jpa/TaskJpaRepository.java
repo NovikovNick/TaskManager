@@ -12,6 +12,8 @@ public interface TaskJpaRepository extends JpaRepository<Task, Integer> {
 
     List<Task> findAllByOrderByPriorityAsc();
 
-    @Query("SELECT t from Task t INNER JOIN t.tags tag where tag.id in :tagIds")
+    @Query("SELECT DISTINCT t from Task t "
+        + "INNER JOIN FETCH t.tags tag where tag.id in :tagIds "
+        + "ORDER BY t.priority")
     List<Task> findAllByTags(@Param("tagIds") List<Integer> tagIds);
 }

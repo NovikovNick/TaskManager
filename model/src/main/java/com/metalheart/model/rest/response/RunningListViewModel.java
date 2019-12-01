@@ -23,4 +23,7 @@ public class RunningListViewModel {
 
     private CalendarViewModel calendar;
     private List<TaskViewModel> tasks;
+
+    private List<TagViewModel> selectedTags;
+    private List<TagViewModel> allTags;
 }

@@ -1,4 +1,5 @@
 import * as types from '../ActionTypes';
+import React from "react";
 
 const initialState = {
     runningList: {
@@ -6,7 +7,9 @@ const initialState = {
             currentDay: "",
             weekDates: []
         },
-        tasks: []
+        tasks: [],
+        selectedTags: [],
+        allTags: []
     }
 };
 

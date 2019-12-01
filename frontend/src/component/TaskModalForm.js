@@ -2,6 +2,7 @@ import React from 'react';
 import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
+import {WithContext as ReactTags} from "react-tag-input";
 
 
 export function UpdateTaskModalForm({schema}) {
@@ -23,7 +24,7 @@ export function CreateTaskModalForm({schema}) {
     return (<TaskModalForm schema={schema}/>);
 }
 
-export function TaskModalForm({id, schema}) {
+export function TaskModalForm({schema}) {
 
     const {t} = useTranslation();
 
@@ -45,6 +46,7 @@ export function TaskModalForm({id, schema}) {
 
             {({
                   handleChange,
+                  setFieldValue,
                   handleSubmit,
                   values,
                   errors,
@@ -96,6 +98,17 @@ export function TaskModalForm({id, schema}) {
                                     <Form.Control.Feedback type="invalid">
                                         {errors.description}
                                     </Form.Control.Feedback>
+                                </Col>
+                            </Form.Group>
+
+                            <Form.Group as={Row} controlId="validationFormik03">
+                                <Form.Label column sm="3">{t('tags')}</Form.Label>
+                                <Col sm={'9'}>
+
+                                    <ReactTags tags={values.tags || []}
+                                               suggestions={values.tagsSuggestion || []}
+                                               handleDelete={(i) => setFieldValue('tags', values.tags.filter((tag, index) => index !== i))}
+                                               handleAddition={(tag) => setFieldValue('tags', [...values.tags, tag])}/>
                                 </Col>
                             </Form.Group>
 

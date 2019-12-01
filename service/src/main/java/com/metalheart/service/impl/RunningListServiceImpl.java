@@ -6,17 +6,21 @@ import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.jpa.WeekWorkLog;
 import com.metalheart.model.rest.response.CalendarViewModel;
 import com.metalheart.model.rest.response.RunningListViewModel;
+import com.metalheart.model.rest.response.TagViewModel;
 import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListService;
+import com.metalheart.service.TagService;
+import com.metalheart.service.TaskService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 
 import static com.metalheart.model.jpa.TaskStatus.CANCELED;
@@ -45,6 +49,12 @@ public class RunningListServiceImpl implements RunningListService {
     @Autowired
     private DateService dateService;
 
+    @Autowired
+    private TagService tagService;
+
+    @Autowired
+    private ConversionService conversionService;
+
     @Override
     public RunningListViewModel getRunningList() {
 
@@ -60,6 +70,8 @@ public class RunningListServiceImpl implements RunningListService {
             .hasPrevious(archiveService.hasPreviousArchive(weekId))
             .canUndo(runningListCommandManager.canUndo())
             .canRedo(runningListCommandManager.canRedo())
+            .selectedTags(tagService.getSelectedTags())
+            .allTags(tagService.getAllTags())
             .year(weekId.getYear())
             .week(weekId.getWeek())
             .build();
@@ -68,12 +80,17 @@ public class RunningListServiceImpl implements RunningListService {
 
     private List<TaskViewModel> getTaskList(CalendarViewModel calendar) {
 
+        // todo: optimize
         return taskService.getAllTasks().stream()
             .map(task -> TaskViewModel.builder()
                 .id(task.getId())
                 .status(getDayStatuses(task, calendar.getCurrentDay()))
                 .title(task.getTitle())
                 .description(task.getDescription())
+                .tags(task.getTags()
+                    .stream()
+                    .map(tag -> conversionService.convert(tag, TagViewModel.class))
+                    .collect(Collectors.toList()))
                 .build())
             .collect(Collectors.toList());
     }

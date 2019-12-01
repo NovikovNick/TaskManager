@@ -7,9 +7,26 @@ import * as REST from "../rest/rest";
 
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import RunningListItem from "../component/RunningListItem";
-import RunningListHeader from "../component/RunningListHeader";
 import {CreateTaskModalForm, UpdateTaskModalForm} from "../component/TaskModalForm";
 
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {
+    faChevronLeft,
+    faChevronRight,
+    faPlus,
+    faRedo,
+    faSave,
+    faSyncAlt,
+    faUndo
+} from "@fortawesome/free-solid-svg-icons";
+import Button from "react-bootstrap/Button";
+import RunningListDaysHeader from "../component/RunningListDaysHeader";
+import {WithContext as ReactTags} from "react-tag-input";
+
+const KeyCodes = {
+    comma: 188,
+    enter: 13,
+};
 
 const getItemStyle = (isDragging, draggableStyle) => ({
     userSelect: "none",
@@ -131,8 +148,13 @@ class RunningList extends Component {
     }
 
     toggleCreateTaskForm = () => {
-        const {createTaskForm} = this.state
+        const {runningList, createTaskForm} = this.state
         createTaskForm.uiSchema.active = !createTaskForm.uiSchema.active;
+        createTaskForm.formData = {
+            ...createTaskForm.formData,
+            tags: [],
+            tagsSuggestion: runningList.allTags || []
+        };
         this.setState({createTaskForm: createTaskForm})
     }
 
@@ -144,13 +166,15 @@ class RunningList extends Component {
 
     toggleUpdateTaskForm = (task = {}) => {
 
-        const {updateTaskForm} = this.state
+        const {runningList, updateTaskForm} = this.state
         updateTaskForm.uiSchema.active = !updateTaskForm.uiSchema.active;
 
         updateTaskForm.formData = {
             id: task.id || "",
             title: task.title || "",
-            description: task.description || ""
+            description: task.description || "",
+            tags: task.tags || [],
+            tagsSuggestion: runningList.allTags || []
         };
         this.setState({updateTaskForm: updateTaskForm})
     }
@@ -181,6 +205,20 @@ class RunningList extends Component {
     }
 
 
+    handleDelete = (i) => {
+
+        const that = this;
+        REST.removeTag(this.state.runningList.selectedTags[i].text)
+            .then(() => that.loadTaskList());
+    }
+
+    handleAddition = (tag) => {
+        const that = this;
+        REST.addTag(tag.text)
+            .then(() => that.loadTaskList());
+    }
+
+
     render() {
 
         const {runningList, createTaskForm, updateTaskForm} = this.state;
@@ -192,7 +230,7 @@ class RunningList extends Component {
 
                 <CreateTaskModalForm schema={createTaskForm}/>
 
-                <div style={{'position': 'relative', 'margin-top': '40px'}}>
+                <div style={{'position': 'relative', 'marginTop': '40px'}}>
 
                     <DragDropContext onDragEnd={this.onDragEnd}>
                         <Droppable droppableId="droppable">
@@ -236,24 +274,51 @@ class RunningList extends Component {
 
                 </div>
 
-                <RunningListHeader calendar={runningList.calendar}
-                                   onLoadTaskList={this.loadTaskList}
-                                   onOpenCreateTaskForm={this.toggleCreateTaskForm}
+                <div className="metalheart-running-list-header">
 
-                                   canArchive={runningList.editable}
-                                   hasNext={runningList.hasNext}
-                                   hasPrev={runningList.hasPrevious}
-                                   canUndo={runningList.canUndo}
-                                   canRedo={runningList.canRedo}
+                    <RunningListDaysHeader calendar={runningList.calendar}/>
 
-                                   onUndo={this.onUndo}
-                                   onRedo={this.onRedo}
-                                   onArchive={this.onArchive}
-                                   onNext={this.onNext}
-                                   onPrev={this.onPrev}
-                />
+                    <div className={'running-list-title'}>
 
+                        <div className={"running-list-tags"}>
+                            <ReactTags tags={runningList.selectedTags || []}
+                                       suggestions={runningList.allTags || []}
+                                       handleDelete={this.handleDelete}
+                                       handleAddition={this.handleAddition}
+                                       delimiters={[KeyCodes.comma, KeyCodes.enter]}/>
+                        </div>
+                    </div>
+                    <div className={'running-list-controls'}>
 
+                        <Button variant="outline-light" disabled={!runningList.canUndo} onClick={this.onUndo}>
+                            <FontAwesomeIcon icon={faUndo}/>
+                        </Button>
+
+                        <Button variant="outline-light" disabled={!runningList.canRedo} onClick={this.onRedo}>
+                            <FontAwesomeIcon icon={faRedo}/>
+                        </Button>
+
+                        <Button variant="outline-light" disabled={!runningList.editable} onClick={this.onArchive}>
+                            <FontAwesomeIcon icon={faSave}/>
+                        </Button>
+
+                        <Button variant="outline-light" disabled={!runningList.hasNext} onClick={this.onNext}>
+                            <FontAwesomeIcon icon={faChevronLeft}/>
+                        </Button>
+
+                        <Button variant="outline-light" disabled={!runningList.hasPrevious} onClick={this.onPrev}>
+                            <FontAwesomeIcon icon={faChevronRight}/>
+                        </Button>
+
+                        <Button variant="outline-light" onClick={this.loadTaskList}>
+                            <FontAwesomeIcon icon={faSyncAlt}/>
+                        </Button>
+
+                        <Button variant="outline-light" onClick={this.toggleCreateTaskForm}>
+                            <FontAwesomeIcon icon={faPlus}/>
+                        </Button>
+                    </div>
+                </div>
             </div>
         )
     }

@@ -33,6 +33,15 @@ public class TagServiceImpl implements TagService {
     @Autowired
     private ConversionService conversionService;
 
+    @Transactional
+    @Override
+    public List<TagViewModel> getSelectedTags() {
+        return selectedTagRepository.getSelectedTags().stream()
+            .map(tagJpaRepository::getOne)
+            .map(tag -> conversionService.convert(tag, TagViewModel.class))
+            .collect(Collectors.toList());
+    }
+
     @Override
     public List<TagViewModel> getAllTags() {
         return tagJpaRepository.findAll().stream()
@@ -75,20 +84,19 @@ public class TagServiceImpl implements TagService {
     }
 
 
-    private Tag getTag(String tagTitle) {
-        Tag tag;
+    @Override
+    public  Tag getTag(String tagTitle) {
 
         if (tagJpaRepository.existsByTitle(tagTitle)) {
 
-            tag = tagJpaRepository.findTagByTitle(tagTitle);
+            return tagJpaRepository.findTagByTitle(tagTitle);
 
         } else {
 
-            tag = tagJpaRepository.save(Tag.builder()
+            return tagJpaRepository.save(Tag.builder()
                 .title(tagTitle)
                 .createdAt(dateService.now())
                 .build());
         }
-        return tag;
     }
 }

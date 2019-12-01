@@ -195,3 +195,37 @@ export function redo() {
     };
     return rest('/taskmanager/runninglist', settings);
 }
+
+
+export function removeTag(tag) {
+    const settings = {
+        method: 'DELETE',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+            tag: tag
+        })
+    };
+    return rest('taskmanager/tag', settings);
+}
+
+export function addTag(tag) {
+    const settings = {
+        method: 'PUT',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+            tag: tag
+        })
+    };
+    return rest('taskmanager/tag', settings);
+}
+

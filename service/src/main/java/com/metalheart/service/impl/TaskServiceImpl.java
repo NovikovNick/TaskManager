@@ -3,6 +3,7 @@ package com.metalheart.service.impl;
 import com.metalheart.model.RunningListAction;
 import com.metalheart.model.TaskModel;
 import com.metalheart.model.jooq.tables.records.TaskRecord;
+import com.metalheart.model.jpa.Tag;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.jpa.WeekWorkLog;
@@ -17,14 +18,18 @@ import com.metalheart.repository.jooq.TaskJooqRepository;
 import com.metalheart.repository.jpa.TaskJpaRepository;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.RunningListCommandManager;
+import com.metalheart.service.TagService;
 import com.metalheart.service.TaskService;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
@@ -59,6 +64,9 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private SelectedTagRepository selectedTagRepository;
 
+    @Autowired
+    private TagService tagService;
+
     @PostConstruct
     public void reorder() {
 
@@ -83,7 +91,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Optional<TaskStatus> getTaskDayStatus(Integer taskId, Integer dayIndex){
+    public Optional<TaskStatus> getTaskDayStatus(Integer taskId, Integer dayIndex) {
 
         WeekWorkLogPK id = WeekWorkLogPK.builder().taskId(taskId).dayIndex(dayIndex).build();
 
@@ -207,6 +215,7 @@ public class TaskServiceImpl implements TaskService {
         runningListCommandManager.execute(new RunningListAction<Void>() {
 
             private WeekWorkLog workLog;
+
             @Override
             public Void execute() {
 
@@ -264,6 +273,13 @@ public class TaskServiceImpl implements TaskService {
         task.setDescription(request.getDescription());
         task.setModifiedAt(ZonedDateTime.now());
 
+        if (CollectionUtils.isNotEmpty(request.getTags())) {
+            List<Tag> tags = request.getTags().stream()
+                .map(tag -> tagService.getTag(tag.getText()))
+                .collect(Collectors.toList());
+            task.setTags(tags);
+        }
+
         runningListCommandManager.execute(new RunningListAction<Void>() {
 
             private TaskModel taskModel;
@@ -295,6 +311,12 @@ public class TaskServiceImpl implements TaskService {
                 task.setTitle(taskModel.getTitle());
                 task.setDescription(taskModel.getDescription());
                 task.setModifiedAt(taskModel.getModifiedAt());
+
+                List<Tag> tags = taskModel.getTags().stream()
+                    .map(tag -> tagService.getTag(tag.getText()))
+                    .collect(Collectors.toList());
+                task.setTags(tags);
+
                 taskJpaRepository.save(task);
                 log.info("Operation of task updating was undone {}", task);
             }

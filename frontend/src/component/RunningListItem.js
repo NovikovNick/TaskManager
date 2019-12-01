@@ -62,6 +62,10 @@ export default function RunningListItem({index, task, handleRemove, changeStatus
 
             <div className="running-list-task">
 
+                {
+                    task.tags && task.tags.map((tag, i) => <div className={"running-list-tag"} key={i}>{tag.text}</div>)
+                }
+
                 <input type={"text"} onChange={changeText} value={task.title}></input>
                 <span>
                      <span className="pl-1">

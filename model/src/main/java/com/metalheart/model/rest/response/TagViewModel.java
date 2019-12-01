@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TagViewModel {
 
-    private Integer id;
+    private String id;
 
-    private String title;
+    private String text;
 }

@@ -7,6 +7,7 @@ import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.exception.UnableToRedoException;
 import com.metalheart.exception.UnableToUndoException;
 import com.metalheart.model.WeekId;
+import com.metalheart.model.rest.request.CRUDTagRequest;
 import com.metalheart.model.rest.request.GetArchiveRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.service.DateService;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -158,11 +160,12 @@ public class RunningListController {
 
     @PutMapping(
         path = EndPoint.ADD_TASK_TAG,
+        consumes = APPLICATION_JSON_VALUE,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Add tag", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> addTaskTag(String tag) {
+    public ResponseEntity<RunningListViewModel> addTaskTag(@Valid @RequestBody CRUDTagRequest tag) {
 
-        tagService.selectTag(tag);
+        tagService.selectTag(tag.getTag());
         return ResponseEntity.ok(runningListService.getRunningList());
     }
 
@@ -170,9 +173,9 @@ public class RunningListController {
         path = EndPoint.REMOVE_TASK_TAG,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Remove tag", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> removeTaskTag(String tag) {
+    public ResponseEntity<RunningListViewModel> removeTaskTag(@Valid @RequestBody CRUDTagRequest tag) {
 
-        tagService.removeSelectedTag(tag);
+        tagService.removeSelectedTag(tag.getTag());
         return ResponseEntity.ok(runningListService.getRunningList());
     }
 }
