@@ -5,6 +5,7 @@ import com.metalheart.model.jpa.Task;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.model.rest.response.TagViewModel;
+import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
 import com.metalheart.service.TaskService;
@@ -65,4 +66,62 @@ public class TagIntegrationTest extends BaseIntegrationTest {
         Assert.assertEquals(2, runningList.getTasks().size());
     }
 
+    @Test
+    public void testSeveralTagSelection() {
+
+        // arrange
+        Task createdTask1 = taskService.createTask(getCreateTaskRequest("task1"));
+        Task createdTask2 = taskService.createTask(getCreateTaskRequest("task2"));
+        Task createdTask3 = taskService.createTask(getCreateTaskRequest("task3"));
+        tagService.addTagToTask("tag1", createdTask1.getId());
+        tagService.addTagToTask("tag2", createdTask1.getId());
+        tagService.addTagToTask("tag1", createdTask2.getId());
+        tagService.addTagToTask("tag2", createdTask2.getId());
+        tagService.addTagToTask("tag3", createdTask3.getId());
+
+
+        // act
+        tagService.selectTag("tag1");
+
+        // assert
+        Assert.assertEquals(1, tagService.getSelectedTags().size());
+
+        RunningListViewModel runningList = runningListService.getRunningList();
+
+        List<TaskViewModel> tasks = runningList.getTasks();
+        Assert.assertEquals(2, tasks.size());
+        Assert.assertEquals(2, tasks.get(0).getTags().size());
+        Assert.assertEquals(2, tasks.get(1).getTags().size());
+    }
+
+    @Test
+    public void testSeveralTagSelection2() {
+
+        // arrange
+        Task createdTask1 = taskService.createTask(getCreateTaskRequest("task1"));
+        Task createdTask2 = taskService.createTask(getCreateTaskRequest("task2"));
+        Task createdTask3 = taskService.createTask(getCreateTaskRequest("task3"));
+        tagService.addTagToTask("tag1", createdTask1.getId());
+        tagService.addTagToTask("tag2", createdTask1.getId());
+        tagService.addTagToTask("tag1", createdTask2.getId());
+        tagService.addTagToTask("tag2", createdTask2.getId());
+        tagService.addTagToTask("tag3", createdTask3.getId());
+
+
+        // act
+        tagService.selectTag("tag1");
+        RunningListViewModel runningList = runningListService.getRunningList();
+        tagService.selectTag("tag2");
+        runningList = runningListService.getRunningList();
+
+        // assert
+        Assert.assertEquals(2, tagService.getSelectedTags().size());
+
+
+
+        List<TaskViewModel> tasks = runningList.getTasks();
+        Assert.assertEquals(2, tasks.size());
+        Assert.assertEquals(2, tasks.get(0).getTags().size());
+        Assert.assertEquals(2, tasks.get(1).getTags().size());
+    }
 }

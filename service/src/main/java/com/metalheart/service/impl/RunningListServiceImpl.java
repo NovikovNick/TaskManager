@@ -81,7 +81,9 @@ public class RunningListServiceImpl implements RunningListService {
     private List<TaskViewModel> getTaskList(CalendarViewModel calendar) {
 
         // todo: optimize
-        return taskService.getAllTasks().stream()
+        List<Task> allTasks = taskService.getAllTasks();
+
+        return allTasks.stream()
             .map(task -> TaskViewModel.builder()
                 .id(task.getId())
                 .status(getDayStatuses(task, calendar.getCurrentDay()))

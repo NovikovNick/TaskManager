@@ -208,7 +208,8 @@ class RunningList extends Component {
     handleDelete = (i) => {
 
         const that = this;
-        REST.removeTag(this.state.runningList.selectedTags[i].text)
+        const selectedTag = this.state.runningList.selectedTags[i];
+        selectedTag && REST.removeTag(selectedTag.text)
             .then(() => that.loadTaskList());
     }
 
