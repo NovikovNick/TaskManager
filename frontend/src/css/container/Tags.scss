@@ -49,25 +49,22 @@ $borderColor: #eee;
 .running-list-tag {
   -webkit-font-smoothing: auto;
   font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
-  font-size: .75rem;
+  font-size: 12px;
   letter-spacing: .3px;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
   color: black;
   font-weight: 500;
   margin: 0;
-  max-height: 20px;
-
+  height: 18px;
+  line-height: 15px;
   overflow: hidden;
   text-overflow: ellipsis;
   direction: ltr;
   cursor: move;
-
   display: inline-block;
-
+  vertical-align: middle;
   border: 1px solid black;
   border-radius: 10px;
-  padding: 1px 10px 1px 5px;
-
-  margin-right: 5px;
+  padding: 0px 10px 0px 5px;
+  margin-right: 2px;
 }
