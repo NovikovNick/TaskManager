@@ -15,6 +15,8 @@ public interface TaskJpaRepository extends JpaRepository<Task, Integer> {
     @Query("SELECT DISTINCT t from Task t "
         + " JOIN t.tags tag "
         + " where tag.id in :tagIds "
+        + " GROUP BY t.id, t.priority having count(t.priority) = :tagCount"
         + " ORDER BY t.priority ASC")
-    List<Task> findAllByTags(@Param("tagIds") List<Integer> tagIds);
+    List<Task> findAllByTags(@Param("tagIds") List<Integer> tagIds,
+                             @Param("tagCount") Long tagCount);
 }

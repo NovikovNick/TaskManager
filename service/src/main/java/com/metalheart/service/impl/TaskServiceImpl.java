@@ -85,7 +85,7 @@ public class TaskServiceImpl implements TaskService {
 
             return taskJpaRepository.findAllByOrderByPriorityAsc();
         } else {
-            return taskJpaRepository.findAllByTags(selectedTags);
+            return taskJpaRepository.findAllByTags(selectedTags, Long.valueOf(selectedTags.size()));
         }
     }
 
