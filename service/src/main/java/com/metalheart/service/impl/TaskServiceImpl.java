@@ -22,6 +22,7 @@ import com.metalheart.service.TagService;
 import com.metalheart.service.TaskService;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -122,6 +123,7 @@ public class TaskServiceImpl implements TaskService {
         return runningListCommandManager.execute(new RunningListAction<>() {
 
             private TaskRecord task;
+            private List<Tag> tags = Collections.emptyList();
 
             @Override
             public Task execute() {
@@ -133,14 +135,24 @@ public class TaskServiceImpl implements TaskService {
                     record.setCreatedAt(OffsetDateTime.now());
                     record.setPriority(taskPriorityRepository.incrementAndGetMaxPriority());
 
+                    if (CollectionUtils.isNotEmpty(request.getTags())) {
+                        this.tags = request.getTags().stream()
+                            .map(tag -> tagService.getTag(tag.getText()))
+                            .collect(Collectors.toList());
+                    }
+
                     this.task = record;
 
                     taskJooqRepository.saveAndGenerateIdIfNotPresent(record);
+                    this.tags.forEach(tag -> tagService.addTagToTask(tag.getTitle(), this.task.getId()));
+
                     log.info("New task has been created {}", this.task);
 
                 } else {
 
                     taskJooqRepository.saveAndGenerateIdIfNotPresent(this.task);
+                    this.tags.forEach(tag -> tagService.addTagToTask(tag.getTitle(), this.task.getId()));
+
                     log.info("Undone operation of task creating was redone {}", this.task);
                 }
                 return conversionService.convert(this.task, Task.class);
@@ -149,7 +161,9 @@ public class TaskServiceImpl implements TaskService {
             @Override
             public void undo() {
 
+                this.tags.forEach(tag -> tagService.removeTagFromTask(tag.getTitle(), this.task.getId()));
                 taskJpaRepository.deleteById(this.task.getId());
+
                 log.info("Operation of task creating was undone {}", this.task);
             }
         });
