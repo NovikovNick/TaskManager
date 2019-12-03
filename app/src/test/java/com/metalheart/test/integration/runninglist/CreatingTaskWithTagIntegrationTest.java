@@ -35,11 +35,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
     public void testCreatingWithTags() throws Exception {
 
         // arrange
-        CreateTaskRequest request = generateRandomCreateTaskRequest();
-        request.setTags(asList(
-            TagViewModel.builder().text("tag1").build(),
-            TagViewModel.builder().text("tag2").build()
-        ));
+        CreateTaskRequest request = getCreateTaskRequest("task", "tag1", "tag2");
 
 
         // act
@@ -58,11 +54,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
     public void testUndoCreatingWithTags() throws Exception {
 
         // arrange
-        CreateTaskRequest request = generateRandomCreateTaskRequest();
-        request.setTags(asList(
-            TagViewModel.builder().text("tag1").build(),
-            TagViewModel.builder().text("tag2").build()
-        ));
+        CreateTaskRequest request = getCreateTaskRequest("task", "tag1", "tag2");
 
 
         // act
@@ -78,11 +70,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreatingWithTags() throws Exception {
 
         // arrange
-        CreateTaskRequest request = generateRandomCreateTaskRequest();
-        request.setTags(asList(
-            TagViewModel.builder().text("tag1").build(),
-            TagViewModel.builder().text("tag2").build()
-        ));
+        CreateTaskRequest request = getCreateTaskRequest("task", "tag1", "tag2");
 
 
         // act

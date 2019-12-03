@@ -8,6 +8,7 @@ import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.CalendarViewModel;
+import com.metalheart.model.rest.response.TagViewModel;
 import com.metalheart.repository.inmemory.SelectedTagRepository;
 import com.metalheart.repository.jpa.RunningListArchiveJpaRepository;
 import com.metalheart.repository.jpa.TaskJpaRepository;
@@ -26,7 +27,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
 
@@ -72,9 +72,20 @@ public abstract class BaseIntegrationTest {
         return getCreateTaskRequest(RandomStringUtils.random(20));
     }
 
+
     protected CreateTaskRequest getCreateTaskRequest(String title) {
         CreateTaskRequest request = new CreateTaskRequest();
         request.setTitle(title);
+        return request;
+    }
+
+    protected CreateTaskRequest getCreateTaskRequest(String title, String... tags) {
+
+        CreateTaskRequest request = new CreateTaskRequest();
+        request.setTitle(title);
+        request.setTags(Arrays.stream(tags)
+            .map(tag -> TagViewModel.builder().text(tag).build())
+            .collect(Collectors.toList()));
         return request;
     }
 
