@@ -74,7 +74,10 @@ public class TaskServiceImpl implements TaskService {
         int maxPriority = taskList.size();
         taskPriorityRepository.setMaxPriority(maxPriority);
 
-        saveTaskList(taskList);
+        for (int i = 0; i < taskList.size(); i++) {
+            taskList.get(i).setPriority(i);
+        }
+        taskJpaRepository.saveAll(taskList);
     }
 
     @Override
@@ -341,17 +344,17 @@ public class TaskServiceImpl implements TaskService {
 
         List<Task> tasks = getAllTasks();
 
-        Task moved = tasks.get(request.getStartIndex());
+        List<Integer> previousPriorities = tasks.stream()
+            .map(Task::getPriority)
+            .collect(Collectors.toList());
 
+        Task moved = tasks.get(request.getStartIndex());
         tasks.remove(moved);
         tasks.add(request.getEndIndex(), moved);
-        saveTaskList(tasks);
-    }
 
-    private void saveTaskList(List<Task> taskList) {
-        for (int i = 0; i < taskList.size(); i++) {
-            taskList.get(i).setPriority(i);
+        for (int i = 0; i < tasks.size(); i++) {
+            tasks.get(i).setPriority(previousPriorities.get(i));
         }
-        taskJpaRepository.saveAll(taskList);
+        taskJpaRepository.saveAll(tasks);
     }
 }
