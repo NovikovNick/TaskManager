@@ -1,0 +1,13 @@
+dependencies {
+    
+    compile("org.springframework.boot:spring-boot-starter-aop:$springBootVersion")  
+    
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: "$logbackVersion"
+    compile group: 'ch.qos.logback', name: 'logback-core', version: "$logbackVersion"
+
+    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    compile "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:$jacksonVersion"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
+    
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: "$commonsLangVersion"
+}

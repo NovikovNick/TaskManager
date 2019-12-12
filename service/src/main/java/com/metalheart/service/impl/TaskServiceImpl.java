@@ -1,7 +1,9 @@
 package com.metalheart.service.impl;
 
+import com.metalheart.log.LogOperationContext;
 import com.metalheart.model.RunningListAction;
 import com.metalheart.model.TaskModel;
+import com.metalheart.model.WeekWorkLogUpdateRequest;
 import com.metalheart.model.jooq.tables.records.TaskRecord;
 import com.metalheart.model.jpa.Tag;
 import com.metalheart.model.jpa.Task;
@@ -20,9 +22,9 @@ import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.TagService;
 import com.metalheart.service.TaskService;
+import com.metalheart.service.WorkLogService;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -48,6 +50,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private WeekWorkLogJpaRepository weekWorkLogJpaRepository;
+
+    @Autowired
+    private WorkLogService workLogService;
 
     @Autowired
     private RunningListCommandManager runningListCommandManager;
@@ -120,57 +125,69 @@ public class TaskServiceImpl implements TaskService {
             TypeDescriptor.valueOf(TaskModel.class));
     }
 
+    @LogOperationContext
+    @Override
+    public Task create(CreateTaskRequest request) {
+
+        TaskRecord record = new TaskRecord();
+        record.setId(request.getTaskId());
+        record.setTitle(request.getTitle());
+        record.setDescription(request.getDescription());
+        record.setCreatedAt(OffsetDateTime.now());
+        record.setPriority(taskPriorityRepository.incrementAndGetMaxPriority());
+
+        taskJooqRepository.saveAndGenerateIdIfNotPresent(record);
+        if (CollectionUtils.isNotEmpty(request.getTags())) {
+            request.getTags().stream()
+                .map(tag -> tagService.getTag(tag.getText()))
+                .forEach(tag -> tagService.addTagToTask(tag.getTitle(), record.getId()));
+        }
+        return conversionService.convert(record, Task.class);
+    }
+
+    @LogOperationContext
+    @Override
+    public void delete(Task task) {
+
+        if (CollectionUtils.isNotEmpty(task.getTags())) {
+            task.getTags().forEach(tag -> tagService.removeTagFromTask(tag.getTitle(), task.getId()));
+        }
+        taskJpaRepository.deleteById(task.getId());
+    }
+
     @Override
     public Task createTask(CreateTaskRequest request) {
 
         return runningListCommandManager.execute(new RunningListAction<>() {
 
-            private TaskRecord task;
-            private List<Tag> tags = Collections.emptyList();
+            private Task task;
 
             @Override
             public Task execute() {
-                if (this.task == null) {
 
-                    TaskRecord record = new TaskRecord();
-                    record.setTitle(request.getTitle());
-                    record.setDescription(request.getDescription());
-                    record.setCreatedAt(OffsetDateTime.now());
-                    record.setPriority(taskPriorityRepository.incrementAndGetMaxPriority());
+                String info;
+                if (Objects.isNull(this.task)) {
 
-                    if (CollectionUtils.isNotEmpty(request.getTags())) {
-                        this.tags = request.getTags().stream()
-                            .map(tag -> tagService.getTag(tag.getText()))
-                            .collect(Collectors.toList());
-                    }
-
-                    this.task = record;
-
-                    taskJooqRepository.saveAndGenerateIdIfNotPresent(record);
-                    this.tags.forEach(tag -> tagService.addTagToTask(tag.getTitle(), this.task.getId()));
-
-                    log.info("New task has been created {}", this.task);
+                    info = "New task has been created";
 
                 } else {
-
-                    taskJooqRepository.saveAndGenerateIdIfNotPresent(this.task);
-                    this.tags.forEach(tag -> tagService.addTagToTask(tag.getTitle(), this.task.getId()));
-
-                    log.info("Undone operation of task creating was redone {}", this.task);
+                    request.setTaskId(this.task.getId());
+                    info = "Undone operation of task creating was redone";
                 }
-                return conversionService.convert(this.task, Task.class);
+
+                Task created = self.create(request);
+
+                log.info(info);
+
+                return this.task = created;
             }
 
             @Override
             public void undo() {
-
-                this.tags.forEach(tag -> tagService.removeTagFromTask(tag.getTitle(), this.task.getId()));
-                taskJpaRepository.deleteById(this.task.getId());
-
-                log.info("Operation of task creating was undone {}", this.task);
+                self.delete(task);
+                log.info("Operation of task creating was undone");
             }
         });
-
     }
 
     @Override
@@ -235,25 +252,19 @@ public class TaskServiceImpl implements TaskService {
             @Override
             public Void execute() {
 
+                WeekWorkLog updated = workLogService.save(WeekWorkLogUpdateRequest.builder()
+                    .taskId(taskId)
+                    .dayIndex(dayIndex)
+                    .status(status)
+                    .build());
+
                 if (Objects.isNull(workLog)) {
-
-
-                    workLog = weekWorkLogJpaRepository.save(WeekWorkLog.builder()
-                        .id(id)
-                        .status(status)
-                        .build());
-
-                    log.info("Task status has been updated {}", workLog);
-
+                    log.info("Task status has been updated");
                 } else {
-
-                    workLog = weekWorkLogJpaRepository.save(WeekWorkLog.builder()
-                        .id(id)
-                        .status(status)
-                        .build());
-
-                    log.info("Undone operation of task status updating was redone {}", workLog);
+                    log.info("Undone operation of task status updating was redone");
                 }
+
+                workLog = updated;
                 return null;
             }
 
@@ -262,15 +273,17 @@ public class TaskServiceImpl implements TaskService {
 
                 if (previousStatus.isPresent()) {
 
-                    workLog = weekWorkLogJpaRepository.save(WeekWorkLog.builder()
-                        .id(id)
+                    workLog = workLogService.save(WeekWorkLogUpdateRequest.builder()
+                        .taskId(taskId)
+                        .dayIndex(dayIndex)
                         .status(previousStatus.get())
                         .build());
-                    log.info("Operation of task status updating was undone {}", previousStatus.get());
+
+                    log.info("Operation of task status updating was undone");
 
                 } else {
                     weekWorkLogJpaRepository.deleteById(id);
-                    log.info("Operation of task status updating was undone {}", id);
+                    log.info("Operation of task status updating was undone");
                 }
             }
         });

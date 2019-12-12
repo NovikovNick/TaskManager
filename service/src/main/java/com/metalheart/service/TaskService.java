@@ -18,6 +18,10 @@ public interface TaskService {
 
     Optional<TaskStatus> getTaskDayStatus(Integer taskId, Integer dayIndex);
 
+    Task create(CreateTaskRequest request);
+
+    void delete(Task task);
+
     /**
      * Can be undone
      * @param request

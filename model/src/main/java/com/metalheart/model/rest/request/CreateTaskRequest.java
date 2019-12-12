@@ -1,5 +1,6 @@
 package com.metalheart.model.rest.request;
 
+import com.metalheart.log.LogContextField;
 import com.metalheart.model.rest.response.TagViewModel;
 import java.util.List;
 import javax.validation.constraints.NotEmpty;
@@ -8,6 +9,9 @@ import lombok.Data;
 
 @Data
 public class CreateTaskRequest {
+
+    @LogContextField(LogContextField.Field.TASK_ID)
+    private Integer taskId;
 
     @NotNull
     @NotEmpty

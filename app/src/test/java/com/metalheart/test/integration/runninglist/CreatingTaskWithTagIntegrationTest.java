@@ -1,14 +1,11 @@
 package com.metalheart.test.integration.runninglist;
 
-import com.metalheart.model.TaskModel;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.rest.request.CreateTaskRequest;
-import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.model.rest.response.TagViewModel;
 import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListService;
-import com.metalheart.service.TagService;
 import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.util.List;
@@ -16,8 +13,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static java.util.Arrays.asList;
 
 public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
 

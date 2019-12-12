@@ -1,5 +1,7 @@
 ## Task manager
 
+tail -f ./taskmanager.log | jq " . "
+
 #### Data:
 ##### Task:
 - Title

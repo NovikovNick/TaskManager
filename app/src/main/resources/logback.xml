@@ -1,0 +1,22 @@
+<configuration debug="true">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <property scope="context" name="application-name" value="engage-real-time-stats"/>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>./taskmanager.log</file>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="com.metalheart.log.LogLayout"/>
+        </encoder>
+    </appender>
+
+    <logger name="com.metalheart" level="info" />
+
+    <!--Root logger-->
+    <root level="INFO">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>
