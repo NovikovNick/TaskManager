@@ -5,6 +5,7 @@ import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListCommandManager;
+import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
@@ -30,6 +31,9 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private RunningListService runningListService;
 
+    @Autowired
+    private RunningListCommandService runningListCommandService;
+
     @MockBean
     private DateService dateService;
 
@@ -38,12 +42,12 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
-        Task createdTask = taskService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, IN_PROGRESS));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, IN_PROGRESS));
 
         // assert
         RunningListViewModel runningList = runningListService.getRunningList();
@@ -56,12 +60,12 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
-        Task createdTask = taskService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, DONE));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, DONE));
         commandManager.undo();
 
         // assert
@@ -75,13 +79,13 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
-        Task createdTask = taskService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, TO_DO));
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, DONE));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, TO_DO));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, DONE));
         commandManager.undo();
 
         // assert
@@ -95,12 +99,12 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
-        Task createdTask = taskService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, DONE));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, DONE));
         commandManager.undo();
         commandManager.redo();
 

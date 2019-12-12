@@ -4,6 +4,7 @@ import com.metalheart.model.jpa.Task;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
 import com.metalheart.service.RunningListCommandManager;
+import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.util.List;
@@ -19,12 +20,15 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private RunningListCommandManager commandManager;
 
+    @Autowired
+    private RunningListCommandService runningListCommandService;
+
     @Test
     public void testCreating() {
 
         // arrange
         CreateTaskRequest createRequest = getCreateTaskRequest("Created task");
-        Task createdTask = taskService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
         UpdateTaskRequest updateRequest = new UpdateTaskRequest();
         updateRequest.setId(createdTask.getId());
@@ -49,7 +53,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = getCreateTaskRequest("Created task");
-        Task createdTask = taskService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
         UpdateTaskRequest updateRequest = new UpdateTaskRequest();
         updateRequest.setId(createdTask.getId());
@@ -74,7 +78,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = getCreateTaskRequest("Created task");
-        Task createdTask = taskService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
         UpdateTaskRequest updateRequest = new UpdateTaskRequest();
         updateRequest.setId(createdTask.getId());

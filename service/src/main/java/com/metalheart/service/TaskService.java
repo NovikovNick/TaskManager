@@ -4,7 +4,6 @@ import com.metalheart.model.TaskModel;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
-import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
 import java.util.List;
@@ -24,13 +23,6 @@ public interface TaskService {
 
     /**
      * Can be undone
-     * @param request
-     * @return
-     */
-    Task createTask(CreateTaskRequest request);
-
-    /**
-     * Can be undone
      * @param taskId
      */
     void delete(Integer taskId);
@@ -41,13 +33,6 @@ public interface TaskService {
      * @return
      */
     void update(UpdateTaskRequest request);
-
-    /**
-     * Can be undone
-     * @param request
-     * @return
-     */
-    void changeTaskStatus(ChangeTaskStatusRequest request);
 
     void reorderTask(ChangeTaskPriorityRequest request);
 }

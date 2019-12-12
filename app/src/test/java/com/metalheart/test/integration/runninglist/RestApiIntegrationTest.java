@@ -4,7 +4,6 @@ import com.metalheart.EndPoint;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.net.HttpURLConnection;
-import java.util.Map;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.server.LocalServerPort;

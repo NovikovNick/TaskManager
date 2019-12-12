@@ -9,6 +9,7 @@ import com.metalheart.model.rest.request.RemoveTagFromTaskRequest;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.model.rest.response.TagViewModel;
+import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
 import com.metalheart.service.TaskService;
@@ -39,13 +40,16 @@ public class TaskController {
     private RunningListService runningListService;
 
     @Autowired
+    private RunningListCommandService runningListCommandService;
+
+    @Autowired
     private TagService tagService;
 
 
     @PostMapping(path = EndPoint.CREATE_TASK, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel createTask(@Valid @RequestBody CreateTaskRequest request) {
 
-        taskService.createTask(request);
+        runningListCommandService.createTask(request);
 
         return runningListService.getRunningList();
     }
@@ -54,7 +58,7 @@ public class TaskController {
         APPLICATION_JSON_VALUE)
     public RunningListViewModel changeStatus(@Valid @RequestBody ChangeTaskStatusRequest request) {
 
-        taskService.changeTaskStatus(request);
+        runningListCommandService.changeTaskStatus(request);
 
         return runningListService.getRunningList();
     }

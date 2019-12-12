@@ -3,6 +3,7 @@ package com.metalheart.test.integration.runninglist;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.service.RunningListCommandManager;
+import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.util.List;
@@ -18,6 +19,9 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private RunningListCommandManager commandManager;
 
+    @Autowired
+    private RunningListCommandService runningListCommandService;
+
     @Test
     public void testCreating() {
 
@@ -25,7 +29,7 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
         CreateTaskRequest request = generateRandomCreateTaskRequest();
 
         // act
-        taskService.createTask(request);
+        runningListCommandService.createTask(request);
 
         // assert
 
@@ -43,7 +47,7 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
         CreateTaskRequest request = generateRandomCreateTaskRequest();
 
         // act
-        taskService.createTask(request);
+        runningListCommandService.createTask(request);
         commandManager.undo();
 
         // assert
@@ -60,7 +64,7 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
         CreateTaskRequest request = generateRandomCreateTaskRequest();
 
         // act
-        taskService.createTask(request);
+        runningListCommandService.createTask(request);
         commandManager.undo();
         commandManager.redo();
 

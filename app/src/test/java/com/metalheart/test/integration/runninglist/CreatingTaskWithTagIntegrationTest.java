@@ -5,6 +5,7 @@ import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.TagViewModel;
 import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.service.RunningListCommandManager;
+import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
@@ -25,6 +26,8 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private RunningListCommandManager commandManager;
 
+    @Autowired
+    private RunningListCommandService runningListCommandService;
 
     @Test
     public void testCreatingWithTags() throws Exception {
@@ -34,7 +37,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
 
 
         // act
-        Task task = taskService.createTask(request);
+        Task task = runningListCommandService.createTask(request);
 
 
         // assert
@@ -53,7 +56,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
 
 
         // act
-        Task task = taskService.createTask(request);
+        Task task = runningListCommandService.createTask(request);
         commandManager.undo();
 
         // assert
@@ -69,7 +72,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
 
 
         // act
-        Task task = taskService.createTask(request);
+        Task task = runningListCommandService.createTask(request);
         commandManager.undo();
         commandManager.redo();
 

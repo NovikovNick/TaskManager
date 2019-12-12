@@ -4,6 +4,7 @@ import com.metalheart.model.jpa.Task;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.service.DateService;
+import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
@@ -28,6 +29,9 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private RunningListService runningListService;
 
+    @Autowired
+    private RunningListCommandService runningListCommandService;
+
     @MockBean
     private DateService dateService;
 
@@ -36,12 +40,12 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
-        Task createdTask = taskService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, TO_DO));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, TO_DO));
 
         // assert
         RunningListViewModel runningList = runningListService.getRunningList();
@@ -54,12 +58,12 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
-        Task createdTask = taskService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, IN_PROGRESS));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, IN_PROGRESS));
 
         // assert
         RunningListViewModel runningList = runningListService.getRunningList();
@@ -72,13 +76,13 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
-        Task createdTask = taskService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, TO_DO));
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, NONE));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, TO_DO));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, NONE));
 
         // assert
         RunningListViewModel runningList = runningListService.getRunningList();
@@ -91,15 +95,15 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
-        Task createdTask = taskService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 3);
 
         // act
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, TO_DO));
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 1, TO_DO));
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 2, TO_DO));
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 3, TO_DO));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, TO_DO));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 1, TO_DO));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 2, TO_DO));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 3, TO_DO));
 
         // assert
         RunningListViewModel runningList = runningListService.getRunningList();
@@ -112,11 +116,11 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
-        Task createdTask = taskService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, DONE));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, DONE));
 
         // assert
         RunningListViewModel runningList = runningListService.getRunningList();
@@ -129,11 +133,11 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
-        Task createdTask = taskService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        taskService.changeTaskStatus(getChangeStatusRequest(createdTask, 2, CANCELED));
+        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 2, CANCELED));
 
         // assert
         RunningListViewModel runningList = runningListService.getRunningList();

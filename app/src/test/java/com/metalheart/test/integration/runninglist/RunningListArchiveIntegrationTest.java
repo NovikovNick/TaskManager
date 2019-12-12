@@ -7,6 +7,7 @@ import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
+import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.util.List;
@@ -22,6 +23,10 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private RunningListCommandManager commandManager;
+
+
+    @Autowired
+    private RunningListCommandService runningListCommandService;
 
     @Autowired
     private RunningListArchiveService archiveService;
@@ -57,7 +62,7 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
         request.setTitle(taskTitle);
         request.setDescription(taskDescription);
 
-        taskService.createTask(request);
+        runningListCommandService.createTask(request);
 
 
         // act
@@ -93,7 +98,7 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
         request.setTitle(taskTitle);
         request.setDescription(taskDescription);
 
-        taskService.createTask(request);
+        runningListCommandService.createTask(request);
 
 
         // act
@@ -121,7 +126,7 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
         request.setTitle(taskTitle);
         request.setDescription(taskDescription);
 
-        taskService.createTask(request);
+        runningListCommandService.createTask(request);
 
 
         // act

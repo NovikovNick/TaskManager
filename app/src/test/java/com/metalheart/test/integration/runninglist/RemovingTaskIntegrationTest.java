@@ -2,12 +2,11 @@ package com.metalheart.test.integration.runninglist;
 
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.rest.request.CreateTaskRequest;
-import com.metalheart.repository.jpa.TaskJpaRepository;
 import com.metalheart.service.RunningListCommandManager;
+import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.util.List;
-import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +19,15 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private RunningListCommandManager commandManager;
 
+    @Autowired
+    private RunningListCommandService runningListCommandService;
+
     @Test
     public void testRemoving() {
 
         // arrange
         CreateTaskRequest request = generateRandomCreateTaskRequest();
-        Task task = taskService.createTask(request);
+        Task task = runningListCommandService.createTask(request);
         Integer taskId = task.getId();
 
         // act
@@ -40,7 +42,7 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest request = generateRandomCreateTaskRequest();
-        Task task = taskService.createTask(request);
+        Task task = runningListCommandService.createTask(request);
 
         // act
         taskService.delete(task.getId());
@@ -58,7 +60,7 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest request = generateRandomCreateTaskRequest();
-        Task task = taskService.createTask(request);
+        Task task = runningListCommandService.createTask(request);
         Integer taskId = task.getId();
 
         // act

@@ -2,6 +2,7 @@ package com.metalheart.test.integration.runninglist;
 
 import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.response.TaskViewModel;
+import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
@@ -22,13 +23,16 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private RunningListService runningListService;
 
+    @Autowired
+    private RunningListCommandService runningListCommandService;
+
     @Test
     public void testOrderAfterTaskCreation() {
 
         // arrange
         // act
         IntStream.range(0, 5)
-            .mapToObj(i -> taskService.createTask(getCreateTaskRequest(PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)))
             .collect(Collectors.toList());
 
         // assert
@@ -47,7 +51,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         IntStream.range(0, 5)
-            .mapToObj(i -> taskService.createTask(getCreateTaskRequest(PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)))
             .collect(Collectors.toList());
 
         // act
@@ -69,7 +73,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         IntStream.range(0, 5)
-            .mapToObj(i -> taskService.createTask(getCreateTaskRequest(PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)))
             .collect(Collectors.toList());
 
         // act
@@ -91,7 +95,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         IntStream.range(0, 5)
-            .mapToObj(i -> taskService.createTask(getCreateTaskRequest(PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)))
             .collect(Collectors.toList());
 
         // act
@@ -113,7 +117,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         IntStream.range(0, 5)
-            .mapToObj(i -> taskService.createTask(getCreateTaskRequest(PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)))
             .collect(Collectors.toList());
 
         // act

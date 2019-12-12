@@ -2,6 +2,7 @@ package com.metalheart.test.integration.runninglist;
 
 import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.response.TaskViewModel;
+import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
 import com.metalheart.service.TaskService;
@@ -25,13 +26,15 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private RunningListService runningListService;
 
+    @Autowired
+    private RunningListCommandService runningListCommandService;
 
     @Test
     public void testOrderFromTopToMiddleWithTag() {
 
         // arrange
-        IntStream.range(0, 5).forEach(i -> taskService.createTask(getCreateTaskRequest(PREFIX + i)));
-        IntStream.range(5, 10).forEach(i -> taskService.createTask(getCreateTaskRequest(PREFIX + i, "tag1")));
+        IntStream.range(0, 5).forEach(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)));
+        IntStream.range(5, 10).forEach(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i, "tag1")));
 
         // act
         tagService.selectTag("tag1");
@@ -52,8 +55,8 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
     public void testOrderFromTopToMiddleWithotTag() {
 
         // arrange
-        IntStream.range(0, 5).forEach(i -> taskService.createTask(getCreateTaskRequest(PREFIX + i)));
-        IntStream.range(5, 10).forEach(i -> taskService.createTask(getCreateTaskRequest(PREFIX + i, "tag1")));
+        IntStream.range(0, 5).forEach(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)));
+        IntStream.range(5, 10).forEach(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i, "tag1")));
 
         // act
         tagService.selectTag("tag1");
