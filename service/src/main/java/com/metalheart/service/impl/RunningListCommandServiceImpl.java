@@ -1,23 +1,32 @@
 package com.metalheart.service.impl;
 
 import com.metalheart.model.RunningListAction;
+import com.metalheart.model.TaskModel;
+import com.metalheart.model.jpa.Tag;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.jpa.WeekWorkLog;
 import com.metalheart.model.jpa.WeekWorkLogPK;
 import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
+import com.metalheart.model.rest.request.UpdateTaskRequest;
 import com.metalheart.model.service.DeleteTaskRequest;
 import com.metalheart.model.service.WeekWorkLogUpdateRequest;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
+import com.metalheart.service.TagService;
 import com.metalheart.service.TaskService;
 import com.metalheart.service.WorkLogService;
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -35,6 +44,12 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private TagService tagService;
+
+    @Autowired
+    private ConversionService conversionService;
 
     @Override
     public Task createTask(CreateTaskRequest request) {
@@ -158,6 +173,50 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
             public void undo() {
                 taskService.undoRemoving(deleteRequest);
                 log.info("Operation of task removing was undone");
+            }
+        });
+    }
+
+    @Override
+    public void update(UpdateTaskRequest request) {
+
+        TaskModel previousState = taskService.getTaskModel(request.getId());
+
+        Task task = conversionService.convert(previousState, Task.class);
+        task.setTitle(request.getTitle());
+        task.setDescription(request.getDescription());
+        task.setModifiedAt(ZonedDateTime.now());
+
+        if (CollectionUtils.isNotEmpty(request.getTags())) {
+            List<Tag> tags = request.getTags().stream()
+                .map(tag -> tagService.getTag(tag.getText()))
+                .collect(Collectors.toList());
+            task.setTags(tags);
+        }
+
+        runningListCommandManager.execute(new RunningListAction<Void>() {
+
+            private TaskModel taskModel;
+
+            @Override
+            public Void execute() {
+
+                taskService.save(task);
+
+                if (taskModel == null) {
+                    log.info("Task has been updated");
+                } else {
+                    log.info("Undone operation of task updating was redone");
+                }
+
+                taskModel = previousState;
+                return null;
+            }
+
+            @Override
+            public void undo() {
+                taskService.save(conversionService.convert(previousState, Task.class));
+                log.info("Operation of task updating was undone");
             }
         });
     }

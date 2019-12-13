@@ -37,7 +37,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
 
         // act
 
-        taskService.update(updateRequest);
+        runningListCommandService.update(updateRequest);
 
         // assert
         List<Task> tasks = taskService.getAllTasks();
@@ -61,7 +61,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
         updateRequest.setDescription("Updated description");
 
         // act
-        taskService.update(updateRequest);
+        runningListCommandService.update(updateRequest);
         commandManager.undo();
 
         // assert
@@ -86,7 +86,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
         updateRequest.setDescription("Updated description");
 
         // act
-        taskService.update(updateRequest);
+        runningListCommandService.update(updateRequest);
         commandManager.undo();
         commandManager.redo();
 

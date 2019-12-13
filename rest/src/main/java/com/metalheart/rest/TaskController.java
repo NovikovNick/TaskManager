@@ -89,7 +89,7 @@ public class TaskController {
         produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel updateTask(@Valid @RequestBody UpdateTaskRequest request) {
 
-        taskService.update(request);
+        runningListCommandService.update(request);
 
         return runningListService.getRunningList();
     }

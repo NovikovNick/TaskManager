@@ -1,28 +1,23 @@
 package com.metalheart.service.impl;
 
 import com.metalheart.log.LogOperationContext;
-import com.metalheart.model.RunningListAction;
 import com.metalheart.model.TaskModel;
 import com.metalheart.model.jooq.tables.records.TaskRecord;
-import com.metalheart.model.jpa.Tag;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.jpa.WeekWorkLog;
 import com.metalheart.model.jpa.WeekWorkLogPK;
 import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
-import com.metalheart.model.rest.request.UpdateTaskRequest;
 import com.metalheart.model.service.DeleteTaskRequest;
 import com.metalheart.repository.inmemory.SelectedTagRepository;
 import com.metalheart.repository.inmemory.TaskPriorityRepository;
 import com.metalheart.repository.jooq.TaskJooqRepository;
 import com.metalheart.repository.jpa.TaskJpaRepository;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
-import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.TagService;
 import com.metalheart.service.TaskService;
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,16 +44,10 @@ public class TaskServiceImpl implements TaskService {
     private WeekWorkLogJpaRepository weekWorkLogJpaRepository;
 
     @Autowired
-    private RunningListCommandManager runningListCommandManager;
-
-    @Autowired
     private TaskPriorityRepository taskPriorityRepository;
 
     @Autowired
     private ConversionService conversionService;
-
-    @Autowired
-    private TaskService self;
 
     @Autowired
     private SelectedTagRepository selectedTagRepository;
@@ -149,6 +138,11 @@ public class TaskServiceImpl implements TaskService {
         taskJpaRepository.deleteById(task.getId());
     }
 
+    @LogOperationContext
+    @Override
+    public void save(Task task) {
+        taskJpaRepository.save(task);
+    }
 
     @LogOperationContext
     @Override
@@ -165,68 +159,6 @@ public class TaskServiceImpl implements TaskService {
         taskJooqRepository.saveAndGenerateIdIfNotPresent(taskRecord);
         weekWorkLogJpaRepository.saveAll(request.getWorkLogs());
 
-    }
-
-
-    @Transactional
-    @Override
-    public void update(UpdateTaskRequest request) {
-
-        TaskModel previousState = self.getTaskModel(request.getId());
-
-        Task task = taskJpaRepository.getOne(request.getId());
-        task.setTitle(request.getTitle());
-        task.setDescription(request.getDescription());
-        task.setModifiedAt(ZonedDateTime.now());
-
-        if (CollectionUtils.isNotEmpty(request.getTags())) {
-            List<Tag> tags = request.getTags().stream()
-                .map(tag -> tagService.getTag(tag.getText()))
-                .collect(Collectors.toList());
-            task.setTags(tags);
-        }
-
-        runningListCommandManager.execute(new RunningListAction<Void>() {
-
-            private TaskModel taskModel;
-
-            @Override
-            public Void execute() {
-
-                if (taskModel == null) {
-
-                    taskModel = previousState;
-
-                    taskJpaRepository.save(task);
-
-                    log.info("Task has been updated {}", task);
-
-                } else {
-
-                    taskJpaRepository.save(task);
-                    log.info("Undone operation of task updating was redone {}", task);
-                }
-
-                return null;
-            }
-
-            @Override
-            public void undo() {
-
-                Task task = taskJpaRepository.getOne(taskModel.getId());
-                task.setTitle(taskModel.getTitle());
-                task.setDescription(taskModel.getDescription());
-                task.setModifiedAt(taskModel.getModifiedAt());
-
-                List<Tag> tags = taskModel.getTags().stream()
-                    .map(tag -> tagService.getTag(tag.getText()))
-                    .collect(Collectors.toList());
-                task.setTags(tags);
-
-                taskJpaRepository.save(task);
-                log.info("Operation of task updating was undone {}", task);
-            }
-        });
     }
 
     @Override
