@@ -7,7 +7,6 @@ import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
-import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.util.List;
 import org.junit.Test;
@@ -21,9 +20,6 @@ import static com.metalheart.model.jpa.TaskStatus.TO_DO;
 import static org.junit.Assert.assertEquals;
 
 public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
-
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private RunningListCommandManager commandManager;

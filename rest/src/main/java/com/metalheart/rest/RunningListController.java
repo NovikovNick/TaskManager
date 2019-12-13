@@ -13,6 +13,7 @@ import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
+import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
 import io.swagger.annotations.Api;
@@ -55,6 +56,9 @@ public class RunningListController {
     private ConversionService conversionService;
 
     @Autowired
+    private RunningListCommandService runningListCommandService;
+
+    @Autowired
     private TagService tagService;
 
     @GetMapping(path = EndPoint.RUNNING_LIST, produces = APPLICATION_JSON_VALUE)
@@ -78,7 +82,7 @@ public class RunningListController {
 
         try {
             WeekId weekId = dateService.getCurrentWeekId();
-            archiveService.archive(weekId);
+            runningListCommandService.archive(weekId);
             return ResponseEntity.ok(runningListService.getRunningList());
         } catch (RunningListArchiveAlreadyExistException e) {
             log.warn(e.getMessage(), e);

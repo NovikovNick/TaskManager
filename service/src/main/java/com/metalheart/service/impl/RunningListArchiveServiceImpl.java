@@ -1,8 +1,6 @@
 package com.metalheart.service.impl;
 
 import com.metalheart.exception.NoSuchRunningListArchiveException;
-import com.metalheart.exception.RunningListArchiveAlreadyExistException;
-import com.metalheart.model.RunningListAction;
 import com.metalheart.model.WeekId;
 import com.metalheart.model.jpa.RunningListArchive;
 import com.metalheart.model.jpa.RunningListArchivePK;
@@ -10,7 +8,6 @@ import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.repository.jpa.RunningListArchiveJpaRepository;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
-import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +27,6 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
 
     @Autowired
     private DateService dateService;
-
-    @Autowired
-    private RunningListCommandManager runningListCommandManager;
 
     @Autowired
     private ConversionService conversionService;
@@ -58,44 +52,6 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
         return getArchive(nextWeekId);
     }
 
-    @Override
-    public void archive(WeekId weekId) throws RunningListArchiveAlreadyExistException {
-
-        if (isArchiveExist(weekId)) {
-            throw new RunningListArchiveAlreadyExistException(weekId);
-        }
-
-        RunningListViewModel runningList = runningListService.getRunningList();
-
-        RunningListArchive archiveToSave = RunningListArchive.builder()
-            .id(conversionService.convert(weekId, RunningListArchivePK.class))
-            .archive(conversionService.convert(runningList, String.class))
-            .build();
-
-        runningListCommandManager.execute(new RunningListAction<Void>() {
-
-            private RunningListArchive archive;
-
-            @Override
-            public Void execute() {
-                if (this.archive == null) {
-                    this.archive = runningListArchiveRepository.save(archiveToSave);
-                    log.info("Archive has been saved {}", this.archive);
-                } else {
-                    this.archive = runningListArchiveRepository.save(archiveToSave);
-                    log.info("Undone operation of archive saving was redone {}", this.archive);
-                }
-                return null;
-            }
-
-            @Override
-            public void undo() {
-                runningListArchiveRepository.delete(this.archive);
-                log.info("Operation of archive saving was undone {}", this.archive);
-            }
-        });
-
-    }
 
     @Override
     public boolean hasPreviousArchive(WeekId weekId) {
@@ -125,9 +81,20 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
         return runningListViewModel;
     }
 
-    private boolean isArchiveExist(WeekId weekId) {
+    @Override
+    public boolean isArchiveExist(WeekId weekId) {
         var pk = conversionService.convert(weekId, RunningListArchivePK.class);
         return runningListArchiveRepository.existsById(pk);
+    }
+
+    @Override
+    public RunningListArchive save(RunningListArchive archiveToSave) {
+        return runningListArchiveRepository.save(archiveToSave);
+    }
+
+    @Override
+    public void delete(RunningListArchive archive) {
+        runningListArchiveRepository.delete(archive);
     }
 
     private RunningListViewModel getRunningListViewModel(WeekId weekId) {

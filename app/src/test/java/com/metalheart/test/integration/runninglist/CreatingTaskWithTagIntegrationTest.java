@@ -7,7 +7,6 @@ import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
-import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
@@ -16,9 +15,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
-
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private RunningListService runningListService;

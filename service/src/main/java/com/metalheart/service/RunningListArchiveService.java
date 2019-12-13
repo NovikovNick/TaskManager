@@ -1,8 +1,8 @@
 package com.metalheart.service;
 
 import com.metalheart.exception.NoSuchRunningListArchiveException;
-import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.model.WeekId;
+import com.metalheart.model.jpa.RunningListArchive;
 import com.metalheart.model.rest.response.RunningListViewModel;
 
 public interface RunningListArchiveService {
@@ -13,10 +13,9 @@ public interface RunningListArchiveService {
 
     boolean hasPreviousArchive(WeekId weekId);
 
-    /**
-     * Can be undone
-     * @param weekId
-     * @throws RunningListArchiveAlreadyExistException
-     */
-    void archive(WeekId weekId) throws RunningListArchiveAlreadyExistException;
+    boolean isArchiveExist(WeekId weekId);
+
+    RunningListArchive save(RunningListArchive archiveToSave);
+
+    void delete(RunningListArchive archive);
 }

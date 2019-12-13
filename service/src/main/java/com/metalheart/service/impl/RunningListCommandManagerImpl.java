@@ -44,7 +44,7 @@ public class RunningListCommandManagerImpl implements RunningListCommandManager 
         }
 
         RunningListAction action = commandRepository.popUndone();
-        action.execute();
+        action.redo();
         commandRepository.pushDone(action);
 
     }

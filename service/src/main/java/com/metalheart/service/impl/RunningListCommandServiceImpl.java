@@ -1,26 +1,31 @@
 package com.metalheart.service.impl;
 
+import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.model.RunningListAction;
 import com.metalheart.model.TaskModel;
+import com.metalheart.model.WeekId;
+import com.metalheart.model.jpa.RunningListArchive;
+import com.metalheart.model.jpa.RunningListArchivePK;
 import com.metalheart.model.jpa.Tag;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
-import com.metalheart.model.jpa.WeekWorkLog;
 import com.metalheart.model.jpa.WeekWorkLogPK;
 import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
+import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.model.service.DeleteTaskRequest;
 import com.metalheart.model.service.WeekWorkLogUpdateRequest;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
+import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
+import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
 import com.metalheart.service.TaskService;
 import com.metalheart.service.WorkLogService;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +54,12 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     private TagService tagService;
 
     @Autowired
+    private RunningListArchiveService runningListArchiveService;
+
+    @Autowired
+    private RunningListService runningListService;
+
+    @Autowired
     private ConversionService conversionService;
 
     @Override
@@ -60,22 +71,16 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
             @Override
             public Task execute() {
+                task = taskService.create(request);
+                log.info("New task has been created");
 
-                String info;
-                if (Objects.isNull(this.task)) {
+                return task;
+            }
 
-                    info = "New task has been created";
-
-                } else {
-                    request.setTaskId(this.task.getId());
-                    info = "Undone operation of task creating was redone";
-                }
-
-                Task created = taskService.create(request);
-
-                log.info(info);
-
-                return this.task = created;
+            @Override
+            public void redo() {
+                taskService.create(request);
+                log.info("Undone operation of task creating was redone");
             }
 
             @Override
@@ -89,7 +94,6 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     @Override
     public void changeTaskStatus(ChangeTaskStatusRequest request) {
 
-
         Integer taskId = request.getTaskId();
         Integer dayIndex = request.getDayIndex();
         TaskStatus status = request.getStatus();
@@ -98,40 +102,36 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
         Optional<TaskStatus> previousStatus = taskService.getTaskDayStatus(taskId, dayIndex);
 
-        runningListCommandManager.execute(new RunningListAction<Void>() {
+        WeekWorkLogUpdateRequest updateRequest = WeekWorkLogUpdateRequest.builder()
+            .taskId(taskId)
+            .dayIndex(dayIndex)
+            .status(status)
+            .build();
 
-            private WeekWorkLog workLog;
+        runningListCommandManager.execute(new RunningListAction<Void>() {
 
             @Override
             public Void execute() {
-
-                WeekWorkLog updated = workLogService.save(WeekWorkLogUpdateRequest.builder()
-                    .taskId(taskId)
-                    .dayIndex(dayIndex)
-                    .status(status)
-                    .build());
-
-                if (Objects.isNull(workLog)) {
-                    log.info("Task status has been updated");
-                } else {
-                    log.info("Undone operation of task status updating was redone");
-                }
-
-                workLog = updated;
+                workLogService.save(updateRequest);
+                log.info("Task status has been updated");
                 return null;
+            }
+
+            @Override
+            public void redo() {
+                workLogService.save(updateRequest);
+                log.info("Undone operation of task status updating was redone");
             }
 
             @Override
             public void undo() {
 
                 if (previousStatus.isPresent()) {
-
-                    workLog = workLogService.save(WeekWorkLogUpdateRequest.builder()
+                    workLogService.save(WeekWorkLogUpdateRequest.builder()
                         .taskId(taskId)
                         .dayIndex(dayIndex)
                         .status(previousStatus.get())
                         .build());
-
                     log.info("Operation of task status updating was undone");
 
                 } else {
@@ -152,21 +152,17 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
         runningListCommandManager.execute(new RunningListAction<Void>() {
 
-            private DeleteTaskRequest request;
-
             @Override
             public Void execute() {
-
                 taskService.deleteTaskWithWorklog(deleteRequest);
-
-                if (request == null) {
-                    log.info("Task has been removed ");
-                } else {
-                    log.info("Undone operation of task removing was redone");
-                }
-
-                this.request = deleteRequest;
+                log.info("Task has been removed ");
                 return null;
+            }
+
+            @Override
+            public void redo() {
+                taskService.deleteTaskWithWorklog(deleteRequest);
+                log.info("Undone operation of task removing was redone");
             }
 
             @Override
@@ -196,27 +192,62 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
         runningListCommandManager.execute(new RunningListAction<Void>() {
 
-            private TaskModel taskModel;
-
             @Override
             public Void execute() {
-
                 taskService.save(task);
-
-                if (taskModel == null) {
-                    log.info("Task has been updated");
-                } else {
-                    log.info("Undone operation of task updating was redone");
-                }
-
-                taskModel = previousState;
+                log.info("Task has been updated");
                 return null;
+            }
+
+            @Override
+            public void redo() {
+                taskService.save(task);
+                log.info("Undone operation of task updating was redone");
             }
 
             @Override
             public void undo() {
                 taskService.save(conversionService.convert(previousState, Task.class));
                 log.info("Operation of task updating was undone");
+            }
+        });
+    }
+
+    @Override
+    public void archive(WeekId weekId) throws RunningListArchiveAlreadyExistException {
+
+        if (runningListArchiveService.isArchiveExist(weekId)) {
+            throw new RunningListArchiveAlreadyExistException(weekId);
+        }
+
+        RunningListViewModel runningList = runningListService.getRunningList();
+
+        RunningListArchive archiveToSave = RunningListArchive.builder()
+            .id(conversionService.convert(weekId, RunningListArchivePK.class))
+            .archive(conversionService.convert(runningList, String.class))
+            .build();
+
+        runningListCommandManager.execute(new RunningListAction<Void>() {
+
+            private RunningListArchive archive;
+
+            @Override
+            public Void execute() {
+                this.archive = runningListArchiveService.save(archiveToSave);
+                log.info("Archive has been saved");
+                return null;
+            }
+
+            @Override
+            public void redo() {
+                this.archive = runningListArchiveService.save(archiveToSave);
+                log.info("Undone operation of archive saving was redone");
+            }
+
+            @Override
+            public void undo() {
+                runningListArchiveService.delete(this.archive);
+                log.info("Operation of archive saving was undone {}", this.archive);
             }
         });
     }

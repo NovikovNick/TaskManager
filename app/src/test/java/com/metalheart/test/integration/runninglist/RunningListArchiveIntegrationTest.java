@@ -8,7 +8,6 @@ import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
-import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.util.List;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -19,11 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
-    private TaskService taskService;
-
-    @Autowired
     private RunningListCommandManager commandManager;
-
 
     @Autowired
     private RunningListCommandService runningListCommandService;
@@ -66,7 +61,7 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
 
         // act
-        archiveService.archive(previousWeekId);
+        runningListCommandService.archive(previousWeekId);
 
         // assert
 
@@ -102,7 +97,7 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
 
         // act
-        archiveService.archive(previousWeekId);
+        runningListCommandService.archive(previousWeekId);
         commandManager.undo();
 
 
@@ -130,7 +125,7 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
 
         // act
-        archiveService.archive(previousWeekId);
+        runningListCommandService.archive(previousWeekId);
         commandManager.undo();
         commandManager.redo();
 
