@@ -43,7 +43,7 @@ public class TagIntegrationTest extends BaseIntegrationTest {
 
         // assert
         List<TagViewModel> tags = tagService.getAllTags();
-        TaskModel fetchedTask = taskService.getTask(createdTask.getId());
+        TaskModel fetchedTask = taskService.getTaskModel(createdTask.getId());
         Assert.assertNotNull(fetchedTask);
         Assert.assertFalse(CollectionUtils.isEmpty(fetchedTask.getTags()));
         Assert.assertFalse(CollectionUtils.isEmpty(tags));

@@ -12,6 +12,7 @@ import com.metalheart.model.jpa.WeekWorkLogPK;
 import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
+import com.metalheart.model.service.DeleteTaskRequest;
 import com.metalheart.repository.inmemory.SelectedTagRepository;
 import com.metalheart.repository.inmemory.TaskPriorityRepository;
 import com.metalheart.repository.jooq.TaskJooqRepository;
@@ -109,7 +110,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     @Override
-    public TaskModel getTask(Integer taskId) {
+    public TaskModel getTaskModel(Integer taskId) {
         Task task = taskJpaRepository.getOne(taskId);
 
         return (TaskModel) conversionService.convert(
@@ -149,57 +150,29 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-
+    @LogOperationContext
     @Override
-    public void delete(Integer taskId) {
-
-        runningListCommandManager.execute(new RunningListAction<Void>() {
-
-            private TaskModel removedTask;
-
-            private List<WeekWorkLog> workLogs;
-
-            @Override
-            public Void execute() {
-
-                if (removedTask == null) {
-
-                    removedTask = self.getTask(taskId);
-                    workLogs = weekWorkLogJpaRepository.findAllByTaskId(taskId);
-
-                    taskJpaRepository.deleteById(taskId);
-                    weekWorkLogJpaRepository.deleteAll(workLogs);
-
-                    log.info("Task has been removed {}", removedTask);
-                } else {
-
-                    taskJpaRepository.deleteById(removedTask.getId());
-                    weekWorkLogJpaRepository.deleteAll(workLogs);
-                    log.info("Undone operation of task removing was redone {}", removedTask);
-                }
-                return null;
-            }
-
-            @Override
-            public void undo() {
-
-                TaskRecord taskRecord = conversionService.convert(removedTask, TaskRecord.class);
-                taskJooqRepository.saveAndGenerateIdIfNotPresent(taskRecord);
-
-                workLogs = weekWorkLogJpaRepository.saveAll(workLogs);
-
-                log.info("Operation of task removing was undone {}", removedTask);
-            }
-        });
+    public void deleteTaskWithWorklog(DeleteTaskRequest request) {
+        taskJpaRepository.deleteById(request.getTask().getId());
+        weekWorkLogJpaRepository.deleteAll(request.getWorkLogs());
     }
 
+    @LogOperationContext
+    @Override
+    public void undoRemoving(DeleteTaskRequest request) {
+
+        TaskRecord taskRecord = conversionService.convert(request.getTask(), TaskRecord.class);
+        taskJooqRepository.saveAndGenerateIdIfNotPresent(taskRecord);
+        weekWorkLogJpaRepository.saveAll(request.getWorkLogs());
+
+    }
 
 
     @Transactional
     @Override
     public void update(UpdateTaskRequest request) {
 
-        TaskModel previousState = self.getTask(request.getId());
+        TaskModel previousState = self.getTaskModel(request.getId());
 
         Task task = taskJpaRepository.getOne(request.getId());
         task.setTitle(request.getTitle());

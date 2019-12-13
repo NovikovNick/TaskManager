@@ -8,4 +8,6 @@ public interface RunningListCommandService {
     Task createTask(CreateTaskRequest request);
 
     void changeTaskStatus(ChangeTaskStatusRequest request);
+
+    void delete(Integer taskId);
 }

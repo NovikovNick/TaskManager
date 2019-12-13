@@ -78,7 +78,7 @@ public class TaskController {
     @DeleteMapping(path = EndPoint.DELETE_TASK, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel delete(@PathVariable("taskId") Integer taskId) {
 
-        taskService.delete(taskId);
+        runningListCommandService.delete(taskId);
 
         return runningListService.getRunningList();
     }

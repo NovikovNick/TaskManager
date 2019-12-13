@@ -6,6 +6,7 @@ import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
+import com.metalheart.model.service.DeleteTaskRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +14,7 @@ public interface TaskService {
 
     List<Task> getAllTasks();
 
-    TaskModel getTask(Integer taskId);
+    TaskModel getTaskModel(Integer taskId);
 
     Optional<TaskStatus> getTaskDayStatus(Integer taskId, Integer dayIndex);
 
@@ -21,11 +22,9 @@ public interface TaskService {
 
     void delete(Task task);
 
-    /**
-     * Can be undone
-     * @param taskId
-     */
-    void delete(Integer taskId);
+    void deleteTaskWithWorklog(DeleteTaskRequest request);
+
+    void undoRemoving(DeleteTaskRequest request);
 
     /**
      * Can be undone

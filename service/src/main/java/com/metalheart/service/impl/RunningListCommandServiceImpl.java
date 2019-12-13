@@ -1,13 +1,14 @@
 package com.metalheart.service.impl;
 
 import com.metalheart.model.RunningListAction;
-import com.metalheart.model.WeekWorkLogUpdateRequest;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.jpa.WeekWorkLog;
 import com.metalheart.model.jpa.WeekWorkLogPK;
 import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
+import com.metalheart.model.service.DeleteTaskRequest;
+import com.metalheart.model.service.WeekWorkLogUpdateRequest;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
@@ -122,6 +123,41 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
                     weekWorkLogJpaRepository.deleteById(id);
                     log.info("Operation of task status updating was undone");
                 }
+            }
+        });
+    }
+
+    @Override
+    public void delete(Integer taskId) {
+
+        DeleteTaskRequest deleteRequest = DeleteTaskRequest.builder()
+            .task(taskService.getTaskModel(taskId))
+            .workLogs(weekWorkLogJpaRepository.findAllByTaskId(taskId))
+            .build();
+
+        runningListCommandManager.execute(new RunningListAction<Void>() {
+
+            private DeleteTaskRequest request;
+
+            @Override
+            public Void execute() {
+
+                taskService.deleteTaskWithWorklog(deleteRequest);
+
+                if (request == null) {
+                    log.info("Task has been removed ");
+                } else {
+                    log.info("Undone operation of task removing was redone");
+                }
+
+                this.request = deleteRequest;
+                return null;
+            }
+
+            @Override
+            public void undo() {
+                taskService.undoRemoving(deleteRequest);
+                log.info("Operation of task removing was undone");
             }
         });
     }

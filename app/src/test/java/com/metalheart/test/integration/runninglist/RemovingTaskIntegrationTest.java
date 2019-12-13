@@ -31,7 +31,7 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
         Integer taskId = task.getId();
 
         // act
-        taskService.delete(taskId);
+        runningListCommandService.delete(taskId);
 
         // assert
         Assert.assertTrue(taskService.getAllTasks().isEmpty());
@@ -45,7 +45,7 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
         Task task = runningListCommandService.createTask(request);
 
         // act
-        taskService.delete(task.getId());
+        runningListCommandService.delete(task.getId());
         commandManager.undo();
 
         // assert
@@ -64,7 +64,7 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
         Integer taskId = task.getId();
 
         // act
-        taskService.delete(taskId);
+        runningListCommandService.delete(taskId);
         commandManager.undo();
         commandManager.redo();
 
