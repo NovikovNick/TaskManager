@@ -1,5 +1,6 @@
 package com.metalheart.config;
 
+import com.metalheart.rest.LogRequestResponseFilter;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -54,5 +55,16 @@ public class RestConfiguration implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         converters.forEach(registry::addConverter);
+    }
+
+    @Bean
+    public LogRequestResponseFilter getLogRequestResponseFilter() {
+        return LogRequestResponseFilter.builder()
+            .maxPayloadLength(10000)
+            .includeRequest(true)
+            .includeRequestHeaders(false)
+            .includeResponse(false)
+            .includeResponseHeaders(false)
+            .build();
     }
 }

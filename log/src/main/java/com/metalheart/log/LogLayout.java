@@ -4,13 +4,12 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LayoutBase;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.metalheart.model.ExceptionDetail;
+import com.metalheart.model.LogInfo;
+import com.metalheart.model.RestRequestInfo;
+import com.metalheart.model.RestResponseInfo;
 import java.text.SimpleDateFormat;
-import java.util.Map;
-import lombok.Builder;
-import lombok.Data;
-import lombok.experimental.Accessors;
 
 import static java.util.Objects.isNull;
 
@@ -38,7 +37,9 @@ public class LogLayout extends LayoutBase<ILoggingEvent> {
                 .setTime(TIME_FORMAT.format(event.getTimeStamp()))
                 .setThread(event.getThreadName())
                 .setContext(event.getMDCPropertyMap())
-                .setException(getExceptionDetail(event));
+                .setException(getExceptionDetail(event))
+                .setRequest(getRestRequestInfo(event))
+                .setResponse(getRestResponseInfo(event));
             log = objectMapper.writeValueAsString(logInfo);
 
         } catch (Exception e) {
@@ -47,9 +48,35 @@ public class LogLayout extends LayoutBase<ILoggingEvent> {
         return log + CoreConstants.LINE_SEPARATOR;
     }
 
+    private RestRequestInfo getRestRequestInfo(ILoggingEvent event) {
+
+        if (isNull(event.getArgumentArray())) {
+            return null;
+        }
+        for (Object arg : event.getArgumentArray()) {
+            if (arg instanceof RestRequestInfo) {
+                return (RestRequestInfo) arg;
+            }
+        }
+        return null;
+    }
+
+    private RestResponseInfo getRestResponseInfo(ILoggingEvent event) {
+
+        if (isNull(event.getArgumentArray())) {
+            return null;
+        }
+        for (Object arg : event.getArgumentArray()) {
+            if (arg instanceof RestResponseInfo) {
+                return (RestResponseInfo) arg;
+            }
+        }
+        return null;
+    }
+
     private ExceptionDetail getExceptionDetail(ILoggingEvent event) {
 
-        if(isNull(event.getThrowableProxy())) {
+        if (isNull(event.getThrowableProxy())) {
             return null;
         }
 
@@ -57,27 +84,5 @@ public class LogLayout extends LayoutBase<ILoggingEvent> {
             .stacktrace(ThrowableProxyUtil.asString(event.getThrowableProxy()))
             .message(event.getThrowableProxy().getMessage())
             .build();
-    }
-
-    @Data
-    @Accessors(chain = true)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private static class LogInfo {
-
-        private String date;
-        private String time;
-        private String level;
-        private String msg;
-        private String thread;
-        private String className;
-        private Map<String, String> context;
-        private ExceptionDetail exception;
-    }
-
-    @Data
-    @Builder
-    private static class ExceptionDetail {
-        private String message;
-        private String stacktrace;
     }
 }
