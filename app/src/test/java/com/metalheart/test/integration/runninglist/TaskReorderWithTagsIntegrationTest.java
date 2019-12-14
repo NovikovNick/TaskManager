@@ -38,7 +38,7 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
 
         // act
         tagService.selectTag("tag1");
-        taskService.reorderTask(ChangeTaskPriorityRequest.builder().startIndex(0).endIndex(3).build());
+        runningListCommandService.reorderTask(ChangeTaskPriorityRequest.builder().startIndex(0).endIndex(3).build());
 
         // assert
         List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
@@ -60,7 +60,7 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
 
         // act
         tagService.selectTag("tag1");
-        taskService.reorderTask(ChangeTaskPriorityRequest.builder().startIndex(0).endIndex(3).build());
+        runningListCommandService.reorderTask(ChangeTaskPriorityRequest.builder().startIndex(0).endIndex(3).build());
         tagService.removeSelectedTag("tag1");
 
 

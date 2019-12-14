@@ -3,7 +3,6 @@ package com.metalheart.service;
 import com.metalheart.model.TaskModel;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
-import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.service.DeleteTaskRequest;
 import java.util.List;
@@ -27,5 +26,5 @@ public interface TaskService {
 
     void undoRemoving(DeleteTaskRequest request);
 
-    void reorderTask(ChangeTaskPriorityRequest request);
+    void save(List<Task> tasks);
 }

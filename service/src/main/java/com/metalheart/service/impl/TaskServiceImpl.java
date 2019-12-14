@@ -7,7 +7,6 @@ import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.jpa.WeekWorkLog;
 import com.metalheart.model.jpa.WeekWorkLogPK;
-import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.service.DeleteTaskRequest;
 import com.metalheart.repository.inmemory.SelectedTagRepository;
@@ -20,7 +19,6 @@ import com.metalheart.service.TaskService;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -65,7 +63,7 @@ public class TaskServiceImpl implements TaskService {
         for (int i = 0; i < taskList.size(); i++) {
             taskList.get(i).setPriority(i);
         }
-        taskJpaRepository.saveAll(taskList);
+        save(taskList);
     }
 
     @Override
@@ -162,21 +160,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void reorderTask(ChangeTaskPriorityRequest request) {
-
-        List<Task> tasks = getAllTasks();
-
-        List<Integer> previousPriorities = tasks.stream()
-            .map(Task::getPriority)
-            .collect(Collectors.toList());
-
-        Task moved = tasks.get(request.getStartIndex());
-        tasks.remove(moved);
-        tasks.add(request.getEndIndex(), moved);
-
-        for (int i = 0; i < tasks.size(); i++) {
-            tasks.get(i).setPriority(previousPriorities.get(i));
-        }
+    public void save(List<Task> tasks) {
         taskJpaRepository.saveAll(tasks);
     }
 }

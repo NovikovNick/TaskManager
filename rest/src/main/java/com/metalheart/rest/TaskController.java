@@ -12,7 +12,6 @@ import com.metalheart.model.rest.response.TagViewModel;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
-import com.metalheart.service.TaskService;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import javax.validation.Valid;
@@ -32,9 +31,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 @RestController
 public class TaskController {
-
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private RunningListService runningListService;
@@ -69,7 +65,7 @@ public class TaskController {
         produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel reorderTask(@Valid @RequestBody ChangeTaskPriorityRequest request) {
 
-        taskService.reorderTask(request);
+        runningListCommandService.reorderTask(request);
 
         return runningListService.getRunningList();
     }

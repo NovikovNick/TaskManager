@@ -10,6 +10,7 @@ import com.metalheart.model.jpa.Tag;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.jpa.WeekWorkLogPK;
+import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
@@ -247,7 +248,53 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
             @Override
             public void undo() {
                 runningListArchiveService.delete(this.archive);
-                log.info("Operation of archive saving was undone {}", this.archive);
+                log.info("Operation of archive saving was undone");
+            }
+        });
+    }
+
+    @Override
+    public void reorderTask(ChangeTaskPriorityRequest request) {
+
+        List<Task> tasks = taskService.getAllTasks();
+
+        List<Task> previousTaskOrder = tasks.stream()
+            .map(task -> conversionService.convert(task, TaskModel.class))
+            .map(task -> conversionService.convert(task, Task.class))
+            .collect(Collectors.toList());
+
+
+        List<Integer> previousPriorities = tasks.stream()
+            .map(Task::getPriority)
+            .collect(Collectors.toList());
+
+        Task moved = tasks.get(request.getStartIndex());
+        tasks.remove(moved);
+        tasks.add(request.getEndIndex(), moved);
+
+        for (int i = 0; i < tasks.size(); i++) {
+            tasks.get(i).setPriority(previousPriorities.get(i));
+        }
+
+        runningListCommandManager.execute(new RunningListAction<Void>() {
+
+            @Override
+            public Void execute() {
+                taskService.save(tasks);
+                log.info("Tasks have been reordered");
+                return null;
+            }
+
+            @Override
+            public void redo() {
+                taskService.save(tasks);
+                log.info("Undone operation of tasks reordering was redone");
+            }
+
+            @Override
+            public void undo() {
+                taskService.save(previousTaskOrder);
+                log.info("Operation of tasks reordering was undone");
             }
         });
     }
