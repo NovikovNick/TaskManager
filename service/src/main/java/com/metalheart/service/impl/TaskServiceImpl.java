@@ -1,7 +1,7 @@
 package com.metalheart.service.impl;
 
 import com.metalheart.log.LogOperationContext;
-import com.metalheart.model.TaskModel;
+import com.metalheart.model.service.TaskModel;
 import com.metalheart.model.jooq.tables.records.TaskRecord;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
@@ -19,6 +19,7 @@ import com.metalheart.service.TaskService;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -56,7 +57,7 @@ public class TaskServiceImpl implements TaskService {
     @PostConstruct
     public void reorder() {
 
-        List<Task> taskList = getAllTasks();
+        List<TaskModel> taskList = getAllTasks();
         int maxPriority = taskList.size();
         taskPriorityRepository.setMaxPriority(maxPriority);
 
@@ -67,16 +68,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getAllTasks() {
+    public List<TaskModel> getAllTasks() {
 
         List<Integer> selectedTags = selectedTagRepository.getSelectedTags();
+        List<Task> res;
 
         if (selectedTags.isEmpty()) {
-
-            return taskJpaRepository.findAllByOrderByPriorityAsc();
+            res = taskJpaRepository.findAllByOrderByPriorityAsc();
         } else {
-            return taskJpaRepository.findAllByTags(selectedTags, Long.valueOf(selectedTags.size()));
+            res = taskJpaRepository.findAllByTags(selectedTags, Long.valueOf(selectedTags.size()));
         }
+
+        return res.stream()
+            .map(task -> conversionService.convert(task, TaskModel.class))
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -97,7 +102,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     @Override
-    public TaskModel getTaskModel(Integer taskId) {
+    public TaskModel getTask(Integer taskId) {
         Task task = taskJpaRepository.getOne(taskId);
 
         return (TaskModel) conversionService.convert(
@@ -108,7 +113,7 @@ public class TaskServiceImpl implements TaskService {
 
     @LogOperationContext
     @Override
-    public Task create(CreateTaskRequest request) {
+    public TaskModel create(CreateTaskRequest request) {
 
         TaskRecord record = new TaskRecord();
         record.setId(request.getTaskId());
@@ -123,23 +128,23 @@ public class TaskServiceImpl implements TaskService {
                 .map(tag -> tagService.getTag(tag.getText()))
                 .forEach(tag -> tagService.addTagToTask(tag.getTitle(), record.getId()));
         }
-        return conversionService.convert(record, Task.class);
+        return conversionService.convert(record, TaskModel.class);
     }
 
     @LogOperationContext
     @Override
-    public void delete(Task task) {
+    public void delete(TaskModel task) {
 
         if (CollectionUtils.isNotEmpty(task.getTags())) {
-            task.getTags().forEach(tag -> tagService.removeTagFromTask(tag.getTitle(), task.getId()));
+            task.getTags().forEach(tag -> tagService.removeTagFromTask(tag.getText(), task.getId()));
         }
         taskJpaRepository.deleteById(task.getId());
     }
 
     @LogOperationContext
     @Override
-    public void save(Task task) {
-        taskJpaRepository.save(task);
+    public void save(TaskModel task) {
+        taskJpaRepository.save(conversionService.convert(task, Task.class));
     }
 
     @LogOperationContext
@@ -160,7 +165,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void save(List<Task> tasks) {
-        taskJpaRepository.saveAll(tasks);
+    public void save(List<TaskModel> tasks) {
+        taskJpaRepository.saveAll(tasks.stream()
+            .map(task -> conversionService.convert(task, Task.class))
+            .collect(Collectors.toList()));
     }
 }

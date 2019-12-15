@@ -1,7 +1,7 @@
 package com.metalheart.service.impl;
 
+import com.metalheart.model.service.TaskModel;
 import com.metalheart.model.WeekId;
-import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.jpa.WeekWorkLog;
 import com.metalheart.model.rest.response.CalendarViewModel;
@@ -14,7 +14,6 @@ import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
-import com.metalheart.service.TaskService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,7 +80,7 @@ public class RunningListServiceImpl implements RunningListService {
     private List<TaskViewModel> getTaskList(CalendarViewModel calendar) {
 
         // todo: optimize
-        List<Task> allTasks = taskService.getAllTasks();
+        List<TaskModel> allTasks = taskService.getAllTasks();
 
         return allTasks.stream()
             .map(task -> TaskViewModel.builder()
@@ -97,7 +96,7 @@ public class RunningListServiceImpl implements RunningListService {
             .collect(Collectors.toList());
     }
 
-    private List<String> getDayStatuses(Task task, Integer currentDay) {
+    private List<String> getDayStatuses(TaskModel task, Integer currentDay) {
         List<WeekWorkLog> taskWorkLog = weekWorkLogJpaRepository.findAllByTaskId(task.getId());
 
         List<String> res = new ArrayList<>();

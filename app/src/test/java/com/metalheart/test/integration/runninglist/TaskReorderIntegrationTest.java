@@ -5,7 +5,6 @@ import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
-import com.metalheart.service.TaskService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,9 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
     public static final String PREFIX = "task_";
-
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private RunningListService runningListService;

@@ -1,6 +1,5 @@
 package com.metalheart.model.jpa;
 
-import com.metalheart.log.LogContextField;
 import java.time.ZonedDateTime;
 import java.util.List;
 import javax.persistence.Column;
@@ -26,7 +25,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "task")
 public class Task {
 
-    @LogContextField(LogContextField.Field.TASK_ID)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="task_id_seq")
     @Column(name = "id", nullable = false)

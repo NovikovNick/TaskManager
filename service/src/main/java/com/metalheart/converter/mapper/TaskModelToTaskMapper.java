@@ -1,6 +1,6 @@
 package com.metalheart.converter.mapper;
 
-import com.metalheart.model.TaskModel;
+import com.metalheart.model.service.TaskModel;
 import com.metalheart.model.jpa.Tag;
 import com.metalheart.model.jpa.Task;
 import com.metalheart.model.rest.response.TagViewModel;

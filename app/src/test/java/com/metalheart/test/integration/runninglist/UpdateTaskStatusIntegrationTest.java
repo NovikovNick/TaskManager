@@ -1,6 +1,6 @@
 package com.metalheart.test.integration.runninglist;
 
-import com.metalheart.model.jpa.Task;
+import com.metalheart.model.service.TaskModel;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.service.DateService;
@@ -38,7 +38,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
-        Task createdTask = runningListCommandService.createTask(createRequest);
+        TaskModel createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
 
@@ -56,7 +56,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
-        Task createdTask = runningListCommandService.createTask(createRequest);
+        TaskModel createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
 
@@ -75,7 +75,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
-        Task createdTask = runningListCommandService.createTask(createRequest);
+        TaskModel createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
 
@@ -95,7 +95,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
-        Task createdTask = runningListCommandService.createTask(createRequest);
+        TaskModel createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
 

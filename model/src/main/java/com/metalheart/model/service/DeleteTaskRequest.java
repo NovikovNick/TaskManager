@@ -1,6 +1,5 @@
 package com.metalheart.model.service;
 
-import com.metalheart.model.TaskModel;
 import com.metalheart.model.jpa.WeekWorkLog;
 import java.util.List;
 import lombok.Builder;

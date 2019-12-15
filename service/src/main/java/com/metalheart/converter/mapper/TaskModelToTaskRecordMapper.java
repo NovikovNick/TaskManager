@@ -1,6 +1,6 @@
 package com.metalheart.converter.mapper;
 
-import com.metalheart.model.TaskModel;
+import com.metalheart.model.service.TaskModel;
 import com.metalheart.model.jooq.tables.records.TaskRecord;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

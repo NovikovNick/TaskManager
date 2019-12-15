@@ -1,6 +1,5 @@
 package com.metalheart.test.integration.runninglist;
 
-import com.metalheart.model.jpa.Task;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.TagViewModel;
 import com.metalheart.model.rest.response.TaskViewModel;
@@ -33,7 +32,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
 
 
         // act
-        Task task = runningListCommandService.createTask(request);
+        runningListCommandService.createTask(request);
 
 
         // assert
@@ -52,7 +51,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
 
 
         // act
-        Task task = runningListCommandService.createTask(request);
+        runningListCommandService.createTask(request);
         commandManager.undo();
 
         // assert
@@ -68,7 +67,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
 
 
         // act
-        Task task = runningListCommandService.createTask(request);
+        runningListCommandService.createTask(request);
         commandManager.undo();
         commandManager.redo();
 

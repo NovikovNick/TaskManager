@@ -3,7 +3,7 @@ package com.metalheart.test.unit.converter;
 
 import com.metalheart.converter.TaskModelToTaskConverter;
 import com.metalheart.converter.TaskModelToTaskRecordConverter;
-import com.metalheart.model.TaskModel;
+import com.metalheart.model.service.TaskModel;
 import java.time.ZonedDateTime;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;

@@ -2,12 +2,10 @@ package com.metalheart.service.impl;
 
 import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.model.RunningListAction;
-import com.metalheart.model.TaskModel;
+import com.metalheart.model.service.TaskModel;
 import com.metalheart.model.WeekId;
 import com.metalheart.model.jpa.RunningListArchive;
 import com.metalheart.model.jpa.RunningListArchivePK;
-import com.metalheart.model.jpa.Tag;
-import com.metalheart.model.jpa.Task;
 import com.metalheart.model.jpa.TaskStatus;
 import com.metalheart.model.jpa.WeekWorkLogPK;
 import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
@@ -22,7 +20,6 @@ import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
-import com.metalheart.service.TagService;
 import com.metalheart.service.TaskService;
 import com.metalheart.service.WorkLogService;
 import java.time.ZonedDateTime;
@@ -30,7 +27,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
@@ -52,9 +48,6 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     private TaskService taskService;
 
     @Autowired
-    private TagService tagService;
-
-    @Autowired
     private RunningListArchiveService runningListArchiveService;
 
     @Autowired
@@ -64,14 +57,14 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     private ConversionService conversionService;
 
     @Override
-    public Task createTask(CreateTaskRequest request) {
+    public TaskModel createTask(CreateTaskRequest request) {
 
         return runningListCommandManager.execute(new RunningListAction<>() {
 
-            private Task task;
+            private TaskModel task;
 
             @Override
-            public Task execute() {
+            public TaskModel execute() {
                 task = taskService.create(request);
                 log.info("New task has been created");
 
@@ -147,7 +140,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     public void delete(Integer taskId) {
 
         DeleteTaskRequest deleteRequest = DeleteTaskRequest.builder()
-            .task(taskService.getTaskModel(taskId))
+            .task(taskService.getTask(taskId))
             .workLogs(weekWorkLogJpaRepository.findAllByTaskId(taskId))
             .build();
 
@@ -177,19 +170,13 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     @Override
     public void update(UpdateTaskRequest request) {
 
-        TaskModel previousState = taskService.getTaskModel(request.getId());
+        TaskModel previousState = taskService.getTask(request.getId());
 
-        Task task = conversionService.convert(previousState, Task.class);
+        TaskModel task = previousState.clone();
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
         task.setModifiedAt(ZonedDateTime.now());
-
-        if (CollectionUtils.isNotEmpty(request.getTags())) {
-            List<Tag> tags = request.getTags().stream()
-                .map(tag -> tagService.getTag(tag.getText()))
-                .collect(Collectors.toList());
-            task.setTags(tags);
-        }
+        task.setTags(request.getTags());
 
         runningListCommandManager.execute(new RunningListAction<Void>() {
 
@@ -208,7 +195,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
             @Override
             public void undo() {
-                taskService.save(conversionService.convert(previousState, Task.class));
+                taskService.save(previousState);
                 log.info("Operation of task updating was undone");
             }
         });
@@ -256,19 +243,17 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     @Override
     public void reorderTask(ChangeTaskPriorityRequest request) {
 
-        List<Task> tasks = taskService.getAllTasks();
-
-        List<Task> previousTaskOrder = tasks.stream()
-            .map(task -> conversionService.convert(task, TaskModel.class))
-            .map(task -> conversionService.convert(task, Task.class))
+        List<TaskModel> tasks = taskService.getAllTasks();
+        List<TaskModel> previousTaskOrder = tasks.stream()
+            .map(TaskModel::clone)
             .collect(Collectors.toList());
 
 
         List<Integer> previousPriorities = tasks.stream()
-            .map(Task::getPriority)
+            .map(TaskModel::getPriority)
             .collect(Collectors.toList());
 
-        Task moved = tasks.get(request.getStartIndex());
+        TaskModel moved = tasks.get(request.getStartIndex());
         tasks.remove(moved);
         tasks.add(request.getEndIndex(), moved);
 
