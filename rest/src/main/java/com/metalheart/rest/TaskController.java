@@ -1,8 +1,8 @@
 package com.metalheart.rest;
 
 import com.metalheart.EndPoint;
-import com.metalheart.model.rest.request.AddTagToTaskRequest;
-import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
+import com.metalheart.model.request.AddTagToTaskRequest;
+import com.metalheart.model.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.request.RemoveTagFromTaskRequest;
@@ -65,7 +65,7 @@ public class TaskController {
         produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel reorderTask(@Valid @RequestBody ChangeTaskPriorityRequest request) {
 
-        runningListCommandService.reorderTask(request);
+        runningListCommandService.reorderTask(request.getStartIndex(), request.getEndIndex());
 
         return runningListService.getRunningList();
     }

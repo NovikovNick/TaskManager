@@ -1,6 +1,5 @@
 package com.metalheart.test.integration.runninglist;
 
-import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
@@ -38,7 +37,7 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
 
         // act
         tagService.selectTag("tag1");
-        runningListCommandService.reorderTask(ChangeTaskPriorityRequest.builder().startIndex(0).endIndex(3).build());
+        runningListCommandService.reorderTask(0, 3);
 
         // assert
         List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
@@ -60,7 +59,7 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
 
         // act
         tagService.selectTag("tag1");
-        runningListCommandService.reorderTask(ChangeTaskPriorityRequest.builder().startIndex(0).endIndex(3).build());
+        runningListCommandService.reorderTask(0, 3);
         tagService.removeSelectedTag("tag1");
 
 

@@ -9,7 +9,6 @@ import com.metalheart.model.jpa.RunningListArchiveJpa;
 import com.metalheart.model.jpa.RunningListArchiveJpaPK;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
-import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
@@ -248,7 +247,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     }
 
     @Override
-    public void reorderTask(ChangeTaskPriorityRequest request) {
+    public void reorderTask(Integer startIndex, Integer endIndex) {
 
         List<TaskModel> tasks = taskService.getAllTasks();
         List<TaskModel> previousTaskOrder = tasks.stream()
@@ -260,9 +259,9 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
             .map(TaskModel::getPriority)
             .collect(toList());
 
-        TaskModel moved = tasks.get(request.getStartIndex());
+        TaskModel moved = tasks.get(startIndex);
         tasks.remove(moved);
-        tasks.add(request.getEndIndex(), moved);
+        tasks.add(endIndex, moved);
 
         for (int i = 0; i < tasks.size(); i++) {
             tasks.get(i).setPriority(previousPriorities.get(i));

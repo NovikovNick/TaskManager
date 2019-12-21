@@ -1,6 +1,5 @@
 package com.metalheart.test.integration.runninglist;
 
-import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
@@ -55,7 +54,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
             .collect(Collectors.toList());
 
         // act
-        runningListCommandService.reorderTask(ChangeTaskPriorityRequest.builder().startIndex(0).endIndex(4).build());
+        runningListCommandService.reorderTask(0, 4);
 
         // assert
         List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
@@ -77,7 +76,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
             .collect(Collectors.toList());
 
         // act
-        runningListCommandService.reorderTask(ChangeTaskPriorityRequest.builder().startIndex(4).endIndex(0).build());
+        runningListCommandService.reorderTask(4, 0);
 
         // assert
         List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
@@ -99,7 +98,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
             .collect(Collectors.toList());
 
         // act
-        runningListCommandService.reorderTask(ChangeTaskPriorityRequest.builder().startIndex(4).endIndex(2).build());
+        runningListCommandService.reorderTask(4, 2);
 
         // assert
         List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
@@ -121,7 +120,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
             .collect(Collectors.toList());
 
         // act
-        runningListCommandService.reorderTask(ChangeTaskPriorityRequest.builder().startIndex(0).endIndex(2).build());
+        runningListCommandService.reorderTask(0, 2);
 
         // assert
         List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
@@ -143,7 +142,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
             .collect(Collectors.toList());
 
         // act
-        runningListCommandService.reorderTask(ChangeTaskPriorityRequest.builder().startIndex(0).endIndex(2).build());
+        runningListCommandService.reorderTask(0, 2);
         commandManager.undo();
 
 
@@ -167,7 +166,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
             .collect(Collectors.toList());
 
         // act
-        runningListCommandService.reorderTask(ChangeTaskPriorityRequest.builder().startIndex(0).endIndex(2).build());
+        runningListCommandService.reorderTask(0, 2);
         commandManager.undo();
         commandManager.redo();
 
