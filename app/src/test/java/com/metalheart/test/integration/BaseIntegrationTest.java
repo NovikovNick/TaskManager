@@ -2,10 +2,8 @@ package com.metalheart.test.integration;
 
 import com.metalheart.App;
 import com.metalheart.PostgresqlContainer;
-import com.metalheart.model.service.TaskModel;
-import com.metalheart.model.WeekId;
 import com.metalheart.model.TaskStatus;
-import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
+import com.metalheart.model.WeekId;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.CalendarViewModel;
 import com.metalheart.model.rest.response.TagViewModel;
@@ -107,13 +105,5 @@ public abstract class BaseIntegrationTest {
         when(dateServiceMock.getPreviousWeekId(any())).thenReturn(WeekId.builder().year(year).week(week - 1).build());
         when(dateServiceMock.getCurrentWeekId()).thenReturn(WeekId.builder().year(year).week(week).build());
         when(dateServiceMock.getNextWeekId(any())).thenReturn(WeekId.builder().year(year).week(week + 1).build());
-    }
-
-    protected ChangeTaskStatusRequest getChangeStatusRequest(TaskModel createdTask, int dayIndex, TaskStatus status) {
-        ChangeTaskStatusRequest updateRequest = new ChangeTaskStatusRequest();
-        updateRequest.setTaskId(createdTask.getId());
-        updateRequest.setDayIndex(dayIndex);
-        updateRequest.setStatus(status);
-        return updateRequest;
     }
 }

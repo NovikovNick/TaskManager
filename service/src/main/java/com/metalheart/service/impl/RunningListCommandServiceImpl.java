@@ -1,19 +1,18 @@
 package com.metalheart.service.impl;
 
 import com.metalheart.exception.RunningListArchiveAlreadyExistException;
+import com.metalheart.model.DeleteTaskRequest;
 import com.metalheart.model.RunningListAction;
-import com.metalheart.model.WeekWorkLog;
-import com.metalheart.model.service.TaskModel;
+import com.metalheart.model.TaskStatus;
 import com.metalheart.model.WeekId;
+import com.metalheart.model.WeekWorkLog;
 import com.metalheart.model.jpa.RunningListArchiveJpa;
 import com.metalheart.model.jpa.RunningListArchiveJpaPK;
-import com.metalheart.model.TaskStatus;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
-import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
-import com.metalheart.model.DeleteTaskRequest;
+import com.metalheart.model.service.TaskModel;
 import com.metalheart.model.service.WeekWorkLogUpdateRequest;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.RunningListArchiveService;
@@ -87,11 +86,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     }
 
     @Override
-    public void changeTaskStatus(ChangeTaskStatusRequest request) {
-
-        Integer taskId = request.getTaskId();
-        Integer dayIndex = request.getDayIndex();
-        TaskStatus status = request.getStatus();
+    public void changeTaskStatus(Integer taskId, Integer dayIndex, TaskStatus status) {
 
         WeekWorkLogJpaPK id = WeekWorkLogJpaPK.builder().taskId(taskId).dayIndex(dayIndex).build();
 

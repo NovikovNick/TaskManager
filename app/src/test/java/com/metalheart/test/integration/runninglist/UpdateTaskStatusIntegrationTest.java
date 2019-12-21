@@ -1,8 +1,8 @@
 package com.metalheart.test.integration.runninglist;
 
-import com.metalheart.model.service.TaskModel;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
+import com.metalheart.model.service.TaskModel;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
@@ -43,7 +43,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, IN_PROGRESS));
+        runningListCommandService.changeTaskStatus(createdTask.getId(), 0, IN_PROGRESS);
 
         // assert
         RunningListViewModel runningList = runningListService.getRunningList();
@@ -61,7 +61,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, DONE));
+        runningListCommandService.changeTaskStatus(createdTask.getId(), 0, DONE);
         commandManager.undo();
 
         // assert
@@ -80,8 +80,8 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, TO_DO));
-        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, DONE));
+        runningListCommandService.changeTaskStatus(createdTask.getId(), 0, TO_DO);
+        runningListCommandService.changeTaskStatus(createdTask.getId(), 0, DONE);
         commandManager.undo();
 
         // assert
@@ -100,7 +100,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        runningListCommandService.changeTaskStatus(getChangeStatusRequest(createdTask, 0, DONE));
+        runningListCommandService.changeTaskStatus(createdTask.getId(), 0, DONE);
         commandManager.undo();
         commandManager.redo();
 

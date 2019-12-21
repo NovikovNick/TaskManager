@@ -3,7 +3,7 @@ package com.metalheart.rest;
 import com.metalheart.EndPoint;
 import com.metalheart.model.request.AddTagToTaskRequest;
 import com.metalheart.model.request.ChangeTaskPriorityRequest;
-import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
+import com.metalheart.model.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.request.RemoveTagFromTaskRequest;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
@@ -54,7 +54,7 @@ public class TaskController {
         APPLICATION_JSON_VALUE)
     public RunningListViewModel changeStatus(@Valid @RequestBody ChangeTaskStatusRequest request) {
 
-        runningListCommandService.changeTaskStatus(request);
+        runningListCommandService.changeTaskStatus(request.getTaskId(), request.getDayIndex(), request.getStatus());
 
         return runningListService.getRunningList();
     }
