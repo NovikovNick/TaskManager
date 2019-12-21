@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @Entity
 @Table(name = "task")
-public class Task {
+public class TaskJpa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="task_id_seq")
@@ -51,5 +51,5 @@ public class Task {
         joinColumns =        @JoinColumn(name = "task_id",  referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id")
     )
-    private List<Tag> tags;
+    private List<TagJpa> tags;
 }

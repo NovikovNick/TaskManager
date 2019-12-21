@@ -2,15 +2,15 @@ package com.metalheart.converter;
 
 import com.metalheart.converter.mapper.TaskToTaskRecordMapper;
 import com.metalheart.model.jooq.tables.records.TaskRecord;
-import com.metalheart.model.jpa.Task;
+import com.metalheart.model.jpa.TaskJpa;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TaskToTaskRecordConverter implements Converter<Task, TaskRecord> {
+public class TaskToTaskRecordConverter implements Converter<TaskJpa, TaskRecord> {
 
     @Override
-    public TaskRecord convert(Task source) {
+    public TaskRecord convert(TaskJpa source) {
         return TaskToTaskRecordMapper.INSTANCE.convert(source);
     }
 }

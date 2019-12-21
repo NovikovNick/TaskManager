@@ -2,8 +2,8 @@ package com.metalheart.service.impl;
 
 import com.metalheart.model.service.TaskModel;
 import com.metalheart.model.WeekId;
-import com.metalheart.model.jpa.TaskStatus;
-import com.metalheart.model.jpa.WeekWorkLog;
+import com.metalheart.model.TaskStatus;
+import com.metalheart.model.jpa.WeekWorkLogJpa;
 import com.metalheart.model.rest.response.CalendarViewModel;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.model.rest.response.TagViewModel;
@@ -22,11 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 
-import static com.metalheart.model.jpa.TaskStatus.CANCELED;
-import static com.metalheart.model.jpa.TaskStatus.DELAYED;
-import static com.metalheart.model.jpa.TaskStatus.DONE;
-import static com.metalheart.model.jpa.TaskStatus.NONE;
-import static com.metalheart.model.jpa.TaskStatus.TO_DO;
+import static com.metalheart.model.TaskStatus.CANCELED;
+import static com.metalheart.model.TaskStatus.DELAYED;
+import static com.metalheart.model.TaskStatus.DONE;
+import static com.metalheart.model.TaskStatus.NONE;
+import static com.metalheart.model.TaskStatus.TO_DO;
 
 
 @Slf4j
@@ -97,7 +97,7 @@ public class RunningListServiceImpl implements RunningListService {
     }
 
     private List<String> getDayStatuses(TaskModel task, Integer currentDay) {
-        List<WeekWorkLog> taskWorkLog = weekWorkLogJpaRepository.findAllByTaskId(task.getId());
+        List<WeekWorkLogJpa> taskWorkLog = weekWorkLogJpaRepository.findAllByTaskId(task.getId());
 
         List<String> res = new ArrayList<>();
 
@@ -144,8 +144,8 @@ public class RunningListServiceImpl implements RunningListService {
         return res;
     }
 
-    private TaskStatus getStatus(List<WeekWorkLog> taskWorkLog, int day) {
-        for (WeekWorkLog log : taskWorkLog) {
+    private TaskStatus getStatus(List<WeekWorkLogJpa> taskWorkLog, int day) {
+        for (WeekWorkLogJpa log : taskWorkLog) {
             if (log.getId().getDayIndex() == day) {
                 return log.getStatus();
             }

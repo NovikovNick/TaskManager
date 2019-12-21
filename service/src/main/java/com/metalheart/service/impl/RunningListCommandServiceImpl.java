@@ -2,18 +2,19 @@ package com.metalheart.service.impl;
 
 import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.model.RunningListAction;
+import com.metalheart.model.WeekWorkLog;
 import com.metalheart.model.service.TaskModel;
 import com.metalheart.model.WeekId;
-import com.metalheart.model.jpa.RunningListArchive;
-import com.metalheart.model.jpa.RunningListArchivePK;
-import com.metalheart.model.jpa.TaskStatus;
-import com.metalheart.model.jpa.WeekWorkLogPK;
+import com.metalheart.model.jpa.RunningListArchiveJpa;
+import com.metalheart.model.jpa.RunningListArchiveJpaPK;
+import com.metalheart.model.TaskStatus;
+import com.metalheart.model.jpa.WeekWorkLogJpaPK;
 import com.metalheart.model.rest.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
-import com.metalheart.model.service.DeleteTaskRequest;
+import com.metalheart.model.DeleteTaskRequest;
 import com.metalheart.model.service.WeekWorkLogUpdateRequest;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.RunningListArchiveService;
@@ -25,11 +26,12 @@ import com.metalheart.service.WorkLogService;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
+
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Component
@@ -92,7 +94,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
         Integer dayIndex = request.getDayIndex();
         TaskStatus status = request.getStatus();
 
-        WeekWorkLogPK id = WeekWorkLogPK.builder().taskId(taskId).dayIndex(dayIndex).build();
+        WeekWorkLogJpaPK id = WeekWorkLogJpaPK.builder().taskId(taskId).dayIndex(dayIndex).build();
 
         Optional<TaskStatus> previousStatus = taskService.getTaskDayStatus(taskId, dayIndex);
 
@@ -139,9 +141,14 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     @Override
     public void delete(Integer taskId) {
 
+        List<WeekWorkLog> workLogs = weekWorkLogJpaRepository.findAllByTaskId(taskId)
+            .stream()
+            .map(weekWorkLogJpa -> conversionService.convert(weekWorkLogJpa, WeekWorkLog.class))
+            .collect(toList());
+
         DeleteTaskRequest deleteRequest = DeleteTaskRequest.builder()
             .task(taskService.getTask(taskId))
-            .workLogs(weekWorkLogJpaRepository.findAllByTaskId(taskId))
+            .workLogs(workLogs)
             .build();
 
         runningListCommandManager.execute(new RunningListAction<Void>() {
@@ -210,14 +217,14 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
         RunningListViewModel runningList = runningListService.getRunningList();
 
-        RunningListArchive archiveToSave = RunningListArchive.builder()
-            .id(conversionService.convert(weekId, RunningListArchivePK.class))
+        RunningListArchiveJpa archiveToSave = RunningListArchiveJpa.builder()
+            .id(conversionService.convert(weekId, RunningListArchiveJpaPK.class))
             .archive(conversionService.convert(runningList, String.class))
             .build();
 
         runningListCommandManager.execute(new RunningListAction<Void>() {
 
-            private RunningListArchive archive;
+            private RunningListArchiveJpa archive;
 
             @Override
             public Void execute() {
@@ -246,12 +253,12 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
         List<TaskModel> tasks = taskService.getAllTasks();
         List<TaskModel> previousTaskOrder = tasks.stream()
             .map(TaskModel::clone)
-            .collect(Collectors.toList());
+            .collect(toList());
 
 
         List<Integer> previousPriorities = tasks.stream()
             .map(TaskModel::getPriority)
-            .collect(Collectors.toList());
+            .collect(toList());
 
         TaskModel moved = tasks.get(request.getStartIndex());
         tasks.remove(moved);

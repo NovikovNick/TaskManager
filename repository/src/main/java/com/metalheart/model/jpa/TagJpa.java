@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @Entity
 @Table(name = "tag")
-public class Tag {
+public class TagJpa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

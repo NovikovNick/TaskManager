@@ -9,20 +9,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
 @Entity
-@Table(name = "week_work_log")
-public class WeekWorkLog implements Serializable {
+@Table(name = "running_list_archive")
+public class RunningListArchiveJpa implements Serializable {
 
     @EmbeddedId
-    private WeekWorkLogPK id;
+    private RunningListArchiveJpaPK id;
 
-    @Type(type = "postgres_enum")
-    @Column(name = "status", nullable = false)
-    private TaskStatus status;
+    @Column(name = "archive", nullable = false)
+    private String archive;
+
 }

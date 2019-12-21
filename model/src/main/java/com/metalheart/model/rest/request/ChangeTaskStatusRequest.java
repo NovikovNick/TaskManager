@@ -1,7 +1,7 @@
 package com.metalheart.model.rest.request;
 
 import com.metalheart.log.LogContextField;
-import com.metalheart.model.jpa.TaskStatus;
+import com.metalheart.model.TaskStatus;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 

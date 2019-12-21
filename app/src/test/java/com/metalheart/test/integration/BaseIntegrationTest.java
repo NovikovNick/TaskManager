@@ -4,13 +4,14 @@ import com.metalheart.App;
 import com.metalheart.PostgresqlContainer;
 import com.metalheart.model.service.TaskModel;
 import com.metalheart.model.WeekId;
-import com.metalheart.model.jpa.TaskStatus;
+import com.metalheart.model.TaskStatus;
 import com.metalheart.model.rest.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.CalendarViewModel;
 import com.metalheart.model.rest.response.TagViewModel;
 import com.metalheart.repository.inmemory.SelectedTagRepository;
 import com.metalheart.repository.jpa.RunningListArchiveJpaRepository;
+import com.metalheart.repository.jpa.TagJpaRepository;
 import com.metalheart.repository.jpa.TaskJpaRepository;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.DateService;
@@ -59,11 +60,15 @@ public abstract class BaseIntegrationTest {
     @Autowired
     private SelectedTagRepository selectedTagRepository;
 
+    @Autowired
+    private TagJpaRepository tagJpaRepository;
+
     @Before
     public void cleanUp() {
         archiveJpaRepository.deleteAll();
         workLogJpaRepository.deleteAll();
         taskJpaRepository.deleteAll();
+        tagJpaRepository.deleteAll();
         commandManager.clear();
         selectedTagRepository.deleteAll();
     }

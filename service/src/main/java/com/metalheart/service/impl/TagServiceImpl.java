@@ -1,7 +1,7 @@
 package com.metalheart.service.impl;
 
-import com.metalheart.model.jpa.Tag;
-import com.metalheart.model.jpa.Task;
+import com.metalheart.model.jpa.TagJpa;
+import com.metalheart.model.jpa.TaskJpa;
 import com.metalheart.model.rest.response.TagViewModel;
 import com.metalheart.repository.inmemory.SelectedTagRepository;
 import com.metalheart.repository.jpa.TagJpaRepository;
@@ -53,9 +53,9 @@ public class TagServiceImpl implements TagService {
     @Override
     public void addTagToTask(String tagTitle, Integer taskId) {
 
-        Tag tag = getTag(tagTitle);
+        TagJpa tag = getTag(tagTitle);
 
-        Task task = taskJpaRepository.getOne(taskId);
+        TaskJpa task = taskJpaRepository.getOne(taskId);
         task.getTags().add(tag);
         taskJpaRepository.save(task);
     }
@@ -64,9 +64,9 @@ public class TagServiceImpl implements TagService {
     @Override
     public void removeTagFromTask(String tagTitle, Integer taskId) {
 
-        Tag tag = tagJpaRepository.findTagByTitle(tagTitle);
+        TagJpa tag = tagJpaRepository.findTagByTitle(tagTitle);
 
-        Task task = taskJpaRepository.getOne(taskId);
+        TaskJpa task = taskJpaRepository.getOne(taskId);
         task.getTags().remove(tag);
         taskJpaRepository.save(task);
     }
@@ -85,7 +85,7 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
-    public  Tag getTag(String tagTitle) {
+    public TagJpa getTag(String tagTitle) {
 
         if (tagJpaRepository.existsByTitle(tagTitle)) {
 
@@ -93,7 +93,7 @@ public class TagServiceImpl implements TagService {
 
         } else {
 
-            return tagJpaRepository.save(Tag.builder()
+            return tagJpaRepository.save(TagJpa.builder()
                 .title(tagTitle)
                 .createdAt(dateService.now())
                 .build());

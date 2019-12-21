@@ -13,10 +13,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import static com.metalheart.model.jpa.TaskStatus.DONE;
-import static com.metalheart.model.jpa.TaskStatus.IN_PROGRESS;
-import static com.metalheart.model.jpa.TaskStatus.NONE;
-import static com.metalheart.model.jpa.TaskStatus.TO_DO;
+import static com.metalheart.model.TaskStatus.DONE;
+import static com.metalheart.model.TaskStatus.IN_PROGRESS;
+import static com.metalheart.model.TaskStatus.NONE;
+import static com.metalheart.model.TaskStatus.TO_DO;
 import static org.junit.Assert.assertEquals;
 
 public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {

@@ -3,12 +3,12 @@ package com.metalheart.service.impl;
 import com.metalheart.log.LogOperationContext;
 import com.metalheart.model.service.TaskModel;
 import com.metalheart.model.jooq.tables.records.TaskRecord;
-import com.metalheart.model.jpa.Task;
-import com.metalheart.model.jpa.TaskStatus;
-import com.metalheart.model.jpa.WeekWorkLog;
-import com.metalheart.model.jpa.WeekWorkLogPK;
+import com.metalheart.model.jpa.TaskJpa;
+import com.metalheart.model.TaskStatus;
+import com.metalheart.model.jpa.WeekWorkLogJpa;
+import com.metalheart.model.jpa.WeekWorkLogJpaPK;
 import com.metalheart.model.rest.request.CreateTaskRequest;
-import com.metalheart.model.service.DeleteTaskRequest;
+import com.metalheart.model.DeleteTaskRequest;
 import com.metalheart.repository.inmemory.SelectedTagRepository;
 import com.metalheart.repository.inmemory.TaskPriorityRepository;
 import com.metalheart.repository.jooq.TaskJooqRepository;
@@ -71,7 +71,7 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskModel> getAllTasks() {
 
         List<Integer> selectedTags = selectedTagRepository.getSelectedTags();
-        List<Task> res;
+        List<TaskJpa> res;
 
         if (selectedTags.isEmpty()) {
             res = taskJpaRepository.findAllByOrderByPriorityAsc();
@@ -87,9 +87,9 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Optional<TaskStatus> getTaskDayStatus(Integer taskId, Integer dayIndex) {
 
-        WeekWorkLogPK id = WeekWorkLogPK.builder().taskId(taskId).dayIndex(dayIndex).build();
+        WeekWorkLogJpaPK id = WeekWorkLogJpaPK.builder().taskId(taskId).dayIndex(dayIndex).build();
 
-        Optional<WeekWorkLog> status = weekWorkLogJpaRepository.findById(id);
+        Optional<WeekWorkLogJpa> status = weekWorkLogJpaRepository.findById(id);
 
         if (status.isPresent()) {
 
@@ -103,11 +103,11 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Override
     public TaskModel getTask(Integer taskId) {
-        Task task = taskJpaRepository.getOne(taskId);
+        TaskJpa task = taskJpaRepository.getOne(taskId);
 
         return (TaskModel) conversionService.convert(
             task,
-            TypeDescriptor.valueOf(Task.class),
+            TypeDescriptor.valueOf(TaskJpa.class),
             TypeDescriptor.valueOf(TaskModel.class));
     }
 
@@ -144,14 +144,16 @@ public class TaskServiceImpl implements TaskService {
     @LogOperationContext
     @Override
     public void save(TaskModel task) {
-        taskJpaRepository.save(conversionService.convert(task, Task.class));
+        taskJpaRepository.save(conversionService.convert(task, TaskJpa.class));
     }
 
     @LogOperationContext
     @Override
     public void deleteTaskWithWorklog(DeleteTaskRequest request) {
         taskJpaRepository.deleteById(request.getTask().getId());
-        weekWorkLogJpaRepository.deleteAll(request.getWorkLogs());
+        weekWorkLogJpaRepository.deleteAll(request.getWorkLogs().stream()
+            .map(weekWorkLog -> conversionService.convert(weekWorkLog, WeekWorkLogJpa.class))
+            .collect(Collectors.toList()));
     }
 
     @LogOperationContext
@@ -160,14 +162,16 @@ public class TaskServiceImpl implements TaskService {
 
         TaskRecord taskRecord = conversionService.convert(request.getTask(), TaskRecord.class);
         taskJooqRepository.saveAndGenerateIdIfNotPresent(taskRecord);
-        weekWorkLogJpaRepository.saveAll(request.getWorkLogs());
+        weekWorkLogJpaRepository.saveAll(request.getWorkLogs().stream()
+            .map(weekWorkLog -> conversionService.convert(weekWorkLog, WeekWorkLogJpa.class))
+            .collect(Collectors.toList()));
 
     }
 
     @Override
     public void save(List<TaskModel> tasks) {
         taskJpaRepository.saveAll(tasks.stream()
-            .map(task -> conversionService.convert(task, Task.class))
+            .map(task -> conversionService.convert(task, TaskJpa.class))
             .collect(Collectors.toList()));
     }
 }

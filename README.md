@@ -1,6 +1,8 @@
 ## Task manager
 
-tail -f ./taskmanager.log | jq " . "
+tail -f ./taskmanager.log | jq '.'
+tail -f ./taskmanager.log | jq '. | select(.level == "ERROR")'
+
 
 #### Data:
 ##### Task:

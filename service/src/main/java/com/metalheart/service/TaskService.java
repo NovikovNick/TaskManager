@@ -1,9 +1,9 @@
 package com.metalheart.service;
 
 import com.metalheart.model.service.TaskModel;
-import com.metalheart.model.jpa.TaskStatus;
+import com.metalheart.model.TaskStatus;
 import com.metalheart.model.rest.request.CreateTaskRequest;
-import com.metalheart.model.service.DeleteTaskRequest;
+import com.metalheart.model.DeleteTaskRequest;
 import java.util.List;
 import java.util.Optional;
 

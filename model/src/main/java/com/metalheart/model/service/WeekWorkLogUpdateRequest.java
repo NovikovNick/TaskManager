@@ -1,7 +1,7 @@
 package com.metalheart.model.service;
 
 import com.metalheart.log.LogContextField;
-import com.metalheart.model.jpa.TaskStatus;
+import com.metalheart.model.TaskStatus;
 import lombok.Builder;
 import lombok.Data;
 

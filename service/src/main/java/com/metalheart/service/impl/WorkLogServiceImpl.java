@@ -2,8 +2,8 @@ package com.metalheart.service.impl;
 
 import com.metalheart.log.LogOperationContext;
 import com.metalheart.model.service.WeekWorkLogUpdateRequest;
-import com.metalheart.model.jpa.WeekWorkLog;
-import com.metalheart.model.jpa.WeekWorkLogPK;
+import com.metalheart.model.jpa.WeekWorkLogJpa;
+import com.metalheart.model.jpa.WeekWorkLogJpaPK;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.WorkLogService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,15 +19,15 @@ public class WorkLogServiceImpl implements WorkLogService {
 
     @Override
     @LogOperationContext
-    public WeekWorkLog save(WeekWorkLogUpdateRequest request) {
+    public WeekWorkLogJpa save(WeekWorkLogUpdateRequest request) {
 
 
-        WeekWorkLogPK id = WeekWorkLogPK.builder()
+        WeekWorkLogJpaPK id = WeekWorkLogJpaPK.builder()
             .taskId(request.getTaskId())
             .dayIndex(request.getDayIndex())
             .build();
 
-        return weekWorkLogJpaRepository.save(WeekWorkLog.builder()
+        return weekWorkLogJpaRepository.save(WeekWorkLogJpa.builder()
             .id(id)
             .status(request.getStatus())
             .build());

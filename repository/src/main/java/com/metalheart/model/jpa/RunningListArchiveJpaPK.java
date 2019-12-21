@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Embeddable
-public class WeekWorkLogPK implements Serializable {
+public class RunningListArchiveJpaPK implements Serializable {
 
-    @Column(name = "task_id", nullable = false)
-    private Integer taskId;
+    @Column(name = "year", nullable = false)
+    private Integer year;
 
-    @Column(name = "day_index", nullable = false)
-    private Integer dayIndex;
+    @Column(name = "week", nullable = false)
+    private Integer week;
 }

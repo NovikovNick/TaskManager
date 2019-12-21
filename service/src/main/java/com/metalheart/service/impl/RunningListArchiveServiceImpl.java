@@ -2,8 +2,8 @@ package com.metalheart.service.impl;
 
 import com.metalheart.exception.NoSuchRunningListArchiveException;
 import com.metalheart.model.WeekId;
-import com.metalheart.model.jpa.RunningListArchive;
-import com.metalheart.model.jpa.RunningListArchivePK;
+import com.metalheart.model.jpa.RunningListArchiveJpa;
+import com.metalheart.model.jpa.RunningListArchiveJpaPK;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.repository.jpa.RunningListArchiveJpaRepository;
 import com.metalheart.service.DateService;
@@ -83,23 +83,23 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
 
     @Override
     public boolean isArchiveExist(WeekId weekId) {
-        var pk = conversionService.convert(weekId, RunningListArchivePK.class);
+        var pk = conversionService.convert(weekId, RunningListArchiveJpaPK.class);
         return runningListArchiveRepository.existsById(pk);
     }
 
     @Override
-    public RunningListArchive save(RunningListArchive archiveToSave) {
+    public RunningListArchiveJpa save(RunningListArchiveJpa archiveToSave) {
         return runningListArchiveRepository.save(archiveToSave);
     }
 
     @Override
-    public void delete(RunningListArchive archive) {
+    public void delete(RunningListArchiveJpa archive) {
         runningListArchiveRepository.delete(archive);
     }
 
     private RunningListViewModel getRunningListViewModel(WeekId weekId) {
-        var pk = conversionService.convert(weekId, RunningListArchivePK.class);
-        RunningListArchive archive = runningListArchiveRepository.getOne(pk);
+        var pk = conversionService.convert(weekId, RunningListArchiveJpaPK.class);
+        RunningListArchiveJpa archive = runningListArchiveRepository.getOne(pk);
         return conversionService.convert(archive, RunningListViewModel.class);
     }
 }
