@@ -1,4 +1,4 @@
-package com.metalheart.model.rest.request;
+package com.metalheart.model.request;
 
 import javax.validation.constraints.NotNull;
 import lombok.Data;

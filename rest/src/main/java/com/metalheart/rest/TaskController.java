@@ -5,7 +5,7 @@ import com.metalheart.model.request.AddTagToTaskRequest;
 import com.metalheart.model.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.request.ChangeTaskStatusRequest;
 import com.metalheart.model.rest.request.CreateTaskRequest;
-import com.metalheart.model.rest.request.RemoveTagFromTaskRequest;
+import com.metalheart.model.request.RemoveTagFromTaskRequest;
 import com.metalheart.model.rest.request.UpdateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.model.rest.response.TagViewModel;
