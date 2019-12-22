@@ -1,5 +1,6 @@
 package com.metalheart.service.impl;
 
+import com.metalheart.model.Tag;
 import com.metalheart.model.jpa.TagJpa;
 import com.metalheart.model.jpa.TaskJpa;
 import com.metalheart.model.rest.response.TagViewModel;
@@ -35,17 +36,17 @@ public class TagServiceImpl implements TagService {
 
     @Transactional
     @Override
-    public List<TagViewModel> getSelectedTags() {
+    public List<Tag> getSelectedTags() {
         return selectedTagRepository.getSelectedTags().stream()
             .map(tagJpaRepository::getOne)
-            .map(tag -> conversionService.convert(tag, TagViewModel.class))
+            .map(tag -> conversionService.convert(tag, Tag.class))
             .collect(Collectors.toList());
     }
 
     @Override
-    public List<TagViewModel> getAllTags() {
+    public List<Tag> getAllTags() {
         return tagJpaRepository.findAll().stream()
-            .map(tag -> conversionService.convert(tag, TagViewModel.class))
+            .map(tag -> conversionService.convert(tag, Tag.class))
             .collect(Collectors.toList());
     }
 

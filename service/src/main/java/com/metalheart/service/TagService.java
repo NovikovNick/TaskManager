@@ -1,14 +1,14 @@
 package com.metalheart.service;
 
+import com.metalheart.model.Tag;
 import com.metalheart.model.jpa.TagJpa;
-import com.metalheart.model.rest.response.TagViewModel;
 import java.util.List;
 
 public interface TagService {
 
-    List<TagViewModel> getSelectedTags();
+    List<Tag> getSelectedTags();
 
-    List<TagViewModel> getAllTags();
+    List<Tag> getAllTags();
 
     void addTagToTask(String tag, Integer taskId);
 

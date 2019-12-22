@@ -1,7 +1,6 @@
-package com.metalheart.model.service;
+package com.metalheart.model;
 
 import com.metalheart.log.LogContextField;
-import com.metalheart.model.rest.response.TagViewModel;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,8 +15,8 @@ import static java.util.Objects.isNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class TaskModel implements Cloneable {
+@Builder(toBuilder = true)
+public class Task implements Cloneable {
 
     @LogContextField(LogContextField.Field.TASK_ID)
     private Integer id;
@@ -32,22 +31,16 @@ public class TaskModel implements Cloneable {
 
     private ZonedDateTime modifiedAt;
 
-    private List<TagViewModel> tags;
+    private List<Tag> tags;
 
     @Override
-    public TaskModel clone() {
+    public Task clone() {
 
-        List<TagViewModel> tags = isNull(this.tags) ? emptyList() : this.tags.stream()
-            .map(TagViewModel::clone)
+        List<Tag> tags = isNull(this.tags) ? emptyList() : this.tags.stream()
+            .map(Tag::clone)
             .collect(Collectors.toList());
 
-        return TaskModel.builder()
-            .id(id)
-            .title(title)
-            .description(description)
-            .priority(priority)
-            .createdAt(createdAt)
-            .modifiedAt(modifiedAt)
+        return toBuilder()
             .tags(tags)
             .build();
     }

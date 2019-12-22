@@ -1,8 +1,7 @@
 package com.metalheart.test.integration.runninglist;
 
-import com.metalheart.model.service.TaskModel;
+import com.metalheart.model.Task;
 import com.metalheart.model.rest.request.CreateTaskRequest;
-import com.metalheart.model.rest.request.UpdateTaskRequest;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.TaskService;
@@ -28,19 +27,20 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = getCreateTaskRequest("Created task");
-        TaskModel createdTask = runningListCommandService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
-        UpdateTaskRequest updateRequest = new UpdateTaskRequest();
-        updateRequest.setId(createdTask.getId());
-        updateRequest.setTitle("Updated title");
-        updateRequest.setDescription("Updated description");
+        Task updateRequest = Task.builder()
+            .id(createdTask.getId())
+            .title("Updated title")
+            .description("Updated description")
+            .build();
 
         // act
 
         runningListCommandService.update(updateRequest);
 
         // assert
-        List<TaskModel> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getAllTasks();
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());
@@ -53,19 +53,20 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = getCreateTaskRequest("Created task");
-        TaskModel createdTask = runningListCommandService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
-        UpdateTaskRequest updateRequest = new UpdateTaskRequest();
-        updateRequest.setId(createdTask.getId());
-        updateRequest.setTitle("Updated title");
-        updateRequest.setDescription("Updated description");
+        Task updateRequest = Task.builder()
+            .id(createdTask.getId())
+            .title("Updated title")
+            .description("Updated description")
+            .build();
 
         // act
         runningListCommandService.update(updateRequest);
         commandManager.undo();
 
         // assert
-        List<TaskModel> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getAllTasks();
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());
@@ -78,12 +79,13 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = getCreateTaskRequest("Created task");
-        TaskModel createdTask = runningListCommandService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
-        UpdateTaskRequest updateRequest = new UpdateTaskRequest();
-        updateRequest.setId(createdTask.getId());
-        updateRequest.setTitle("Updated title");
-        updateRequest.setDescription("Updated description");
+        Task updateRequest = Task.builder()
+            .id(createdTask.getId())
+            .title("Updated title")
+            .description("Updated description")
+            .build();
 
         // act
         runningListCommandService.update(updateRequest);
@@ -91,7 +93,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
         commandManager.redo();
 
         // assert
-        List<TaskModel> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getAllTasks();
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());

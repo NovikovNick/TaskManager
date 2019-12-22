@@ -1,7 +1,7 @@
 package com.metalheart.service.impl;
 
 import com.metalheart.log.LogOperationContext;
-import com.metalheart.model.service.TaskModel;
+import com.metalheart.model.Task;
 import com.metalheart.model.jooq.tables.records.TaskRecord;
 import com.metalheart.model.jpa.TaskJpa;
 import com.metalheart.model.TaskStatus;
@@ -57,7 +57,7 @@ public class TaskServiceImpl implements TaskService {
     @PostConstruct
     public void reorder() {
 
-        List<TaskModel> taskList = getAllTasks();
+        List<Task> taskList = getAllTasks();
         int maxPriority = taskList.size();
         taskPriorityRepository.setMaxPriority(maxPriority);
 
@@ -68,7 +68,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskModel> getAllTasks() {
+    public List<Task> getAllTasks() {
 
         List<Integer> selectedTags = selectedTagRepository.getSelectedTags();
         List<TaskJpa> res;
@@ -80,7 +80,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return res.stream()
-            .map(task -> conversionService.convert(task, TaskModel.class))
+            .map(task -> conversionService.convert(task, Task.class))
             .collect(Collectors.toList());
     }
 
@@ -102,18 +102,18 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     @Override
-    public TaskModel getTask(Integer taskId) {
+    public Task getTask(Integer taskId) {
         TaskJpa task = taskJpaRepository.getOne(taskId);
 
-        return (TaskModel) conversionService.convert(
+        return (Task) conversionService.convert(
             task,
             TypeDescriptor.valueOf(TaskJpa.class),
-            TypeDescriptor.valueOf(TaskModel.class));
+            TypeDescriptor.valueOf(Task.class));
     }
 
     @LogOperationContext
     @Override
-    public TaskModel create(CreateTaskRequest request) {
+    public Task create(CreateTaskRequest request) {
 
         TaskRecord record = new TaskRecord();
         record.setId(request.getTaskId());
@@ -128,22 +128,22 @@ public class TaskServiceImpl implements TaskService {
                 .map(tag -> tagService.getTag(tag.getText()))
                 .forEach(tag -> tagService.addTagToTask(tag.getTitle(), record.getId()));
         }
-        return conversionService.convert(record, TaskModel.class);
+        return conversionService.convert(record, Task.class);
     }
 
     @LogOperationContext
     @Override
-    public void delete(TaskModel task) {
+    public void delete(Task task) {
 
         if (CollectionUtils.isNotEmpty(task.getTags())) {
-            task.getTags().forEach(tag -> tagService.removeTagFromTask(tag.getText(), task.getId()));
+            task.getTags().forEach(tag -> tagService.removeTagFromTask(tag.getTitle(), task.getId()));
         }
         taskJpaRepository.deleteById(task.getId());
     }
 
     @LogOperationContext
     @Override
-    public void save(TaskModel task) {
+    public void save(Task task) {
         taskJpaRepository.save(conversionService.convert(task, TaskJpa.class));
     }
 
@@ -169,7 +169,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void save(List<TaskModel> tasks) {
+    public void save(List<Task> tasks) {
         taskJpaRepository.saveAll(tasks.stream()
             .map(task -> conversionService.convert(task, TaskJpa.class))
             .collect(Collectors.toList()));

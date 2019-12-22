@@ -1,6 +1,6 @@
 package com.metalheart.test.integration.runninglist;
 
-import com.metalheart.model.service.TaskModel;
+import com.metalheart.model.Task;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
@@ -33,7 +33,7 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
 
         // assert
 
-        List<TaskModel> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getAllTasks();
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());
@@ -52,7 +52,7 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
 
         // assert
 
-        List<TaskModel> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getAllTasks();
         Assert.assertNotNull(tasks);
         Assert.assertTrue(tasks.isEmpty());
     }
@@ -70,7 +70,7 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
 
         // assert
 
-        List<TaskModel> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getAllTasks();
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());

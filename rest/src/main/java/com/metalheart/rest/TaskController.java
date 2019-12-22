@@ -1,12 +1,13 @@
 package com.metalheart.rest;
 
 import com.metalheart.EndPoint;
+import com.metalheart.model.Task;
 import com.metalheart.model.request.AddTagToTaskRequest;
 import com.metalheart.model.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.request.ChangeTaskStatusRequest;
-import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.request.RemoveTagFromTaskRequest;
-import com.metalheart.model.rest.request.UpdateTaskRequest;
+import com.metalheart.model.rest.request.CreateTaskRequest;
+import com.metalheart.model.request.UpdateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.model.rest.response.TagViewModel;
 import com.metalheart.service.RunningListCommandService;
@@ -14,9 +15,11 @@ import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +44,8 @@ public class TaskController {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private ConversionService conversionService;
 
     @PostMapping(path = EndPoint.CREATE_TASK, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel createTask(@Valid @RequestBody CreateTaskRequest request) {
@@ -85,7 +90,8 @@ public class TaskController {
         produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel updateTask(@Valid @RequestBody UpdateTaskRequest request) {
 
-        runningListCommandService.update(request);
+
+        runningListCommandService.update(conversionService.convert(request, Task.class));
 
         return runningListService.getRunningList();
     }
@@ -116,6 +122,8 @@ public class TaskController {
     @ApiOperation(value = "Remove tag from task", response = TagViewModel.class, responseContainer = "List")
     public List<TagViewModel> getTags() {
 
-        return tagService.getAllTags();
+        return tagService.getAllTags().stream()
+            .map(tag -> conversionService.convert(tag, TagViewModel.class))
+            .collect(Collectors.toList());
     }
 }

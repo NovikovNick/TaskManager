@@ -1,9 +1,9 @@
 package com.metalheart.test.integration.runninglist;
 
-import com.metalheart.model.service.TaskModel;
+import com.metalheart.model.Tag;
+import com.metalheart.model.Task;
 import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
-import com.metalheart.model.rest.response.TagViewModel;
 import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
@@ -35,14 +35,14 @@ public class TagIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         CreateTaskRequest createRequest = getCreateTaskRequest("Created task");
-        TaskModel createdTask = runningListCommandService.createTask(createRequest);
+        Task createdTask = runningListCommandService.createTask(createRequest);
 
         // act
         tagService.addTagToTask("tag1", createdTask.getId());
 
         // assert
-        List<TagViewModel> tags = tagService.getAllTags();
-        TaskModel fetchedTask = taskService.getTask(createdTask.getId());
+        List<Tag> tags = tagService.getAllTags();
+        Task fetchedTask = taskService.getTask(createdTask.getId());
         Assert.assertNotNull(fetchedTask);
         Assert.assertFalse(CollectionUtils.isEmpty(fetchedTask.getTags()));
         Assert.assertFalse(CollectionUtils.isEmpty(tags));
@@ -53,9 +53,9 @@ public class TagIntegrationTest extends BaseIntegrationTest {
     public void testSelection() {
 
         // arrange
-        TaskModel createdTask1 = runningListCommandService.createTask(getCreateTaskRequest("task1"));
-        TaskModel createdTask2 = runningListCommandService.createTask(getCreateTaskRequest("task2"));
-        TaskModel createdTask3 = runningListCommandService.createTask(getCreateTaskRequest("task3"));
+        Task createdTask1 = runningListCommandService.createTask(getCreateTaskRequest("task1"));
+        Task createdTask2 = runningListCommandService.createTask(getCreateTaskRequest("task2"));
+        Task createdTask3 = runningListCommandService.createTask(getCreateTaskRequest("task3"));
         tagService.addTagToTask("tag1", createdTask1.getId());
         tagService.addTagToTask("tag1", createdTask2.getId());
 
@@ -73,9 +73,9 @@ public class TagIntegrationTest extends BaseIntegrationTest {
     public void testSeveralTagSelection() {
 
         // arrange
-        TaskModel createdTask1 = runningListCommandService.createTask(getCreateTaskRequest("task1"));
-        TaskModel createdTask2 = runningListCommandService.createTask(getCreateTaskRequest("task2"));
-        TaskModel createdTask3 = runningListCommandService.createTask(getCreateTaskRequest("task3"));
+        Task createdTask1 = runningListCommandService.createTask(getCreateTaskRequest("task1"));
+        Task createdTask2 = runningListCommandService.createTask(getCreateTaskRequest("task2"));
+        Task createdTask3 = runningListCommandService.createTask(getCreateTaskRequest("task3"));
         tagService.addTagToTask("tag1", createdTask1.getId());
         tagService.addTagToTask("tag2", createdTask1.getId());
         tagService.addTagToTask("tag1", createdTask2.getId());
@@ -101,9 +101,9 @@ public class TagIntegrationTest extends BaseIntegrationTest {
     public void testSeveralTagSelection2() {
 
         // arrange
-        TaskModel createdTask1 = runningListCommandService.createTask(getCreateTaskRequest("task1"));
-        TaskModel createdTask2 = runningListCommandService.createTask(getCreateTaskRequest("task2"));
-        TaskModel createdTask3 = runningListCommandService.createTask(getCreateTaskRequest("task3"));
+        Task createdTask1 = runningListCommandService.createTask(getCreateTaskRequest("task1"));
+        Task createdTask2 = runningListCommandService.createTask(getCreateTaskRequest("task2"));
+        Task createdTask3 = runningListCommandService.createTask(getCreateTaskRequest("task3"));
         tagService.addTagToTask("tag1", createdTask1.getId());
         tagService.addTagToTask("tag2", createdTask1.getId());
         tagService.addTagToTask("tag1", createdTask2.getId());
@@ -132,9 +132,9 @@ public class TagIntegrationTest extends BaseIntegrationTest {
     public void testStrictSeveralTagSelection() {
 
         // arrange
-        TaskModel createdTask1 = runningListCommandService.createTask(getCreateTaskRequest("task1"));
-        TaskModel createdTask2 = runningListCommandService.createTask(getCreateTaskRequest("task2"));
-        TaskModel createdTask3 = runningListCommandService.createTask(getCreateTaskRequest("task3"));
+        Task createdTask1 = runningListCommandService.createTask(getCreateTaskRequest("task1"));
+        Task createdTask2 = runningListCommandService.createTask(getCreateTaskRequest("task2"));
+        Task createdTask3 = runningListCommandService.createTask(getCreateTaskRequest("task3"));
 
         tagService.addTagToTask("tag1", createdTask1.getId());
         tagService.addTagToTask("tag2", createdTask1.getId());

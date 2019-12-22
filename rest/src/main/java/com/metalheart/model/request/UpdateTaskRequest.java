@@ -1,4 +1,4 @@
-package com.metalheart.model.rest.request;
+package com.metalheart.model.request;
 
 import com.metalheart.model.rest.response.TagViewModel;
 import java.util.List;

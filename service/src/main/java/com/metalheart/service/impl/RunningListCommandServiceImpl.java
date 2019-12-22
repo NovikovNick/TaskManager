@@ -3,6 +3,7 @@ package com.metalheart.service.impl;
 import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.model.DeleteTaskRequest;
 import com.metalheart.model.RunningListAction;
+import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.WeekId;
 import com.metalheart.model.WeekWorkLog;
@@ -10,9 +11,7 @@ import com.metalheart.model.jpa.RunningListArchiveJpa;
 import com.metalheart.model.jpa.RunningListArchiveJpaPK;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
 import com.metalheart.model.rest.request.CreateTaskRequest;
-import com.metalheart.model.rest.request.UpdateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
-import com.metalheart.model.service.TaskModel;
 import com.metalheart.model.service.WeekWorkLogUpdateRequest;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.RunningListArchiveService;
@@ -57,14 +56,14 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     private ConversionService conversionService;
 
     @Override
-    public TaskModel createTask(CreateTaskRequest request) {
+    public Task createTask(CreateTaskRequest request) {
 
         return runningListCommandManager.execute(new RunningListAction<>() {
 
-            private TaskModel task;
+            private Task task;
 
             @Override
-            public TaskModel execute() {
+            public Task execute() {
                 task = taskService.create(request);
                 log.info("New task has been created");
 
@@ -169,11 +168,11 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     }
 
     @Override
-    public void update(UpdateTaskRequest request) {
+    public void update(Task request) {
 
-        TaskModel previousState = taskService.getTask(request.getId());
+        Task previousState = taskService.getTask(request.getId());
 
-        TaskModel task = previousState.clone();
+        Task task = previousState.clone();
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
         task.setModifiedAt(ZonedDateTime.now());
@@ -244,17 +243,17 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     @Override
     public void reorderTask(Integer startIndex, Integer endIndex) {
 
-        List<TaskModel> tasks = taskService.getAllTasks();
-        List<TaskModel> previousTaskOrder = tasks.stream()
-            .map(TaskModel::clone)
+        List<Task> tasks = taskService.getAllTasks();
+        List<Task> previousTaskOrder = tasks.stream()
+            .map(Task::clone)
             .collect(toList());
 
 
         List<Integer> previousPriorities = tasks.stream()
-            .map(TaskModel::getPriority)
+            .map(Task::getPriority)
             .collect(toList());
 
-        TaskModel moved = tasks.get(startIndex);
+        Task moved = tasks.get(startIndex);
         tasks.remove(moved);
         tasks.add(endIndex, moved);
 

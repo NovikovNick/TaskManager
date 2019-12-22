@@ -9,17 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TagViewModel implements Cloneable {
+public class TagViewModel {
 
     private String id;
 
     private String text;
-
-    @Override
-    public TagViewModel clone() {
-        return TagViewModel.builder()
-            .id(id)
-            .text(text)
-            .build();
-    }
 }

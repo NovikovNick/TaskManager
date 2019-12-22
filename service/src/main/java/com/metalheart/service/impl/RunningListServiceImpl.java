@@ -1,8 +1,8 @@
 package com.metalheart.service.impl;
 
-import com.metalheart.model.service.TaskModel;
-import com.metalheart.model.WeekId;
+import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
+import com.metalheart.model.WeekId;
 import com.metalheart.model.jpa.WeekWorkLogJpa;
 import com.metalheart.model.rest.response.CalendarViewModel;
 import com.metalheart.model.rest.response.RunningListViewModel;
@@ -69,8 +69,12 @@ public class RunningListServiceImpl implements RunningListService {
             .hasPrevious(archiveService.hasPreviousArchive(weekId))
             .canUndo(runningListCommandManager.canUndo())
             .canRedo(runningListCommandManager.canRedo())
-            .selectedTags(tagService.getSelectedTags())
-            .allTags(tagService.getAllTags())
+            .selectedTags(tagService.getSelectedTags().stream()
+                .map(tag -> conversionService.convert(tag, TagViewModel.class))
+                .collect(Collectors.toList()))
+            .allTags(tagService.getAllTags().stream()
+                .map(tag -> conversionService.convert(tag, TagViewModel.class))
+                .collect(Collectors.toList()))
             .year(weekId.getYear())
             .week(weekId.getWeek())
             .build();
@@ -80,7 +84,7 @@ public class RunningListServiceImpl implements RunningListService {
     private List<TaskViewModel> getTaskList(CalendarViewModel calendar) {
 
         // todo: optimize
-        List<TaskModel> allTasks = taskService.getAllTasks();
+        List<Task> allTasks = taskService.getAllTasks();
 
         return allTasks.stream()
             .map(task -> TaskViewModel.builder()
@@ -96,7 +100,7 @@ public class RunningListServiceImpl implements RunningListService {
             .collect(Collectors.toList());
     }
 
-    private List<String> getDayStatuses(TaskModel task, Integer currentDay) {
+    private List<String> getDayStatuses(Task task, Integer currentDay) {
         List<WeekWorkLogJpa> taskWorkLog = weekWorkLogJpaRepository.findAllByTaskId(task.getId());
 
         List<String> res = new ArrayList<>();

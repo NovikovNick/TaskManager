@@ -1,9 +1,9 @@
 package com.metalheart.test.unit.converter;
 
 
-import com.metalheart.converter.TaskModelToTaskConverter;
-import com.metalheart.converter.TaskModelToTaskRecordConverter;
-import com.metalheart.model.service.TaskModel;
+import com.metalheart.converter.TaskToTaskJpaConverter;
+import com.metalheart.converter.TaskToTaskRecordConverter;
+import com.metalheart.model.Task;
 import java.time.ZonedDateTime;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -16,9 +16,9 @@ public class ConverterTest {
     public void testTaskModelToTaskConverter() {
 
         // arrange
-        var converter = new TaskModelToTaskConverter();
+        var converter = new TaskToTaskJpaConverter();
 
-        var src = new TaskModel();
+        var src = new Task();
         src.setId(RandomUtils.nextInt());
         src.setTitle(RandomStringUtils.random(5));
 
@@ -34,9 +34,9 @@ public class ConverterTest {
     public void testTaskModelToTaskRecordConverter() {
 
         // arrange
-        var converter = new TaskModelToTaskRecordConverter();
+        var converter = new TaskToTaskRecordConverter();
 
-        var src = new TaskModel();
+        var src = new Task();
         src.setId(RandomUtils.nextInt());
         src.setTitle(RandomStringUtils.random(5));
         src.setCreatedAt(ZonedDateTime.now());
