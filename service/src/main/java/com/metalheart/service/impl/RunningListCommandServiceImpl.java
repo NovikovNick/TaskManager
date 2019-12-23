@@ -10,7 +10,6 @@ import com.metalheart.model.WeekWorkLog;
 import com.metalheart.model.jpa.RunningListArchiveJpa;
 import com.metalheart.model.jpa.RunningListArchiveJpaPK;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
-import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.model.service.WeekWorkLogUpdateRequest;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
@@ -56,7 +55,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     private ConversionService conversionService;
 
     @Override
-    public Task createTask(CreateTaskRequest request) {
+    public Task createTask(Task request) {
 
         return runningListCommandManager.execute(new RunningListAction<>() {
 

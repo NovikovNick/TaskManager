@@ -1,7 +1,7 @@
 package com.metalheart.test.integration.runninglist;
 
+import com.metalheart.model.Task;
 import com.metalheart.model.WeekId;
-import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.service.DateService;
@@ -53,9 +53,9 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
         String taskTitle = RandomStringUtils.random(30);
         String taskDescription = RandomStringUtils.random(300);
 
-        CreateTaskRequest request = new CreateTaskRequest();
-        request.setTitle(taskTitle);
-        request.setDescription(taskDescription);
+        Task request = Task.builder()
+            .title(taskTitle)
+            .description(taskDescription).build();
 
         runningListCommandService.createTask(request);
 
@@ -89,9 +89,9 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
         String taskTitle = RandomStringUtils.random(30);
         String taskDescription = RandomStringUtils.random(300);
 
-        CreateTaskRequest request = new CreateTaskRequest();
-        request.setTitle(taskTitle);
-        request.setDescription(taskDescription);
+        Task request = Task.builder()
+            .title(taskTitle)
+            .description(taskDescription).build();
 
         runningListCommandService.createTask(request);
 
@@ -117,9 +117,9 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
         String taskTitle = RandomStringUtils.random(30);
         String taskDescription = RandomStringUtils.random(300);
 
-        CreateTaskRequest request = new CreateTaskRequest();
-        request.setTitle(taskTitle);
-        request.setDescription(taskDescription);
+        Task request = Task.builder()
+            .title(taskTitle)
+            .description(taskDescription).build();
 
         runningListCommandService.createTask(request);
 

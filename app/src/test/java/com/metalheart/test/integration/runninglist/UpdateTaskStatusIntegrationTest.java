@@ -1,8 +1,7 @@
 package com.metalheart.test.integration.runninglist;
 
-import com.metalheart.model.rest.request.CreateTaskRequest;
-import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.model.Task;
+import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
@@ -37,7 +36,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
     public void simpleUpdateStatusTest() {
 
         // arrange
-        CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
+        Task createRequest = generateRandomTask();
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
@@ -55,7 +54,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
     public void testUndoCreating() throws Exception {
 
         // arrange
-        CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
+        Task createRequest = generateRandomTask();
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
@@ -74,7 +73,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
     public void testUndoAfterUpdateStatusOperation() throws Exception {
 
         // arrange
-        CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
+        Task createRequest = generateRandomTask();
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
@@ -94,7 +93,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreating() throws Exception {
 
         // arrange
-        CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
+        Task createRequest = generateRandomTask();
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);

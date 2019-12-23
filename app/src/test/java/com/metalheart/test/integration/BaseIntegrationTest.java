@@ -2,11 +2,11 @@ package com.metalheart.test.integration;
 
 import com.metalheart.App;
 import com.metalheart.PostgresqlContainer;
+import com.metalheart.model.Tag;
+import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.WeekId;
-import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.CalendarViewModel;
-import com.metalheart.model.rest.response.TagViewModel;
 import com.metalheart.repository.inmemory.SelectedTagRepository;
 import com.metalheart.repository.jpa.RunningListArchiveJpaRepository;
 import com.metalheart.repository.jpa.TagJpaRepository;
@@ -71,25 +71,23 @@ public abstract class BaseIntegrationTest {
         selectedTagRepository.deleteAll();
     }
 
-    protected CreateTaskRequest generateRandomCreateTaskRequest() {
-        return getCreateTaskRequest(RandomStringUtils.random(20));
+    protected Task generateRandomTask() {
+        return getTask(RandomStringUtils.random(20));
     }
 
 
-    protected CreateTaskRequest getCreateTaskRequest(String title) {
-        CreateTaskRequest request = new CreateTaskRequest();
-        request.setTitle(title);
-        return request;
+    protected Task getTask(String title) {
+        return Task.builder().title(title).build();
     }
 
-    protected CreateTaskRequest getCreateTaskRequest(String title, String... tags) {
+    protected Task getTask(String title, String... tags) {
 
-        CreateTaskRequest request = new CreateTaskRequest();
-        request.setTitle(title);
-        request.setTags(Arrays.stream(tags)
-            .map(tag -> TagViewModel.builder().text(tag).build())
-            .collect(Collectors.toList()));
-        return request;
+        return Task.builder()
+            .title(title)
+            .tags(Arrays.stream(tags)
+                .map(tag -> Tag.builder().title(tag).build())
+                .collect(Collectors.toList()))
+            .build();
     }
 
     protected List<String> toStingList(TaskStatus... statuses) {

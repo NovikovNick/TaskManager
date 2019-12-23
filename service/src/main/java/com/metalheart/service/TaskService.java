@@ -1,9 +1,8 @@
 package com.metalheart.service;
 
+import com.metalheart.model.DeleteTaskRequest;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
-import com.metalheart.model.rest.request.CreateTaskRequest;
-import com.metalheart.model.DeleteTaskRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +14,7 @@ public interface TaskService {
 
     Optional<TaskStatus> getTaskDayStatus(Integer taskId, Integer dayIndex);
 
-    Task create(CreateTaskRequest request);
+    Task create(Task request);
 
     void delete(Task task);
 

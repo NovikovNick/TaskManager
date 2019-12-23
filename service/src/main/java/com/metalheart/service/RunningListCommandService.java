@@ -4,11 +4,10 @@ import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.WeekId;
-import com.metalheart.model.rest.request.CreateTaskRequest;
 
 public interface RunningListCommandService {
 
-    Task createTask(CreateTaskRequest request);
+    Task createTask(Task request);
 
     void changeTaskStatus(Integer taskId, Integer dayIndex, TaskStatus status);
 

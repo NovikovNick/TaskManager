@@ -1,7 +1,6 @@
 package com.metalheart.test.integration.runninglist;
 
 import com.metalheart.model.Task;
-import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.TaskService;
@@ -26,7 +25,7 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
     public void testRemoving() {
 
         // arrange
-        CreateTaskRequest request = generateRandomCreateTaskRequest();
+        Task request = generateRandomTask();
         Task task = runningListCommandService.createTask(request);
         Integer taskId = task.getId();
 
@@ -41,7 +40,7 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
     public void testUndoRemoving() throws Exception {
 
         // arrange
-        CreateTaskRequest request = generateRandomCreateTaskRequest();
+        Task request = generateRandomTask();
         Task task = runningListCommandService.createTask(request);
 
         // act
@@ -59,7 +58,7 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreating() throws Exception {
 
         // arrange
-        CreateTaskRequest request = generateRandomCreateTaskRequest();
+        Task request = generateRandomTask();
         Task task = runningListCommandService.createTask(request);
         Integer taskId = task.getId();
 

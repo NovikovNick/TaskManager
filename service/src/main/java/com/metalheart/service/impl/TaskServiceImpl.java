@@ -1,14 +1,13 @@
 package com.metalheart.service.impl;
 
 import com.metalheart.log.LogOperationContext;
+import com.metalheart.model.DeleteTaskRequest;
 import com.metalheart.model.Task;
+import com.metalheart.model.TaskStatus;
 import com.metalheart.model.jooq.tables.records.TaskRecord;
 import com.metalheart.model.jpa.TaskJpa;
-import com.metalheart.model.TaskStatus;
 import com.metalheart.model.jpa.WeekWorkLogJpa;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
-import com.metalheart.model.rest.request.CreateTaskRequest;
-import com.metalheart.model.DeleteTaskRequest;
 import com.metalheart.repository.inmemory.SelectedTagRepository;
 import com.metalheart.repository.inmemory.TaskPriorityRepository;
 import com.metalheart.repository.jooq.TaskJooqRepository;
@@ -113,10 +112,10 @@ public class TaskServiceImpl implements TaskService {
 
     @LogOperationContext
     @Override
-    public Task create(CreateTaskRequest request) {
+    public Task create(Task request) {
 
         TaskRecord record = new TaskRecord();
-        record.setId(request.getTaskId());
+        record.setId(request.getId());
         record.setTitle(request.getTitle());
         record.setDescription(request.getDescription());
         record.setCreatedAt(OffsetDateTime.now());
@@ -125,7 +124,7 @@ public class TaskServiceImpl implements TaskService {
         taskJooqRepository.saveAndGenerateIdIfNotPresent(record);
         if (CollectionUtils.isNotEmpty(request.getTags())) {
             request.getTags().stream()
-                .map(tag -> tagService.getTag(tag.getText()))
+                .map(tag -> tagService.getTag(tag.getTitle()))
                 .forEach(tag -> tagService.addTagToTask(tag.getTitle(), record.getId()));
         }
         return conversionService.convert(record, Task.class);

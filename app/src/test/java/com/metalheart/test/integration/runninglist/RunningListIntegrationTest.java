@@ -1,7 +1,6 @@
 package com.metalheart.test.integration.runninglist;
 
 import com.metalheart.model.Task;
-import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListCommandService;
@@ -35,7 +34,7 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
     public void testTodoStatus() {
 
         // arrange
-        CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
+        Task createRequest = generateRandomTask();
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
@@ -53,7 +52,7 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
     public void testInProcessStatus() {
 
         // arrange
-        CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
+        Task createRequest = generateRandomTask();
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
@@ -71,7 +70,7 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
     public void testNoneStatus() {
 
         // arrange
-        CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
+        Task createRequest = generateRandomTask();
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
@@ -90,7 +89,7 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
     public void testDelayedStatus() {
 
         // arrange
-        CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
+        Task createRequest = generateRandomTask();
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 3);
@@ -111,7 +110,7 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
     public void testDoneStatus() {
 
         // arrange
-        CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
+        Task createRequest = generateRandomTask();
         Task createdTask = runningListCommandService.createTask(createRequest);
         setDate(this.dateService, 2019, 1, 0);
 
@@ -128,7 +127,7 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
     public void testCancelStatus() {
 
         // arrange
-        CreateTaskRequest createRequest = generateRandomCreateTaskRequest();
+        Task createRequest = generateRandomTask();
         Task createdTask = runningListCommandService.createTask(createRequest);
         setDate(this.dateService, 2019, 1, 0);
 

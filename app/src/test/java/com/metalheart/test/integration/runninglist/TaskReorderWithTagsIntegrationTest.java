@@ -32,8 +32,8 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
     public void testOrderFromTopToMiddleWithTag() {
 
         // arrange
-        IntStream.range(0, 5).forEach(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)));
-        IntStream.range(5, 10).forEach(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i, "tag1")));
+        IntStream.range(0, 5).forEach(i -> runningListCommandService.createTask(getTask(PREFIX + i)));
+        IntStream.range(5, 10).forEach(i -> runningListCommandService.createTask(getTask(PREFIX + i, "tag1")));
 
         // act
         tagService.selectTag("tag1");
@@ -54,8 +54,8 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
     public void testOrderFromTopToMiddleWithotTag() {
 
         // arrange
-        IntStream.range(0, 5).forEach(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)));
-        IntStream.range(5, 10).forEach(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i, "tag1")));
+        IntStream.range(0, 5).forEach(i -> runningListCommandService.createTask(getTask(PREFIX + i)));
+        IntStream.range(5, 10).forEach(i -> runningListCommandService.createTask(getTask(PREFIX + i, "tag1")));
 
         // act
         tagService.selectTag("tag1");

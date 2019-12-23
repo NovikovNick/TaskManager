@@ -5,8 +5,8 @@ import com.metalheart.model.Task;
 import com.metalheart.model.request.AddTagToTaskRequest;
 import com.metalheart.model.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.request.ChangeTaskStatusRequest;
+import com.metalheart.model.request.CreateTaskRequest;
 import com.metalheart.model.request.RemoveTagFromTaskRequest;
-import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.model.request.UpdateTaskRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.model.rest.response.TagViewModel;
@@ -50,7 +50,7 @@ public class TaskController {
     @PostMapping(path = EndPoint.CREATE_TASK, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel createTask(@Valid @RequestBody CreateTaskRequest request) {
 
-        runningListCommandService.createTask(request);
+        runningListCommandService.createTask(conversionService.convert(request, Task.class));
 
         return runningListService.getRunningList();
     }

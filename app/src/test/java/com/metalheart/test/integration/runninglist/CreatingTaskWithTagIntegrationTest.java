@@ -1,6 +1,6 @@
 package com.metalheart.test.integration.runninglist;
 
-import com.metalheart.model.rest.request.CreateTaskRequest;
+import com.metalheart.model.Task;
 import com.metalheart.model.rest.response.TagViewModel;
 import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.service.RunningListCommandManager;
@@ -28,7 +28,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
     public void testCreatingWithTags() throws Exception {
 
         // arrange
-        CreateTaskRequest request = getCreateTaskRequest("task", "tag1", "tag2");
+        Task request = getTask("task", "tag1", "tag2");
 
 
         // act
@@ -47,7 +47,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
     public void testUndoCreatingWithTags() throws Exception {
 
         // arrange
-        CreateTaskRequest request = getCreateTaskRequest("task", "tag1", "tag2");
+        Task request = getTask("task", "tag1", "tag2");
 
 
         // act
@@ -63,7 +63,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreatingWithTags() throws Exception {
 
         // arrange
-        CreateTaskRequest request = getCreateTaskRequest("task", "tag1", "tag2");
+        Task request = getTask("task", "tag1", "tag2");
 
 
         // act

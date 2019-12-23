@@ -31,7 +31,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         // arrange
         // act
         IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(getTask(PREFIX + i)))
             .collect(Collectors.toList());
 
         // assert
@@ -50,7 +50,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(getTask(PREFIX + i)))
             .collect(Collectors.toList());
 
         // act
@@ -72,7 +72,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(getTask(PREFIX + i)))
             .collect(Collectors.toList());
 
         // act
@@ -94,7 +94,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(getTask(PREFIX + i)))
             .collect(Collectors.toList());
 
         // act
@@ -116,7 +116,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(getTask(PREFIX + i)))
             .collect(Collectors.toList());
 
         // act
@@ -138,7 +138,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(getTask(PREFIX + i)))
             .collect(Collectors.toList());
 
         // act
@@ -162,7 +162,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(getCreateTaskRequest(PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(getTask(PREFIX + i)))
             .collect(Collectors.toList());
 
         // act

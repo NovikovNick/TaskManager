@@ -1,7 +1,6 @@
 package com.metalheart.test.integration.runninglist;
 
 import com.metalheart.model.Task;
-import com.metalheart.model.rest.request.CreateTaskRequest;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.TaskService;
@@ -26,7 +25,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
     public void testCreating() {
 
         // arrange
-        CreateTaskRequest createRequest = getCreateTaskRequest("Created task");
+        Task createRequest = getTask("Created task");
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         Task updateRequest = Task.builder()
@@ -52,7 +51,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
     public void testUndoCreating() throws Exception {
 
         // arrange
-        CreateTaskRequest createRequest = getCreateTaskRequest("Created task");
+        Task createRequest = getTask("Created task");
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         Task updateRequest = Task.builder()
@@ -78,7 +77,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreating() throws Exception {
 
         // arrange
-        CreateTaskRequest createRequest = getCreateTaskRequest("Created task");
+        Task createRequest = getTask("Created task");
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         Task updateRequest = Task.builder()
