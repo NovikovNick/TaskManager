@@ -1,7 +1,7 @@
 package com.metalheart.converter.mapper;
 
 import com.metalheart.model.WeekId;
-import com.metalheart.model.rest.request.GetArchiveRequest;
+import com.metalheart.model.request.GetArchiveRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

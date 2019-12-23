@@ -8,7 +8,7 @@ import com.metalheart.exception.UnableToRedoException;
 import com.metalheart.exception.UnableToUndoException;
 import com.metalheart.model.WeekId;
 import com.metalheart.model.request.CRUDTagRequest;
-import com.metalheart.model.rest.request.GetArchiveRequest;
+import com.metalheart.model.request.GetArchiveRequest;
 import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
