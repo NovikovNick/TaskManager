@@ -1,6 +1,6 @@
 package com.metalheart.test.integration.runninglist;
 
-import com.metalheart.model.rest.response.TaskViewModel;
+import com.metalheart.model.Task;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
@@ -40,7 +40,7 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.reorderTask(0, 3);
 
         // assert
-        List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList().getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 6, tasks.get(0).getTitle());
@@ -64,7 +64,7 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
 
 
         // assert
-        List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList().getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(10, tasks.size());
 

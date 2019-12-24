@@ -1,16 +1,16 @@
 package com.metalheart.converter;
 
 import com.metalheart.converter.mapper.TaskViewModelToTaskMapper;
-import com.metalheart.model.rest.response.TaskViewModel;
-import com.metalheart.model.Task;
+import com.metalheart.model.RunningList;
+import com.metalheart.model.response.RunningListViewModel;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TaskViewModelToTaskConverter implements Converter<TaskViewModel, Task> {
+public class RunningListToRunningListViewModelConverter implements Converter<RunningList, RunningListViewModel> {
 
     @Override
-    public Task convert(TaskViewModel source) {
+    public RunningListViewModel convert(RunningList source) {
         return TaskViewModelToTaskMapper.INSTANCE.map(source);
     }
 }

@@ -2,11 +2,11 @@ package com.metalheart.test.integration;
 
 import com.metalheart.App;
 import com.metalheart.PostgresqlContainer;
+import com.metalheart.model.Calendar;
 import com.metalheart.model.Tag;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.WeekId;
-import com.metalheart.model.rest.response.CalendarViewModel;
 import com.metalheart.repository.inmemory.SelectedTagRepository;
 import com.metalheart.repository.jpa.RunningListArchiveJpaRepository;
 import com.metalheart.repository.jpa.TagJpaRepository;
@@ -95,7 +95,7 @@ public abstract class BaseIntegrationTest {
     }
 
     protected void setDate(DateService dateServiceMock, int year, int week, int day) {
-        CalendarViewModel calendar = CalendarViewModel.builder()
+        Calendar calendar = Calendar.builder()
             .currentDay(day)
             .weekDates(Collections.emptyList())
             .build();

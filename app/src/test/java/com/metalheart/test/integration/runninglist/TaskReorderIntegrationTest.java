@@ -1,6 +1,6 @@
 package com.metalheart.test.integration.runninglist;
 
-import com.metalheart.model.rest.response.TaskViewModel;
+import com.metalheart.model.Task;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
@@ -35,7 +35,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
             .collect(Collectors.toList());
 
         // assert
-        List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList().getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 0, tasks.get(0).getTitle());
@@ -57,7 +57,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.reorderTask(0, 4);
 
         // assert
-        List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList().getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 1, tasks.get(0).getTitle());
@@ -79,7 +79,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.reorderTask(4, 0);
 
         // assert
-        List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList().getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 4, tasks.get(0).getTitle());
@@ -101,7 +101,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.reorderTask(4, 2);
 
         // assert
-        List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList().getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 0, tasks.get(0).getTitle());
@@ -123,7 +123,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.reorderTask(0, 2);
 
         // assert
-        List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList().getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 1, tasks.get(0).getTitle());
@@ -147,7 +147,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
 
         // assert
-        List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList().getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 0, tasks.get(0).getTitle());
@@ -171,7 +171,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         commandManager.redo();
 
         // assert
-        List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList().getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 1, tasks.get(0).getTitle());

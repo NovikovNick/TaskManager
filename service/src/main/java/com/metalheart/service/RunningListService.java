@@ -1,8 +1,8 @@
 package com.metalheart.service;
 
-import com.metalheart.model.rest.response.RunningListViewModel;
+import com.metalheart.model.RunningList;
 
 public interface RunningListService {
 
-    RunningListViewModel getRunningList();
+    RunningList getRunningList();
 }

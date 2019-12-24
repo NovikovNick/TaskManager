@@ -1,8 +1,7 @@
 package com.metalheart.test.integration.runninglist;
 
+import com.metalheart.model.Tag;
 import com.metalheart.model.Task;
-import com.metalheart.model.rest.response.TagViewModel;
-import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
@@ -36,10 +35,10 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
 
 
         // assert
-        List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList().getTasks();
         Assert.assertFalse(CollectionUtils.isEmpty(tasks));
 
-        List<TagViewModel> tags = tasks.get(0).getTags();
+        List<Tag> tags = tasks.get(0).getTags();
         Assert.assertEquals(2, tags.size());
     }
 
@@ -55,7 +54,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
         commandManager.undo();
 
         // assert
-        List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList().getTasks();
         Assert.assertTrue(CollectionUtils.isEmpty(tasks));
     }
 
@@ -72,10 +71,10 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
         commandManager.redo();
 
         // assert
-        List<TaskViewModel> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList().getTasks();
         Assert.assertFalse(CollectionUtils.isEmpty(tasks));
 
-        List<TagViewModel> tags = tasks.get(0).getTags();
+        List<Tag> tags = tasks.get(0).getTags();
         Assert.assertEquals(2, tags.size());
     }
 }

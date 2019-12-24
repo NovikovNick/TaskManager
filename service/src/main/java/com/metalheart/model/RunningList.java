@@ -1,4 +1,4 @@
-package com.metalheart.model.rest.response;
+package com.metalheart.model;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -10,10 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RunningListViewModel {
+public class RunningList {
 
-    private Integer year;
-    private Integer week;
+    private WeekId weekId;
 
     private Boolean editable;
     private Boolean hasNext;
@@ -21,9 +20,9 @@ public class RunningListViewModel {
     private Boolean canUndo;
     private Boolean canRedo;
 
-    private CalendarViewModel calendar;
-    private List<TaskViewModel> tasks;
+    private Calendar calendar;
+    private List<Task> tasks;
 
-    private List<TagViewModel> selectedTags;
-    private List<TagViewModel> allTags;
+    private List<Tag> selectedTags;
+    private List<Tag> allTags;
 }

@@ -1,4 +1,4 @@
-package com.metalheart.model.rest.response;
+package com.metalheart.model;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CalendarViewModel {
+public class Calendar {
 
     private Integer currentDay;
     private List<String> weekDates;

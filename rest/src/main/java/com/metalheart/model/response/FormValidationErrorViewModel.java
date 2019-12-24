@@ -1,4 +1,4 @@
-package com.metalheart.model.rest.response;
+package com.metalheart.model.response;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

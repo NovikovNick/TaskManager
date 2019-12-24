@@ -1,11 +1,11 @@
 package com.metalheart.service;
 
+import com.metalheart.model.Calendar;
 import com.metalheart.model.WeekId;
-import com.metalheart.model.rest.response.CalendarViewModel;
 import java.time.ZonedDateTime;
 
 /**
- * Service to provide operations with {@link WeekId} and {@link CalendarViewModel} and other related to date and time
+ * Service to provide operations with {@link WeekId} and {@link Calendar} and other related to date and time
  * structures.
  */
 public interface DateService {
@@ -31,7 +31,7 @@ public interface DateService {
     WeekId getPreviousWeekId(WeekId weekId);
 
     /**
-     * @return {@link CalendarViewModel} for current week
+     * @return {@link Calendar} for current week
      */
-    CalendarViewModel getCalendar();
+    Calendar getCalendar();
 }

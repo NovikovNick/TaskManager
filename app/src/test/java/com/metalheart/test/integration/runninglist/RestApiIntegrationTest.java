@@ -1,7 +1,7 @@
 package com.metalheart.test.integration.runninglist;
 
 import com.metalheart.EndPoint;
-import com.metalheart.model.rest.response.RunningListViewModel;
+import com.metalheart.model.response.RunningListViewModel;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.net.HttpURLConnection;
 import org.junit.Test;

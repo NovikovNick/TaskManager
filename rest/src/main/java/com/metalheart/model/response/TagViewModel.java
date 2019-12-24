@@ -1,4 +1,4 @@
-package com.metalheart.model.rest.response;
+package com.metalheart.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

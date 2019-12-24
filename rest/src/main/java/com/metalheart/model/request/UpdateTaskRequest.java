@@ -1,6 +1,6 @@
 package com.metalheart.model.request;
 
-import com.metalheart.model.rest.response.TagViewModel;
+import com.metalheart.model.response.TagViewModel;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import lombok.Data;

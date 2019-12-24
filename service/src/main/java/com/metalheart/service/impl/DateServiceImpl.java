@@ -1,7 +1,7 @@
 package com.metalheart.service.impl;
 
+import com.metalheart.model.Calendar;
 import com.metalheart.model.WeekId;
-import com.metalheart.model.rest.response.CalendarViewModel;
 import com.metalheart.service.DateService;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -42,9 +42,9 @@ public class DateServiceImpl implements DateService {
     }
 
     @Override
-    public CalendarViewModel getCalendar() {
+    public Calendar getCalendar() {
 
-        var builder = CalendarViewModel.builder();
+        var builder = Calendar.builder();
 
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime monday = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));

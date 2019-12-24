@@ -1,6 +1,7 @@
 package com.metalheart.rest;
 
 import com.metalheart.EndPoint;
+import com.metalheart.model.RunningList;
 import com.metalheart.model.Task;
 import com.metalheart.model.request.AddTagToTaskRequest;
 import com.metalheart.model.request.ChangeTaskPriorityRequest;
@@ -8,8 +9,8 @@ import com.metalheart.model.request.ChangeTaskStatusRequest;
 import com.metalheart.model.request.CreateTaskRequest;
 import com.metalheart.model.request.RemoveTagFromTaskRequest;
 import com.metalheart.model.request.UpdateTaskRequest;
-import com.metalheart.model.rest.response.RunningListViewModel;
-import com.metalheart.model.rest.response.TagViewModel;
+import com.metalheart.model.response.RunningListViewModel;
+import com.metalheart.model.response.TagViewModel;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
@@ -52,7 +53,7 @@ public class TaskController {
 
         runningListCommandService.createTask(conversionService.convert(request, Task.class));
 
-        return runningListService.getRunningList();
+        return conversionService.convert(runningListService.getRunningList(), RunningListViewModel.class);
     }
 
     @PostMapping(path = EndPoint.CHANGE_TASK_STATUS, consumes = APPLICATION_JSON_VALUE, produces =
@@ -61,7 +62,7 @@ public class TaskController {
 
         runningListCommandService.changeTaskStatus(request.getTaskId(), request.getDayIndex(), request.getStatus());
 
-        return runningListService.getRunningList();
+        return conversionService.convert(runningListService.getRunningList(), RunningListViewModel.class);
     }
 
     @PutMapping(
@@ -72,7 +73,7 @@ public class TaskController {
 
         runningListCommandService.reorderTask(request.getStartIndex(), request.getEndIndex());
 
-        return runningListService.getRunningList();
+        return conversionService.convert(runningListService.getRunningList(), RunningListViewModel.class);
     }
 
 
@@ -81,7 +82,7 @@ public class TaskController {
 
         runningListCommandService.delete(taskId);
 
-        return runningListService.getRunningList();
+        return conversionService.convert(runningListService.getRunningList(), RunningListViewModel.class);
     }
 
     @PutMapping(
@@ -93,7 +94,7 @@ public class TaskController {
 
         runningListCommandService.update(conversionService.convert(request, Task.class));
 
-        return runningListService.getRunningList();
+        return conversionService.convert(runningListService.getRunningList(), RunningListViewModel.class);
     }
 
     @PostMapping(
@@ -103,7 +104,9 @@ public class TaskController {
     public ResponseEntity<RunningListViewModel> addTaskTag(AddTagToTaskRequest request) {
 
         tagService.addTagToTask(request.getTag(), request.getTaskId());
-        return ResponseEntity.ok(runningListService.getRunningList());
+        RunningList runningList = runningListService.getRunningList();
+        RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
+        return ResponseEntity.ok(viewModel);
     }
 
     @DeleteMapping(
@@ -113,7 +116,9 @@ public class TaskController {
     public ResponseEntity<RunningListViewModel> removeTaskTag(RemoveTagFromTaskRequest request) {
 
         tagService.removeTagFromTask(request.getTag(), request.getTaskId());
-        return ResponseEntity.ok(runningListService.getRunningList());
+        RunningList runningList = runningListService.getRunningList();
+        RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
+        return ResponseEntity.ok(viewModel);
     }
 
     @GetMapping(

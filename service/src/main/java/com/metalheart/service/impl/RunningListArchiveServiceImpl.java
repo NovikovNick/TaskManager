@@ -1,10 +1,10 @@
 package com.metalheart.service.impl;
 
 import com.metalheart.exception.NoSuchRunningListArchiveException;
+import com.metalheart.model.RunningList;
 import com.metalheart.model.WeekId;
 import com.metalheart.model.jpa.RunningListArchiveJpa;
 import com.metalheart.model.jpa.RunningListArchiveJpaPK;
-import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.repository.jpa.RunningListArchiveJpaRepository;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
@@ -33,7 +33,7 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
 
     @Transactional
     @Override
-    public RunningListViewModel getPrev(WeekId weekId) throws NoSuchRunningListArchiveException {
+    public RunningList getPrev(WeekId weekId) throws NoSuchRunningListArchiveException {
 
         WeekId prevWeekId = dateService.getPreviousWeekId(weekId);
 
@@ -41,7 +41,7 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
     }
 
     @Override
-    public RunningListViewModel getNext(WeekId weekId) throws NoSuchRunningListArchiveException {
+    public RunningList getNext(WeekId weekId) throws NoSuchRunningListArchiveException {
 
         WeekId nextWeekId = dateService.getNextWeekId(weekId);
 
@@ -68,17 +68,17 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
         return isArchiveExist(nextWeekId);
     }
 
-    private RunningListViewModel getArchive(WeekId weekId) throws NoSuchRunningListArchiveException {
+    private RunningList getArchive(WeekId weekId) throws NoSuchRunningListArchiveException {
 
         if (!isArchiveExist(weekId)) {
             throw new NoSuchRunningListArchiveException(weekId);
         }
 
-        RunningListViewModel runningListViewModel = getRunningListViewModel(weekId);
-        runningListViewModel.setEditable(false);
-        runningListViewModel.setHasPrevious(hasPreviousArchive(weekId));
-        runningListViewModel.setHasNext(hasNextArchive(weekId));
-        return runningListViewModel;
+        RunningList runningList = getRunningList(weekId);
+        runningList.setEditable(false);
+        runningList.setHasPrevious(hasPreviousArchive(weekId));
+        runningList.setHasNext(hasNextArchive(weekId));
+        return runningList;
     }
 
     @Override
@@ -97,9 +97,9 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
         runningListArchiveRepository.delete(archive);
     }
 
-    private RunningListViewModel getRunningListViewModel(WeekId weekId) {
+    private RunningList getRunningList(WeekId weekId) {
         var pk = conversionService.convert(weekId, RunningListArchiveJpaPK.class);
         RunningListArchiveJpa archive = runningListArchiveRepository.getOne(pk);
-        return conversionService.convert(archive, RunningListViewModel.class);
+        return conversionService.convert(archive, RunningList.class);
     }
 }

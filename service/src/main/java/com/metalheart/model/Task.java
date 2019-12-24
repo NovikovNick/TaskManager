@@ -33,6 +33,8 @@ public class Task implements Cloneable {
 
     private List<Tag> tags;
 
+    private List<WeekWorkLog> status;
+
     @Override
     public Task clone() {
 

@@ -1,7 +1,7 @@
 package com.metalheart.converter;
 
 import com.metalheart.converter.mapper.TaskViewModelToTaskMapper;
-import com.metalheart.model.rest.response.TaskViewModel;
+import com.metalheart.model.response.TaskViewModel;
 import com.metalheart.model.Task;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;

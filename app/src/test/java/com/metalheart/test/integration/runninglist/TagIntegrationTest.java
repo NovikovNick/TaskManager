@@ -1,9 +1,8 @@
 package com.metalheart.test.integration.runninglist;
 
+import com.metalheart.model.RunningList;
 import com.metalheart.model.Tag;
 import com.metalheart.model.Task;
-import com.metalheart.model.rest.response.RunningListViewModel;
-import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
@@ -64,7 +63,7 @@ public class TagIntegrationTest extends BaseIntegrationTest {
 
         // assert
 
-        RunningListViewModel runningList = runningListService.getRunningList();
+        RunningList runningList = runningListService.getRunningList();
         Assert.assertEquals(2, runningList.getTasks().size());
     }
 
@@ -88,9 +87,9 @@ public class TagIntegrationTest extends BaseIntegrationTest {
         // assert
         Assert.assertEquals(1, tagService.getSelectedTags().size());
 
-        RunningListViewModel runningList = runningListService.getRunningList();
+        RunningList runningList = runningListService.getRunningList();
 
-        List<TaskViewModel> tasks = runningList.getTasks();
+        List<Task> tasks = runningList.getTasks();
         Assert.assertEquals(2, tasks.size());
         Assert.assertEquals(2, tasks.get(0).getTags().size());
         Assert.assertEquals(2, tasks.get(1).getTags().size());
@@ -112,7 +111,7 @@ public class TagIntegrationTest extends BaseIntegrationTest {
 
         // act
         tagService.selectTag("tag1");
-        RunningListViewModel runningList = runningListService.getRunningList();
+        RunningList runningList = runningListService.getRunningList();
         tagService.selectTag("tag2");
         runningList = runningListService.getRunningList();
 
@@ -121,7 +120,7 @@ public class TagIntegrationTest extends BaseIntegrationTest {
 
 
 
-        List<TaskViewModel> tasks = runningList.getTasks();
+        List<Task> tasks = runningList.getTasks();
         Assert.assertEquals(2, tasks.size());
         Assert.assertEquals(2, tasks.get(0).getTags().size());
         Assert.assertEquals(2, tasks.get(1).getTags().size());
@@ -151,8 +150,8 @@ public class TagIntegrationTest extends BaseIntegrationTest {
         // assert
         Assert.assertEquals(2, tagService.getSelectedTags().size());
 
-        RunningListViewModel runningList = runningListService.getRunningList();
-        List<TaskViewModel> tasks = runningList.getTasks();
+        RunningList runningList = runningListService.getRunningList();
+        List<Task> tasks = runningList.getTasks();
         Assert.assertEquals(2, tasks.size());
         Assert.assertEquals(2, tasks.get(0).getTags().size());
         Assert.assertEquals(2, tasks.get(1).getTags().size());

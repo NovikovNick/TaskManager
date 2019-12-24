@@ -1,7 +1,10 @@
 package com.metalheart.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.model.DeleteTaskRequest;
+import com.metalheart.model.RunningList;
 import com.metalheart.model.RunningListAction;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
@@ -10,7 +13,6 @@ import com.metalheart.model.WeekWorkLog;
 import com.metalheart.model.jpa.RunningListArchiveJpa;
 import com.metalheart.model.jpa.RunningListArchiveJpaPK;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
-import com.metalheart.model.rest.response.RunningListViewModel;
 import com.metalheart.model.service.WeekWorkLogUpdateRequest;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.RunningListArchiveService;
@@ -53,6 +55,9 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
     @Autowired
     private ConversionService conversionService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     public Task createTask(Task request) {
@@ -207,11 +212,11 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
             throw new RunningListArchiveAlreadyExistException(weekId);
         }
 
-        RunningListViewModel runningList = runningListService.getRunningList();
+        RunningList runningList = runningListService.getRunningList();
 
         RunningListArchiveJpa archiveToSave = RunningListArchiveJpa.builder()
             .id(conversionService.convert(weekId, RunningListArchiveJpaPK.class))
-            .archive(conversionService.convert(runningList, String.class))
+            .archive(toJson(runningList))
             .build();
 
         runningListCommandManager.execute(new RunningListAction<Void>() {
@@ -281,5 +286,13 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
                 log.info("Operation of tasks reordering was undone");
             }
         });
+    }
+
+    private String toJson(RunningList runningList) {
+        try {
+            return objectMapper.writeValueAsString(runningList);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

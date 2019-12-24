@@ -6,10 +6,11 @@ import com.metalheart.exception.NoSuchRunningListArchiveException;
 import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.exception.UnableToRedoException;
 import com.metalheart.exception.UnableToUndoException;
+import com.metalheart.model.RunningList;
 import com.metalheart.model.WeekId;
 import com.metalheart.model.request.CRUDTagRequest;
 import com.metalheart.model.request.GetArchiveRequest;
-import com.metalheart.model.rest.response.RunningListViewModel;
+import com.metalheart.model.response.RunningListViewModel;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
@@ -65,7 +66,7 @@ public class RunningListController {
     @ApiOperation(value = "Get running list for current week", response = RunningListViewModel.class)
     public RunningListViewModel getTaskList() {
 
-        return runningListService.getRunningList();
+        return conversionService.convert(runningListService.getRunningList(), RunningListViewModel.class);
     }
 
     @PostMapping(
@@ -83,7 +84,9 @@ public class RunningListController {
         try {
             WeekId weekId = dateService.getCurrentWeekId();
             runningListCommandService.archive(weekId);
-            return ResponseEntity.ok(runningListService.getRunningList());
+            RunningList runningList = runningListService.getRunningList();
+            RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
+            return ResponseEntity.ok(viewModel);
         } catch (RunningListArchiveAlreadyExistException e) {
             log.warn(e.getMessage(), e);
             return ResponseEntity.unprocessableEntity().build();
@@ -98,8 +101,9 @@ public class RunningListController {
 
         try {
             WeekId weekId = conversionService.convert(request, WeekId.class);
-            RunningListViewModel res = archiveService.getNext(weekId);
-            return ResponseEntity.ok(res);
+            RunningList runningList = archiveService.getNext(weekId);
+            RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
+            return ResponseEntity.ok(viewModel);
         } catch (NoSuchRunningListArchiveException e) {
             log.warn(e.getMessage(), e);
             return ResponseEntity.notFound().build();
@@ -114,8 +118,9 @@ public class RunningListController {
 
         try {
             WeekId weekId = conversionService.convert(request, WeekId.class);
-            RunningListViewModel res = archiveService.getPrev(weekId);
-            return ResponseEntity.ok(res);
+            RunningList runningList = archiveService.getPrev(weekId);
+            RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
+            return ResponseEntity.ok(viewModel);
         } catch (NoSuchRunningListArchiveException e) {
             log.warn(e.getMessage(), e);
             return ResponseEntity.notFound().build();
@@ -135,7 +140,9 @@ public class RunningListController {
 
         try {
             commandManager.undo();
-            return ResponseEntity.ok(runningListService.getRunningList());
+            RunningList runningList = runningListService.getRunningList();
+            RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
+            return ResponseEntity.ok(viewModel);
         } catch (UnableToUndoException e) {
             log.warn(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
@@ -155,7 +162,9 @@ public class RunningListController {
 
         try {
             commandManager.redo();
-            return ResponseEntity.ok(runningListService.getRunningList());
+            RunningList runningList = runningListService.getRunningList();
+            RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
+            return ResponseEntity.ok(viewModel);
         } catch (UnableToRedoException e) {
             log.warn(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
@@ -170,7 +179,9 @@ public class RunningListController {
     public ResponseEntity<RunningListViewModel> addTaskTag(@Valid @RequestBody CRUDTagRequest tag) {
 
         tagService.selectTag(tag.getTag());
-        return ResponseEntity.ok(runningListService.getRunningList());
+        RunningList runningList = runningListService.getRunningList();
+        RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
+        return ResponseEntity.ok(viewModel);
     }
 
     @DeleteMapping(
@@ -180,6 +191,8 @@ public class RunningListController {
     public ResponseEntity<RunningListViewModel> removeTaskTag(@Valid @RequestBody CRUDTagRequest tag) {
 
         tagService.removeSelectedTag(tag.getTag());
-        return ResponseEntity.ok(runningListService.getRunningList());
+        RunningList runningList = runningListService.getRunningList();
+        RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
+        return ResponseEntity.ok(viewModel);
     }
 }

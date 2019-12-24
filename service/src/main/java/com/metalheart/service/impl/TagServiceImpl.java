@@ -3,7 +3,6 @@ package com.metalheart.service.impl;
 import com.metalheart.model.Tag;
 import com.metalheart.model.jpa.TagJpa;
 import com.metalheart.model.jpa.TaskJpa;
-import com.metalheart.model.rest.response.TagViewModel;
 import com.metalheart.repository.inmemory.SelectedTagRepository;
 import com.metalheart.repository.jpa.TagJpaRepository;
 import com.metalheart.repository.jpa.TaskJpaRepository;

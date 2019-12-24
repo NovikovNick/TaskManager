@@ -1,9 +1,8 @@
 package com.metalheart.test.integration.runninglist;
 
+import com.metalheart.model.RunningList;
 import com.metalheart.model.Task;
 import com.metalheart.model.WeekId;
-import com.metalheart.model.rest.response.RunningListViewModel;
-import com.metalheart.model.rest.response.TaskViewModel;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
@@ -67,10 +66,10 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
         Assert.assertTrue(archiveService.hasPreviousArchive(weekId));
 
-        RunningListViewModel archive = archiveService.getPrev(weekId);
+        RunningList archive = archiveService.getPrev(weekId);
         Assert.assertNotNull(archive);
 
-        List<TaskViewModel> tasks = archive.getTasks();
+        List<Task> tasks = archive.getTasks();
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());
@@ -133,10 +132,10 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
         Assert.assertTrue(archiveService.hasPreviousArchive(weekId));
 
-        RunningListViewModel archive = archiveService.getPrev(weekId);
+        RunningList archive = archiveService.getPrev(weekId);
         Assert.assertNotNull(archive);
 
-        List<TaskViewModel> tasks = archive.getTasks();
+        List<Task> tasks = archive.getTasks();
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());

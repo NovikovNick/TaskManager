@@ -1,7 +1,9 @@
 package com.metalheart.test.integration.runninglist;
 
+import com.metalheart.model.RunningList;
 import com.metalheart.model.Task;
-import com.metalheart.model.rest.response.RunningListViewModel;
+import com.metalheart.model.TaskStatus;
+import com.metalheart.model.WeekWorkLog;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
@@ -16,6 +18,8 @@ import static com.metalheart.model.TaskStatus.DONE;
 import static com.metalheart.model.TaskStatus.IN_PROGRESS;
 import static com.metalheart.model.TaskStatus.NONE;
 import static com.metalheart.model.TaskStatus.TO_DO;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
 public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
@@ -45,9 +49,11 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.changeTaskStatus(createdTask.getId(), 0, IN_PROGRESS);
 
         // assert
-        RunningListViewModel runningList = runningListService.getRunningList();
-        List<String> statuses = runningList.getTasks().get(0).getStatus();
-        assertEquals(toStingList(IN_PROGRESS, NONE, NONE, NONE, NONE, NONE, NONE), statuses);
+        RunningList runningList = runningListService.getRunningList();
+        List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
+            .stream().map(WeekWorkLog::getStatus)
+            .collect(toList());
+        assertEquals(asList(IN_PROGRESS, NONE, NONE, NONE, NONE, NONE, NONE), statuses);
     }
 
     @Test
@@ -64,9 +70,11 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         commandManager.undo();
 
         // assert
-        RunningListViewModel runningList = runningListService.getRunningList();
-        List<String> statuses = runningList.getTasks().get(0).getStatus();
-        assertEquals(toStingList(NONE, NONE, NONE, NONE, NONE, NONE, NONE), statuses);
+        RunningList runningList = runningListService.getRunningList();
+        List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
+            .stream().map(WeekWorkLog::getStatus)
+            .collect(toList());
+        assertEquals(asList(NONE, NONE, NONE, NONE, NONE, NONE, NONE), statuses);
     }
 
     @Test
@@ -84,9 +92,11 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         commandManager.undo();
 
         // assert
-        RunningListViewModel runningList = runningListService.getRunningList();
-        List<String> statuses = runningList.getTasks().get(0).getStatus();
-        assertEquals(toStingList(TO_DO, NONE, NONE, NONE, NONE, NONE, NONE), statuses);
+        RunningList runningList = runningListService.getRunningList();
+        List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
+            .stream().map(WeekWorkLog::getStatus)
+            .collect(toList());
+        assertEquals(asList(TO_DO, NONE, NONE, NONE, NONE, NONE, NONE), statuses);
     }
 
     @Test
@@ -104,8 +114,10 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         commandManager.redo();
 
         // assert
-        RunningListViewModel runningList = runningListService.getRunningList();
-        List<String> statuses = runningList.getTasks().get(0).getStatus();
-        assertEquals(toStingList(DONE, DONE, DONE, DONE, DONE, DONE, DONE), statuses);
+        RunningList runningList = runningListService.getRunningList();
+        List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
+            .stream().map(WeekWorkLog::getStatus)
+            .collect(toList());
+        assertEquals(asList(DONE, DONE, DONE, DONE, DONE, DONE, DONE), statuses);
     }
 }
