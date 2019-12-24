@@ -2,7 +2,7 @@ package com.metalheart.service;
 
 import com.metalheart.model.WeekWorkLog;
 import com.metalheart.model.jpa.WeekWorkLogJpa;
-import com.metalheart.model.service.WeekWorkLogUpdateRequest;
+import com.metalheart.model.WeekWorkLogUpdateRequest;
 import java.util.List;
 
 public interface WorkLogService {

@@ -18,7 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @Import(SwaggerConfiguration.class)
 @EnableWebMvc
-@ComponentScan("com.metalheart.rest")
+@ComponentScan("com.metalheart.controller")
 public class RestConfiguration implements WebMvcConfigurer {
 
     @Autowired

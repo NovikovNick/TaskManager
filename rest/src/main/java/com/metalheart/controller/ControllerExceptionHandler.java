@@ -1,4 +1,4 @@
-package com.metalheart.rest;
+package com.metalheart.controller;
 
 import com.google.common.collect.Lists;
 import com.metalheart.model.response.FormValidationErrorViewModel;

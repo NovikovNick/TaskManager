@@ -1,6 +1,8 @@
 dependencies{
 
     compile project(":service")
+
+    compile 'javax.validation:validation-api:2.0.1.Final'
     
     compile("io.swagger:swagger-core:$swaggerCoreVersion")
     compile("io.springfox:springfox-swagger2:$springfoxVersion")

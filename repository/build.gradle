@@ -1,3 +1,6 @@
 dependencies{
-    compile project(":model")
+    compile project(":log")
+    compile project(":db")
+    
+    compile 'javax.persistence:javax.persistence-api:2.2'
 }

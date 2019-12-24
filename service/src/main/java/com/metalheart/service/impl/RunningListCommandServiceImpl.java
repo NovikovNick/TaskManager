@@ -13,7 +13,7 @@ import com.metalheart.model.WeekWorkLog;
 import com.metalheart.model.jpa.RunningListArchiveJpa;
 import com.metalheart.model.jpa.RunningListArchiveJpaPK;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
-import com.metalheart.model.service.WeekWorkLogUpdateRequest;
+import com.metalheart.model.WeekWorkLogUpdateRequest;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;

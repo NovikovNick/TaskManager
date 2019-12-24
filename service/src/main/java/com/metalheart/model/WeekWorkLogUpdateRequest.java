@@ -1,4 +1,4 @@
-package com.metalheart.model.service;
+package com.metalheart.model;
 
 import com.metalheart.log.LogContextField;
 import com.metalheart.model.TaskStatus;

@@ -1,4 +1,4 @@
-package com.metalheart.rest;
+package com.metalheart.controller;
 
 import com.metalheart.EndPoint;
 import com.metalheart.model.RunningList;

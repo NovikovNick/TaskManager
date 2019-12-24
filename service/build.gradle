@@ -1,3 +1,6 @@
 dependencies {
     compile project(":repository")
+
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: "$commonsLangVersion"
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: "$commonsCollectionsVersion"
 }

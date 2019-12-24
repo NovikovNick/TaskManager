@@ -5,7 +5,7 @@ import com.metalheart.model.TaskStatus;
 import com.metalheart.model.WeekWorkLog;
 import com.metalheart.model.jpa.WeekWorkLogJpa;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
-import com.metalheart.model.service.WeekWorkLogUpdateRequest;
+import com.metalheart.model.WeekWorkLogUpdateRequest;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.WorkLogService;
 import java.util.ArrayList;
