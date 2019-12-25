@@ -1,15 +1,13 @@
 package com.metalheart.service.impl;
 
 import com.metalheart.exception.RunningListArchiveAlreadyExistException;
-import com.metalheart.model.request.DeleteTaskRequest;
 import com.metalheart.model.RunningList;
 import com.metalheart.model.RunningListAction;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.WeekId;
-import com.metalheart.model.WeekWorkLog;
-import com.metalheart.model.request.WeekWorkLogUpdateRequest;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
+import com.metalheart.model.request.WeekWorkLogUpdateRequest;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
@@ -22,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 
 import static java.util.stream.Collectors.toList;
@@ -49,9 +46,6 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     @Autowired
     private RunningListService runningListService;
 
-    @Autowired
-    private ConversionService conversionService;
-
     @Override
     public Task createTask(Task request) {
 
@@ -69,13 +63,13 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
             @Override
             public void redo() {
-                taskService.create(request);
+                taskService.undoRemoving(task.getId());
                 log.info("Undone operation of task creating was redone");
             }
 
             @Override
             public void undo() {
-                taskService.delete(task);
+                taskService.delete(task.getId());
                 log.info("Operation of task creating was undone");
             }
         });
@@ -131,34 +125,24 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     @Override
     public void delete(Integer taskId) {
 
-        List<WeekWorkLog> workLogs = weekWorkLogJpaRepository.findAllByTaskId(taskId)
-            .stream()
-            .map(weekWorkLogJpa -> conversionService.convert(weekWorkLogJpa, WeekWorkLog.class))
-            .collect(toList());
-
-        DeleteTaskRequest deleteRequest = DeleteTaskRequest.builder()
-            .task(taskService.getTask(taskId))
-            .workLogs(workLogs)
-            .build();
-
         runningListCommandManager.execute(new RunningListAction<Void>() {
 
             @Override
             public Void execute() {
-                taskService.deleteTaskWithWorklog(deleteRequest);
+                taskService.delete(taskId);
                 log.info("Task has been removed ");
                 return null;
             }
 
             @Override
             public void redo() {
-                taskService.deleteTaskWithWorklog(deleteRequest);
+                taskService.delete(taskId);
                 log.info("Undone operation of task removing was redone");
             }
 
             @Override
             public void undo() {
-                taskService.undoRemoving(deleteRequest);
+                taskService.undoRemoving(taskId);
                 log.info("Operation of task removing was undone");
             }
         });

@@ -1,6 +1,5 @@
 package com.metalheart.service;
 
-import com.metalheart.model.request.DeleteTaskRequest;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
 import java.util.List;
@@ -16,13 +15,11 @@ public interface TaskService {
 
     Task create(Task request);
 
-    void delete(Task task);
+    Task save(Task task);
 
-    void save(Task task);
+    void delete(Integer taskId);
 
-    void deleteTaskWithWorklog(DeleteTaskRequest request);
-
-    void undoRemoving(DeleteTaskRequest request);
+    void undoRemoving(Integer taskId);
 
     void save(List<Task> tasks);
 }

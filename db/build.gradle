@@ -16,71 +16,12 @@ buildscript {
 
 plugins {
     id "org.flywaydb.flyway" version "5.2.4"
-    id 'nu.studer.jooq' version '3.0.3'
 }
 
 dependencies {
-    
     compile group: "org.springframework.boot", name: "spring-boot-starter-data-jpa", version: "$springBootVersion"
-    
-    compile group: 'org.flywaydb', name: 'flyway-core', version:"$flywayDbVersion"
-    compile group: "org.springframework.boot", name: "spring-boot-starter-jdbc", version:"$springBootVersion"
-    compile group: "org.postgresql", name: "postgresql", version:"$postgreSqlVersion"
 
-    jooqRuntime group: "org.postgresql", name: "postgresql", version:"$postgreSqlVersion"
-    jooqRuntime group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
-    jooqRuntime group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
-    jooqRuntime group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
-    jooqRuntime group: 'javax.activation', name: 'javax.activation-api', version: '1.2.0'
-    
-    compile group: "org.jooq", name: "jooq", version: "$jooqVersion"
-    compile group: "org.jooq", name: "jooq-codegen", version: "$jooqVersion"
-    compile group: "org.jooq", name: "jooq-meta", version: "$jooqVersion"
-    compile group: "com.sun.xml.bind", name: "jaxb-core", version:"$jaxbVersion"
-    compile group: "javax.xml.bind", name: "jaxb-api", version:"$jaxbVersion"
-    compile group: "com.sun.xml.bind", name: "jaxb-impl", version:"$jaxbVersion"
+    compile group: 'org.flywaydb', name: 'flyway-core', version: "$flywayDbVersion"
+    compile group: "org.springframework.boot", name: "spring-boot-starter-jdbc", version: "$springBootVersion"
+    compile group: "org.postgresql", name: "postgresql", version: "$postgreSqlVersion"
 }
-
-// load properties from source project
-/*Properties props = new Properties()
-props.load(new FileInputStream("../gradle.properties"))
-props.each { prop ->
-    project.ext.set(prop.key, prop.value)
-}*/
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src/main/java']
-        }
-    }
-}
-
-jooq {
-    version = "$jooqVersion"
-    taskmanager(sourceSets.main) {
-        jdbc {
-            driver = 'org.postgresql.Driver'
-            url = 'jdbc:postgresql://localhost:5432/taskmanager'
-            user = 'metalheart'
-            password = 'metalheart'
-        }
-        generator {
-            name = 'org.jooq.codegen.DefaultGenerator'
-            strategy {
-                name = 'org.jooq.codegen.DefaultGeneratorStrategy'
-            }
-            database {
-                name = 'org.jooq.meta.postgres.PostgresDatabase'
-                inputSchema = 'public'
-                includes = '.*'
-            }
-            generate {
-            }
-            target {
-                packageName = 'com.metalheart.model.jooq'
-                directory = '../db/src/main/java/com/metalheart/model/jooq'
-            }
-        }
-    }
-}
-

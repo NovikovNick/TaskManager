@@ -16,6 +16,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Data
 @AllArgsConstructor
@@ -39,9 +41,12 @@ public class TaskJpa {
     @Column(nullable = false)
     private Integer priority;
 
+    // todo: check it, add tests
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private ZonedDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "modified_at")
     private ZonedDateTime modifiedAt;
 
@@ -52,4 +57,7 @@ public class TaskJpa {
         inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id")
     )
     private List<TagJpa> tags;
+
+    @Column
+    private boolean deleted;
 }
