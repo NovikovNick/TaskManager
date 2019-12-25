@@ -1,7 +1,5 @@
 package com.metalheart.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.model.DeleteTaskRequest;
 import com.metalheart.model.RunningList;
@@ -10,10 +8,8 @@ import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.WeekId;
 import com.metalheart.model.WeekWorkLog;
-import com.metalheart.model.jpa.RunningListArchiveJpa;
-import com.metalheart.model.jpa.RunningListArchiveJpaPK;
-import com.metalheart.model.jpa.WeekWorkLogJpaPK;
 import com.metalheart.model.WeekWorkLogUpdateRequest;
+import com.metalheart.model.jpa.WeekWorkLogJpaPK;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
@@ -55,9 +51,6 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
     @Autowired
     private ConversionService conversionService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Override
     public Task createTask(Task request) {
@@ -213,32 +206,26 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
         }
 
         RunningList runningList = runningListService.getRunningList();
-
-        RunningListArchiveJpa archiveToSave = RunningListArchiveJpa.builder()
-            .id(conversionService.convert(weekId, RunningListArchiveJpaPK.class))
-            .archive(toJson(runningList))
-            .build();
+        runningList.setWeekId(weekId);
 
         runningListCommandManager.execute(new RunningListAction<Void>() {
 
-            private RunningListArchiveJpa archive;
-
             @Override
             public Void execute() {
-                this.archive = runningListArchiveService.save(archiveToSave);
+                runningListArchiveService.save(runningList);
                 log.info("Archive has been saved");
                 return null;
             }
 
             @Override
             public void redo() {
-                this.archive = runningListArchiveService.save(archiveToSave);
+                runningListArchiveService.save(runningList);
                 log.info("Undone operation of archive saving was redone");
             }
 
             @Override
             public void undo() {
-                runningListArchiveService.delete(this.archive);
+                runningListArchiveService.delete(runningList.getWeekId());
                 log.info("Operation of archive saving was undone");
             }
         });
@@ -286,13 +273,5 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
                 log.info("Operation of tasks reordering was undone");
             }
         });
-    }
-
-    private String toJson(RunningList runningList) {
-        try {
-            return objectMapper.writeValueAsString(runningList);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

@@ -88,13 +88,15 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
     }
 
     @Override
-    public RunningListArchiveJpa save(RunningListArchiveJpa archiveToSave) {
-        return runningListArchiveRepository.save(archiveToSave);
+    public RunningList save(RunningList runningList) {
+        RunningListArchiveJpa entity = conversionService.convert(runningList, RunningListArchiveJpa.class);
+        runningListArchiveRepository.save(entity);
+        return runningList;
     }
 
     @Override
-    public void delete(RunningListArchiveJpa archive) {
-        runningListArchiveRepository.delete(archive);
+    public void delete(WeekId weekId) {
+        runningListArchiveRepository.deleteById(conversionService.convert(weekId, RunningListArchiveJpaPK.class));
     }
 
     private RunningList getRunningList(WeekId weekId) {

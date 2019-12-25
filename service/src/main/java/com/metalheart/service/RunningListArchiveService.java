@@ -3,7 +3,6 @@ package com.metalheart.service;
 import com.metalheart.exception.NoSuchRunningListArchiveException;
 import com.metalheart.model.RunningList;
 import com.metalheart.model.WeekId;
-import com.metalheart.model.jpa.RunningListArchiveJpa;
 
 public interface RunningListArchiveService {
 
@@ -15,7 +14,7 @@ public interface RunningListArchiveService {
 
     boolean isArchiveExist(WeekId weekId);
 
-    RunningListArchiveJpa save(RunningListArchiveJpa archiveToSave);
+    RunningList save(RunningList archiveToSave);
 
-    void delete(RunningListArchiveJpa archive);
+    void delete(WeekId weekId);
 }
