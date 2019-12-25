@@ -1,6 +1,6 @@
 package com.metalheart.service;
 
-import com.metalheart.model.DeleteTaskRequest;
+import com.metalheart.model.request.DeleteTaskRequest;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
 import java.util.List;

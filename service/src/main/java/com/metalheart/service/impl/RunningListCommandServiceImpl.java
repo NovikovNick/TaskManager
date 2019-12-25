@@ -1,14 +1,14 @@
 package com.metalheart.service.impl;
 
 import com.metalheart.exception.RunningListArchiveAlreadyExistException;
-import com.metalheart.model.DeleteTaskRequest;
+import com.metalheart.model.request.DeleteTaskRequest;
 import com.metalheart.model.RunningList;
 import com.metalheart.model.RunningListAction;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.WeekId;
 import com.metalheart.model.WeekWorkLog;
-import com.metalheart.model.WeekWorkLogUpdateRequest;
+import com.metalheart.model.request.WeekWorkLogUpdateRequest;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.RunningListArchiveService;

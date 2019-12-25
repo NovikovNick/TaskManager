@@ -1,7 +1,7 @@
 package com.metalheart.service.impl;
 
 import com.metalheart.log.LogOperationContext;
-import com.metalheart.model.DeleteTaskRequest;
+import com.metalheart.model.request.DeleteTaskRequest;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.jooq.tables.records.TaskRecord;

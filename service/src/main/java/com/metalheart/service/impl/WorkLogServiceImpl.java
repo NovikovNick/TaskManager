@@ -3,7 +3,7 @@ package com.metalheart.service.impl;
 import com.metalheart.log.LogOperationContext;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.WeekWorkLog;
-import com.metalheart.model.WeekWorkLogUpdateRequest;
+import com.metalheart.model.request.WeekWorkLogUpdateRequest;
 import com.metalheart.model.jpa.WeekWorkLogJpa;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
