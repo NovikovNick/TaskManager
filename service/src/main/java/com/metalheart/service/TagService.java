@@ -1,7 +1,6 @@
 package com.metalheart.service;
 
 import com.metalheart.model.Tag;
-import com.metalheart.model.jpa.TagJpa;
 import java.util.List;
 
 public interface TagService {
@@ -17,6 +16,4 @@ public interface TagService {
     void  selectTag(String tag);
 
     void removeSelectedTag(String tag);
-
-    TagJpa getTag(String tagTitle);
 }

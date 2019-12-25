@@ -123,9 +123,7 @@ public class TaskServiceImpl implements TaskService {
 
         taskJooqRepository.saveAndGenerateIdIfNotPresent(record);
         if (CollectionUtils.isNotEmpty(request.getTags())) {
-            request.getTags().stream()
-                .map(tag -> tagService.getTag(tag.getTitle()))
-                .forEach(tag -> tagService.addTagToTask(tag.getTitle(), record.getId()));
+            request.getTags().stream().forEach(tag -> tagService.addTagToTask(tag.getTitle(), record.getId()));
         }
         return conversionService.convert(record, Task.class);
     }

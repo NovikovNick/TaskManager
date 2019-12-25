@@ -83,9 +83,7 @@ public class TagServiceImpl implements TagService {
         }
     }
 
-
-    @Override
-    public TagJpa getTag(String tagTitle) {
+    private TagJpa getTag(String tagTitle) {
 
         if (tagJpaRepository.existsByTitle(tagTitle)) {
 
