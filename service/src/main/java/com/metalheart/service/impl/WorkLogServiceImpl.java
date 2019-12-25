@@ -3,9 +3,9 @@ package com.metalheart.service.impl;
 import com.metalheart.log.LogOperationContext;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.WeekWorkLog;
+import com.metalheart.model.WeekWorkLogUpdateRequest;
 import com.metalheart.model.jpa.WeekWorkLogJpa;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
-import com.metalheart.model.WeekWorkLogUpdateRequest;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.WorkLogService;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class WorkLogServiceImpl implements WorkLogService {
 
     @Override
     @LogOperationContext
-    public WeekWorkLogJpa save(WeekWorkLogUpdateRequest request) {
+    public void save(WeekWorkLogUpdateRequest request) {
 
 
         WeekWorkLogJpaPK id = WeekWorkLogJpaPK.builder()
@@ -37,7 +37,7 @@ public class WorkLogServiceImpl implements WorkLogService {
             .dayIndex(request.getDayIndex())
             .build();
 
-        return weekWorkLogJpaRepository.save(WeekWorkLogJpa.builder()
+        weekWorkLogJpaRepository.save(WeekWorkLogJpa.builder()
             .id(id)
             .status(request.getStatus())
             .build());
