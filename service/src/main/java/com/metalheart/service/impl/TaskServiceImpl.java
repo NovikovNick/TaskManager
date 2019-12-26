@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,7 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TagJpaRepository tagJpaRepository;
 
-    @PostConstruct
+    @Override
     public void reorder() {
 
         List<Task> taskList = getAllTasks();
@@ -60,6 +59,8 @@ public class TaskServiceImpl implements TaskService {
             taskList.get(i).setPriority(i);
         }
         save(taskList);
+
+        log.info("All task have been ordered");
     }
 
     @Override
