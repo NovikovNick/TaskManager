@@ -27,6 +27,9 @@ public class RestConfiguration implements WebMvcConfigurer {
     @Autowired
     private Collection<Converter> converters;
 
+    @Autowired
+    private AppRestProperties appRestProperties;
+
     @Bean
     public MessageSourceAccessor messageSourceAccessor() {
         return new MessageSourceAccessor(messageSource);
@@ -60,11 +63,11 @@ public class RestConfiguration implements WebMvcConfigurer {
     @Bean
     public LogRequestResponseFilter getLogRequestResponseFilter() {
         return LogRequestResponseFilter.builder()
-            .maxPayloadLength(10000)
-            .includeRequest(true)
-            .includeRequestHeaders(false)
-            .includeResponse(false)
-            .includeResponseHeaders(false)
+            .maxPayloadLength(appRestProperties.getMaxPayloadLength())
+            .includeRequest(appRestProperties.isIncludeRequest())
+            .includeRequestHeaders(appRestProperties.isIncludeRequestHeaders())
+            .includeResponse(appRestProperties.isIncludeResponse())
+            .includeResponseHeaders(appRestProperties.isIncludeResponseHeaders())
             .build();
     }
 }
