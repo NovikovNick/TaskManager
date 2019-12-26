@@ -36,6 +36,9 @@ public interface TaskViewModelToTaskMapper {
     @Mapping(source = "title", target = "text")
     TagViewModel map(Tag task);
 
+    @Mapping(source = "text", target = "title")
+    Tag map(TagViewModel task);
+
     @Mapping(source = "weekId.year", target = "year")
     @Mapping(source = "weekId.week", target = "week")
     RunningListViewModel map(RunningList source);
