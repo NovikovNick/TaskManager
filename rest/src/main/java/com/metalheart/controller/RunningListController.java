@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,7 +65,7 @@ public class RunningListController {
 
     @GetMapping(path = EndPoint.RUNNING_LIST, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get running list for current week", response = RunningListViewModel.class)
-    public RunningListViewModel getTaskList() {
+    public RunningListViewModel getTaskList(Authentication authentication) {
 
         return conversionService.convert(runningListService.getRunningList(), RunningListViewModel.class);
     }

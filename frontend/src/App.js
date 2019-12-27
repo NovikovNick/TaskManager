@@ -11,6 +11,7 @@ import * as REST from "./rest/rest";
 import * as Store from "./store/ReduxActions";
 
 import Page from "./page/Page";
+import PageLogin from "./page/PageLogin";
 
 const store = createStore(combineReducers(reducers),
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
@@ -39,7 +40,8 @@ export default function App() {
             <Suspense fallback={<div>loading...</div>}>
 
                 <Router>
-                    <Route path="/" component={Page}/>
+                    <Route path="/signin" component={PageLogin}/>
+                    <Route exact path="/" component={Page}/>
                 </Router>
 
             </Suspense>

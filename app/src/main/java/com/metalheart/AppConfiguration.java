@@ -3,6 +3,11 @@ package com.metalheart;
 import com.metalheart.config.RepositoryConfiguration;
 import com.metalheart.config.RestConfiguration;
 import com.metalheart.config.ServiceConfiguration;
+import com.metalheart.service.TaskService;
+import com.metalheart.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -13,4 +18,25 @@ import org.springframework.context.annotation.Import;
     RepositoryConfiguration.class
 })
 public class AppConfiguration {
+
+    @Autowired
+    private AppProperties properties;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private UserService userService;
+
+    @Bean
+    public ApplicationRunner applicationRunner() {
+        return arg -> {
+
+            if(!userService.isUserExistByEmail(properties.getDefaultEmail())) {
+                userService.createUser(properties.getDefaultUsername(),
+                    properties.getDefaultEmail(), properties.getDefaultPassword());
+            }
+            taskService.reorder();
+        };
+    }
 }

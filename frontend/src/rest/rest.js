@@ -23,10 +23,21 @@ function parseJSON(response) {
  * @return {Promise}           The request promise
  */
 function rest(url, options) {
+
     return new Promise((resolve, reject) => {
         fetch(url, options)
+            .then(response => {
+
+                if (response.status === 403) {
+                    window.location = "/signin";
+                    console.log("Unauthorised ", response)
+                }
+
+                return response;
+            })
             .then(parseJSON)
             .then((response) => {
+
                 if (response.ok) {
                     return resolve(response.json);
                 }
@@ -229,3 +240,19 @@ export function addTag(tag) {
     return rest('taskmanager/tag', settings);
 }
 
+export function signIn({username, password}) {
+
+    const settings = {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            username: username,
+            password: password
+        })
+    };
+    return rest('/auth/signin', settings);
+}

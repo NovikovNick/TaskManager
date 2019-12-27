@@ -1,4 +1,4 @@
-package com.metalheart.config;
+package com.metalheart;
 
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,23 +10,19 @@ import org.springframework.validation.annotation.Validated;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "taskmanager.rest")
+@ConfigurationProperties(prefix = "taskmanager.security")
 @AllArgsConstructor
 @NoArgsConstructor
 @Validated
-public class AppRestProperties {
+public class AppProperties {
 
     @NotNull
-    private Integer maxPayloadLength;
-
-    private boolean includeRequest;
-
-    private boolean includeRequestHeaders;
-
-    private boolean includeResponse;
-
-    private boolean includeResponseHeaders;
+    private String defaultUsername;
 
     @NotNull
-    private String frontUrl;
+    private String defaultEmail;
+
+    @NotNull
+    private String defaultPassword;
+
 }
