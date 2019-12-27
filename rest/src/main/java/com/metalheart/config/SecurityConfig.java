@@ -1,5 +1,6 @@
 package com.metalheart.config;
 
+import com.metalheart.security.OAuth2Registration;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,18 +13,17 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private AppRestProperties properties;
+    private OAuth2Registration oAuth2Registration;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        AuthenticationSuccessHandler handler;
+
         http.authorizeRequests()
             .antMatchers(
                 "/js/**",
@@ -34,14 +34,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/auth/signin/**").permitAll()
             .anyRequest().authenticated()
             .and()
-
         .oauth2Login()
-            .defaultSuccessUrl(properties.getFrontUrl(), true)
+            .successHandler(oAuth2Registration)
             .and()
         .csrf()
             .disable()
         .exceptionHandling()
             .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
+            .and()
         ;
     }
 
