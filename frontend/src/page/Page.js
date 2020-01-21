@@ -5,12 +5,15 @@ import * as Store from "../store/ReduxActions";
 
 import RunningList from "../container/RunningList";
 
-import Button from "react-bootstrap/Button";
 import * as REST from "../rest/rest";
 import {Container, Row, Col, Nav} from "react-bootstrap";
 
 class Page extends Component {
     render() {
+
+        const signout = function () {
+            REST.signOut().then(() => window.location = "/signin");
+        }
 
         return (
             <Container fluid>
@@ -30,11 +33,9 @@ class Page extends Component {
                             </Row>
 
                             <Nav.Item><Nav.Link onClick={REST.getUserProfile}>Load User Profile</Nav.Link></Nav.Item>
-                            <Nav.Item><Nav.Link  onClick={() => alert("1")}>1</Nav.Link></Nav.Item>
+                            <Nav.Item><Nav.Link  onClick={signout}>Logout</Nav.Link></Nav.Item>
                             <Nav.Item><Nav.Link  onClick={() => alert("2")}>2</Nav.Link></Nav.Item>
                             <Nav.Item><Nav.Link  onClick={() => alert("3")}>3</Nav.Link></Nav.Item>
-
-
                         </Nav>
                     </Col>
 

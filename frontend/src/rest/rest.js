@@ -240,6 +240,14 @@ export function addTag(tag) {
     return rest('taskmanager/tag', settings);
 }
 
+export function signOut(){
+    const settings = {
+        method: 'GET',
+        credentials: 'include',
+    };
+    return rest('/auth/signout', settings)
+}
+
 export function signIn({username, password}) {
 
     const settings = {

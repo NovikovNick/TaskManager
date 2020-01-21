@@ -1,6 +1,7 @@
 package com.metalheart.config;
 
 import com.metalheart.security.AuthenticationAfterRegistrationFilter;
+import com.metalheart.security.LogoutHandler;
 import com.metalheart.security.OAuth2Registration;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import static com.metalheart.EndPoint.AUTH_SIGN_OUT;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -26,6 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthenticationAfterRegistrationFilter registrationFilter;
+
+    @Autowired
+    private LogoutHandler logoutHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -45,6 +52,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
         .oauth2Login()
             .successHandler(oAuth2Registration)
+            .and()
+        .logout()
+            .invalidateHttpSession(true)
+            .clearAuthentication(true)
+            .logoutRequestMatcher(new AntPathRequestMatcher(AUTH_SIGN_OUT))
+            .logoutSuccessHandler(logoutHandler)
+            .permitAll()
             .and()
         .csrf()
             .disable()
