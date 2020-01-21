@@ -1,7 +1,6 @@
 package com.metalheart.config;
 
 import com.metalheart.rest.LogRequestResponseFilter;
-import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -9,8 +8,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -25,10 +22,7 @@ public class RestConfiguration implements WebMvcConfigurer {
     private MessageSource messageSource;
 
     @Autowired
-    private Collection<Converter> converters;
-
-    @Autowired
-    private AppRestProperties appRestProperties;
+    private AppProperties appProperties;
 
     @Bean
     public MessageSourceAccessor messageSourceAccessor() {
@@ -55,19 +49,14 @@ public class RestConfiguration implements WebMvcConfigurer {
                 "classpath:/static/js/");
     }
 
-    @Override
-    public void addFormatters(FormatterRegistry registry) {
-        converters.forEach(registry::addConverter);
-    }
-
     @Bean
     public LogRequestResponseFilter getLogRequestResponseFilter() {
         return LogRequestResponseFilter.builder()
-            .maxPayloadLength(appRestProperties.getMaxPayloadLength())
-            .includeRequest(appRestProperties.isIncludeRequest())
-            .includeRequestHeaders(appRestProperties.isIncludeRequestHeaders())
-            .includeResponse(appRestProperties.isIncludeResponse())
-            .includeResponseHeaders(appRestProperties.isIncludeResponseHeaders())
+            .maxPayloadLength(appProperties.getRest().getMaxPayloadLength())
+            .includeRequest(appProperties.getRest().isIncludeRequest())
+            .includeRequestHeaders(appProperties.getRest().isIncludeRequestHeaders())
+            .includeResponse(appProperties.getRest().isIncludeResponse())
+            .includeResponseHeaders(appProperties.getRest().isIncludeResponseHeaders())
             .build();
     }
 }

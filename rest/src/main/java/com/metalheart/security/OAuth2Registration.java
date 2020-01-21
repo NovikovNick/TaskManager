@@ -1,6 +1,7 @@
 package com.metalheart.security;
 
-import com.metalheart.config.AppRestProperties;
+import com.metalheart.config.AppProperties;
+import com.metalheart.model.User;
 import com.metalheart.service.UserService;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -18,7 +19,7 @@ public class OAuth2Registration extends SimpleUrlAuthenticationSuccessHandler {
 
 
     @Autowired
-    private AppRestProperties properties;
+    private AppProperties properties;
 
     @Autowired
     private UserService userService;
@@ -32,12 +33,19 @@ public class OAuth2Registration extends SimpleUrlAuthenticationSuccessHandler {
         String username = user.getAttribute("name");
         String email = user.getAttribute("email");
 
-
         if (!userService.isUserExistByEmail(email)) {
-            userService.createUser(username, email, RandomStringUtils.random(8));
+            userService.createUser(User.builder()
+                .username(username)
+                .email(email)
+                .password(RandomStringUtils.random(8))
+                .build());
         }
 
+        /*UsernamePasswordAuthenticationToken
+        Authentication authentication = authenticationManager.authenticate(token);
+        // Inject into security context
+        SecurityContextHolder.getContext().setAuthentication(authentication);*/
 
-        response.sendRedirect(properties.getFrontUrl());
+        response.sendRedirect(properties.getRest().getFrontUrl());
     }
 }

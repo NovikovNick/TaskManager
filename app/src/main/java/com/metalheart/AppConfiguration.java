@@ -1,8 +1,10 @@
 package com.metalheart;
 
+import com.metalheart.config.AppProperties;
 import com.metalheart.config.RepositoryConfiguration;
 import com.metalheart.config.RestConfiguration;
 import com.metalheart.config.ServiceConfiguration;
+import com.metalheart.model.User;
 import com.metalheart.service.TaskService;
 import com.metalheart.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +34,13 @@ public class AppConfiguration {
     public ApplicationRunner applicationRunner() {
         return arg -> {
 
-            if(!userService.isUserExistByEmail(properties.getDefaultEmail())) {
-                userService.createUser(properties.getDefaultUsername(),
-                    properties.getDefaultEmail(), properties.getDefaultPassword());
+            if(!userService.isUserExistByEmail(properties.getSecurity().getDefaultEmail())) {
+
+                userService.createUser(User.builder()
+                    .email(properties.getSecurity().getDefaultEmail())
+                    .username(properties.getSecurity().getDefaultUsername())
+                    .password(properties.getSecurity().getDefaultPassword())
+                    .build());
             }
             taskService.reorder();
         };

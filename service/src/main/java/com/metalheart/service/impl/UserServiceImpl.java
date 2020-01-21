@@ -4,15 +4,18 @@ import com.metalheart.model.User;
 import com.metalheart.model.jpa.UserJpa;
 import com.metalheart.repository.jpa.UserJpaRepository;
 import com.metalheart.service.UserService;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.metalheart.config.ServiceConfiguration.APP_CONVERSION_SERVICE;
 
 @Slf4j
 @Component
@@ -22,6 +25,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserJpaRepository repository;
 
     @Autowired
+    @Qualifier(APP_CONVERSION_SERVICE)
     private ConversionService conversionService;
 
     @Autowired
@@ -30,30 +34,35 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Optional<UserJpa> userOpt = repository.findByUsername(username);
+        UserJpa user = repository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("There is no such user with username: " + username));
 
-        if (userOpt.isPresent()) {
-            return conversionService.convert(userOpt.get(), User.class);
-        } else {
-            throw new UsernameNotFoundException("There is no such user with username: " + username);
-        }
+        return conversionService.convert(user, User.class);
     }
 
     @Override
-    public Integer createUser(String username, String email, String password) {
+    public User createUser(User user) {
 
         UserJpa res = repository.save(UserJpa.builder()
-            .username(username)
-            .email(email)
-            .password(encoder.encode(password))
+            .username(user.getUsername())
+            .email(user.getEmail())
+            .password(encoder.encode(user.getPassword()))
             .build());
 
         log.info("User has been created");
-        return res.getId();
+
+        return conversionService.convert(res, User.class);
     }
+
+
 
     @Override
     public boolean isUserExistByEmail(String email) {
         return repository.existsByEmail(email);
+    }
+
+    @Override
+    public User get(Integer id) {
+        return conversionService.convert(repository.getOne(id), User.class);
     }
 }

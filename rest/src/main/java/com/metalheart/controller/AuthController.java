@@ -1,6 +1,8 @@
 package com.metalheart.controller;
 
+import com.metalheart.EndPoint;
 import com.metalheart.model.request.AuthenticationRequest;
+import com.metalheart.service.AuthService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -8,9 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -20,28 +19,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthController {
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private AuthService authService;
 
-
-    @RequestMapping(value = "/signin", method = RequestMethod.POST)
+    @RequestMapping(value = EndPoint.AUTH_SIGN_IN, method = RequestMethod.POST)
     public AuthenticationResult signin(
         @RequestBody @Valid AuthenticationRequest authenticationRequest,
         HttpServletRequest httpServletRequest) throws AuthenticationException {
 
-        var token = new UsernamePasswordAuthenticationToken(
-            authenticationRequest.getUsername(),
-            authenticationRequest.getPassword()
-        );
-
-        Authentication authentication = authenticationManager.authenticate(token);
-
-        // Inject into security context
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
+        authService.authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
         final HttpSession session = httpServletRequest.getSession(true);
         session.setAttribute(

@@ -2,25 +2,11 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Store from "../store/ReduxActions";
-import LoginForm from "../component/LoginForm";
-import * as REST from "../rest/rest";
-
-import {Container} from 'react-bootstrap';
+import LoginRegistration from "../container/LoginRegistration";
 
 class PageLogin extends Component {
     render() {
-
-        return (
-            <div className="metalheart-wrapper">
-                <Container>
-                    <LoginForm schema={{
-                        formData: {username: '', password: ''},
-                        onSubmit: REST.signIn,
-                        onSuccess: () => { window.location = "/"}
-                    }}/>
-                </Container>
-            </div>
-        );
+        return (<LoginRegistration/>);
     }
 }
 

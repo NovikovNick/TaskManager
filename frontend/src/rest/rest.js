@@ -256,3 +256,31 @@ export function signIn({username, password}) {
     };
     return rest('/auth/signin', settings);
 }
+
+export function getUserProfile() {
+    const settings = {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-cache'
+    };
+    return rest('/user', settings);
+}
+
+export function signUp({username, email, password, confirmPassword}) {
+
+    const settings = {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            username: username,
+            email: email,
+            password: password,
+            confirmPassword: confirmPassword
+        })
+    };
+    return rest('/user', settings);
+}

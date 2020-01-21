@@ -1,0 +1,13 @@
+taskmanager:
+  security:
+    defaultUsername: test
+    defaultEmail: test@email.com
+    defaultPassword: 7uyGH*YU&H()JI0JI-0oK3wASR%4DE
+  rest:
+    maxPayloadLength: 10000
+    includeRequest: true
+    includeRequestHeaders: false
+    includeResponse: false
+    includeResponseHeaders: false
+    frontUrl: http://localhost:3000
+

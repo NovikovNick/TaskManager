@@ -23,7 +23,8 @@ public class EndPoint {
     public static final String RUNNING_LIST_REDO = "taskmanager/runninglist";
     public static final String RUNNING_LIST = "taskmanager/runninglist";
 
-
+    public static final String AUTH_SIGN_IN = "/auth/signin";
+    public static final String USER_REGISTRATION = "/user";
 
     private EndPoint() {
         throw new UnsupportedOperationException();

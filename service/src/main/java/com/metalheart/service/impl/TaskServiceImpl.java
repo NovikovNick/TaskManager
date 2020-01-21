@@ -21,10 +21,13 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.metalheart.config.ServiceConfiguration.APP_CONVERSION_SERVICE;
 
 @Slf4j
 @Component
@@ -40,6 +43,7 @@ public class TaskServiceImpl implements TaskService {
     private TaskPriorityRepository taskPriorityRepository;
 
     @Autowired
+    @Qualifier(APP_CONVERSION_SERVICE)
     private ConversionService conversionService;
 
     @Autowired

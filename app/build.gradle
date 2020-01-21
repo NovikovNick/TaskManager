@@ -1,22 +1,27 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-    }
-    dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion") }
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.0.3.RELEASE'
+    id 'com.bmuschko.docker-spring-boot-application' version '6.1.2'
 }
 
-apply plugin: 'org.springframework.boot'
-
 dependencies {
+
     compile project(":rest")
+
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
+    implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
 
     testCompile("io.rest-assured:rest-assured:$restAssuredVersion")
     testCompile "org.testcontainers:postgresql:$testContainersVersion"
+    testCompile("org.jsoup:jsoup:$jsoupVersion")
+    testCompile("org.apache.commons:commons-email:$apacheCommonsMail")
 }
 
-libsDirName = './../../docker'
-
-bootJar {
-    archiveName = "app.jar"
+docker {
+    springBootApplication {
+        baseImage = 'adoptopenjdk/openjdk11:alpine-jre'
+        ports = [8080]
+        images = ['running-list-server:latest']
+        jvmArgs = ['-Dspring.profiles.active=production', '-Xmx512m']
+    }
 }

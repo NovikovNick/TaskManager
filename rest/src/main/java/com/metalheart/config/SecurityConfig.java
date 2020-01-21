@@ -1,10 +1,12 @@
 package com.metalheart.config;
 
+import com.metalheart.security.AuthenticationAfterRegistrationFilter;
 import com.metalheart.security.OAuth2Registration;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -13,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 
 @Configuration
@@ -21,10 +24,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private OAuth2Registration oAuth2Registration;
 
+    @Autowired
+    private AuthenticationAfterRegistrationFilter registrationFilter;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.authorizeRequests()
+        http
+            .addFilterBefore(registrationFilter, AnonymousAuthenticationFilter.class)
+            .authorizeRequests()
             .antMatchers(
                 "/js/**",
                 "/css/**",
@@ -32,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/webjars/**").permitAll()
             .antMatchers("/taskmanager/**").authenticated()
             .antMatchers("/auth/signin/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/user").permitAll()
             .anyRequest().authenticated()
             .and()
         .oauth2Login()
@@ -39,6 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
         .csrf()
             .disable()
+        .httpBasic()
+            .and()
         .exceptionHandling()
             .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
             .and()

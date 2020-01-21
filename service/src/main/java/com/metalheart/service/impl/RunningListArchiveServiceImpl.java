@@ -11,9 +11,12 @@ import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.metalheart.config.ServiceConfiguration.APP_CONVERSION_SERVICE;
 
 @Slf4j
 @Component
@@ -29,6 +32,7 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
     private DateService dateService;
 
     @Autowired
+    @Qualifier(APP_CONVERSION_SERVICE)
     private ConversionService conversionService;
 
     @Transactional

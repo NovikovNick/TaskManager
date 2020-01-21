@@ -1,8 +1,12 @@
 package com.metalheart.service;
 
+import com.metalheart.model.User;
+
 public interface UserService {
 
-    Integer createUser(String username, String email, String password);
+    User createUser(User user);
 
     boolean isUserExistByEmail(String email);
+
+    User get(Integer id);
 }

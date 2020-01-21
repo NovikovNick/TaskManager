@@ -2,6 +2,10 @@ dependencies {
     compile project(":repository")
 
     compile group: "org.springframework.boot", name: "spring-boot-starter-security", version: "$springBootVersion"
+    compile group: "org.springframework.boot", name: "spring-boot-starter-thymeleaf", version: "$springBootVersion"
+    compile group: "org.springframework.boot", name: "spring-boot-starter-mail", version: "$springBootVersion"
+    
+    compile ("org.springframework.integration:spring-integration-core:$springVersion")
     
     compile group: 'org.apache.commons', name: 'commons-lang3', version: "$commonsLangVersion"
     compile group: 'org.apache.commons', name: 'commons-collections4', version: "$commonsCollectionsVersion"

@@ -1,23 +1,12 @@
+@import "../colors";
+
+
+
 $length: 20px;
 $running-list-min-width: 450px;
-$borderColor: #eee;
-$headerColor: #435d7d;
-$throwLine: black;
 $controlWidth: 45px;
 $taskTitleWidth: calc(#{$running-list-min-width} - 140px);
 $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
-
-@mixin linear-gradient($direction, $fromColor, $toColor) {
-
-  background-color: $toColor;
-  background-image: -webkit-gradient(linear, $direction, from($fromColor), to($toColor));
-  background-image: -webkit-linear-gradient($direction, $fromColor, $toColor);
-  background-image: -moz-linear-gradient($direction, $fromColor, $toColor);
-  background-image: -ms-linear-gradient($direction, $fromColor, $toColor);
-  background-image: -o-linear-gradient($direction, $fromColor, $toColor);
-  background-image: linear-gradient($direction, $fromColor, $toColor);
-  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1, StartColorStr='#{$fromColor}', EndColorStr='#{$toColor}');
-}
 
 .metalheart-running-list {
 
@@ -26,7 +15,7 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
   position: relative;
 
   .metalheart-running-list-header {
-    background: linear-gradient(bottom, $headerColor, lighten($headerColor, 10%));
+    background: $headerBackground;
     color: #fff;
     height: 40px;
     box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.5);
