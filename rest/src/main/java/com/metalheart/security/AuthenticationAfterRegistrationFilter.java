@@ -3,17 +3,14 @@ package com.metalheart.security;
 import com.metalheart.config.AppProperties;
 import com.metalheart.integration.gateway.RegistrationGateway;
 import com.metalheart.model.RegistrationResponse;
-import com.metalheart.model.User;
 import java.io.IOException;
 import java.util.UUID;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -68,17 +65,5 @@ public class AuthenticationAfterRegistrationFilter extends OncePerRequestFilter 
         }
 
         chain.doFilter(request, response);
-    }
-
-    @Data
-    public static class Token extends AbstractAuthenticationToken {
-
-        private User principal;
-        private Object credentials;
-
-        public Token(User principal) {
-            super(principal.getAuthorities());
-            this.principal = principal;
-        }
     }
 }

@@ -32,7 +32,7 @@ public class UserController {
     @Autowired
     private RegistrationGateway registrationGateway;
 
-    @GetMapping
+    @GetMapping(USER_REGISTRATION)
     public UserViewModel getUser(@AuthenticationPrincipal Object user) {
         return conversionService.convert(user, UserViewModel.class);
     }
