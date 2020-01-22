@@ -33,7 +33,7 @@ public class UserController {
     private RegistrationGateway registrationGateway;
 
     @GetMapping(USER_REGISTRATION)
-    public UserViewModel getUser(@AuthenticationPrincipal Object user) {
+    public UserViewModel getUser(@AuthenticationPrincipal User user) {
         return conversionService.convert(user, UserViewModel.class);
     }
 

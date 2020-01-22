@@ -29,6 +29,7 @@ export function setTaskList(taskList) {
     store.dispatch(Store.setRunningList(taskList));
 }
 
+
 export default function App() {
 
     return (

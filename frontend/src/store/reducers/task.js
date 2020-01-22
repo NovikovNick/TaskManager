@@ -2,6 +2,10 @@ import * as types from '../ActionTypes';
 import React from "react";
 
 const initialState = {
+    user: {
+        id: null,
+        username: null,
+    },
     runningList: {
         calendar: {
             currentDay: "",
@@ -22,7 +26,12 @@ export default function task(state = initialState, action) {
                 runningList: action.runningList
             }
         }
-
+        case types.SET_USER: {
+            return {
+                ...state,
+                user: action.user
+            }
+        }
         default:
             return state;
     }
