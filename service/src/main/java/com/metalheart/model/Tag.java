@@ -14,6 +14,8 @@ public class Tag implements Cloneable {
 
     private Integer id;
 
+    private Integer userId;
+
     private String title;
 
     private ZonedDateTime createdAt;

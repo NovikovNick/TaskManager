@@ -5,11 +5,11 @@ import java.util.List;
 public interface SelectedTagRepository {
 
 
-    void addSelectedTag(Integer tagId);
+    void addSelectedTag(Integer userId, Integer tagId);
 
-    void removeSelectedTag(Integer tagId);
+    void removeSelectedTag(Integer userId, Integer tagId);
 
-    List<Integer> getSelectedTags();
+    List<Integer> getSelectedTags(Integer userId);
 
     void deleteAll();
 }

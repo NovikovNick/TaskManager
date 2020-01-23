@@ -7,6 +7,7 @@ import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.exception.UnableToRedoException;
 import com.metalheart.exception.UnableToUndoException;
 import com.metalheart.model.RunningList;
+import com.metalheart.model.User;
 import com.metalheart.model.WeekId;
 import com.metalheart.model.request.CRUDTagRequest;
 import com.metalheart.model.request.GetArchiveRequest;
@@ -29,6 +30,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,9 +70,9 @@ public class RunningListController {
 
     @GetMapping(path = EndPoint.RUNNING_LIST, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get running list for current week", response = RunningListViewModel.class)
-    public RunningListViewModel getTaskList(Authentication authentication) {
+    public RunningListViewModel getTaskList(@AuthenticationPrincipal User user) {
 
-        return conversionService.convert(runningListService.getRunningList(), RunningListViewModel.class);
+        return conversionService.convert(runningListService.getRunningList(user.getId()), RunningListViewModel.class);
     }
 
     @PostMapping(
@@ -83,12 +85,12 @@ public class RunningListController {
             code = RestConstants.HTTP_UNPROCESSABLE_ENTITY,
             message = "If running list archive has already exist")
     })
-    public ResponseEntity<RunningListViewModel> archive() {
+    public ResponseEntity<RunningListViewModel> archive(@AuthenticationPrincipal User user) {
 
         try {
             WeekId weekId = dateService.getCurrentWeekId();
-            runningListCommandService.archive(weekId);
-            RunningList runningList = runningListService.getRunningList();
+            runningListCommandService.archive(user.getId(), weekId);
+            RunningList runningList = runningListService.getRunningList(user.getId());
             RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
             return ResponseEntity.ok(viewModel);
         } catch (RunningListArchiveAlreadyExistException e) {
@@ -101,11 +103,12 @@ public class RunningListController {
         path = EndPoint.RUNNING_LIST_ARCHIVE_NEXT,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get archive for next week", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> getNextArchive(@Valid GetArchiveRequest request) {
+    public ResponseEntity<RunningListViewModel> getNextArchive(@AuthenticationPrincipal User user,
+                                                               @Valid GetArchiveRequest request) {
 
         try {
             WeekId weekId = conversionService.convert(request, WeekId.class);
-            RunningList runningList = archiveService.getNext(weekId);
+            RunningList runningList = archiveService.getNext(user.getId(), weekId);
             RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
             return ResponseEntity.ok(viewModel);
         } catch (NoSuchRunningListArchiveException e) {
@@ -140,11 +143,11 @@ public class RunningListController {
             code = RestConstants.HTTP_NOT_ACCEPTABLE,
             message = "If there are no previous operations to undo")
     })
-    public ResponseEntity<RunningListViewModel> undo() {
+    public ResponseEntity<RunningListViewModel> undo(@AuthenticationPrincipal User user) {
 
         try {
             commandManager.undo();
-            RunningList runningList = runningListService.getRunningList();
+            RunningList runningList = runningListService.getRunningList(user.getId());
             RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
             return ResponseEntity.ok(viewModel);
         } catch (UnableToUndoException e) {
@@ -162,11 +165,11 @@ public class RunningListController {
             code = RestConstants.HTTP_NOT_ACCEPTABLE,
             message = "If there are no undone operations to redo")
     })
-    public ResponseEntity<RunningListViewModel> redo() {
+    public ResponseEntity<RunningListViewModel> redo(@AuthenticationPrincipal User user) {
 
         try {
             commandManager.redo();
-            RunningList runningList = runningListService.getRunningList();
+            RunningList runningList = runningListService.getRunningList(user.getId());
             RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
             return ResponseEntity.ok(viewModel);
         } catch (UnableToRedoException e) {
@@ -180,10 +183,11 @@ public class RunningListController {
         consumes = APPLICATION_JSON_VALUE,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Add tag", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> addTaskTag(@Valid @RequestBody CRUDTagRequest tag) {
+    public ResponseEntity<RunningListViewModel> addTaskTag(@AuthenticationPrincipal User user,
+                                                           @Valid @RequestBody CRUDTagRequest tag) {
 
-        tagService.selectTag(tag.getTag());
-        RunningList runningList = runningListService.getRunningList();
+        tagService.selectTag(user.getId(), tag.getTag());
+        RunningList runningList = runningListService.getRunningList(user.getId());
         RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
         return ResponseEntity.ok(viewModel);
     }
@@ -192,10 +196,11 @@ public class RunningListController {
         path = EndPoint.REMOVE_TASK_TAG,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Remove tag", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> removeTaskTag(@Valid @RequestBody CRUDTagRequest tag) {
+    public ResponseEntity<RunningListViewModel> removeTaskTag(@AuthenticationPrincipal User user,
+                                                              @Valid @RequestBody CRUDTagRequest tag) {
 
-        tagService.removeSelectedTag(tag.getTag());
-        RunningList runningList = runningListService.getRunningList();
+        tagService.removeSelectedTag(user.getId(), tag.getTag());
+        RunningList runningList = runningListService.getRunningList(user.getId());
         RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
         return ResponseEntity.ok(viewModel);
     }

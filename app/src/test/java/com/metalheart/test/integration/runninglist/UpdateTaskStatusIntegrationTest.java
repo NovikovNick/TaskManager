@@ -40,7 +40,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
     public void simpleUpdateStatusTest() {
 
         // arrange
-        Task createRequest = generateRandomTask();
+        Task createRequest = generateRandomTask(1);
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
@@ -49,7 +49,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.changeTaskStatus(createdTask.getId(), 0, IN_PROGRESS);
 
         // assert
-        RunningList runningList = runningListService.getRunningList();
+        RunningList runningList = runningListService.getRunningList(1);
         List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
             .stream().map(WeekWorkLog::getStatus)
             .collect(toList());
@@ -60,7 +60,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
     public void testUndoCreating() throws Exception {
 
         // arrange
-        Task createRequest = generateRandomTask();
+        Task createRequest = generateRandomTask(1);
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
@@ -70,7 +70,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         commandManager.undo();
 
         // assert
-        RunningList runningList = runningListService.getRunningList();
+        RunningList runningList = runningListService.getRunningList(1);
         List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
             .stream().map(WeekWorkLog::getStatus)
             .collect(toList());
@@ -81,7 +81,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
     public void testUndoAfterUpdateStatusOperation() throws Exception {
 
         // arrange
-        Task createRequest = generateRandomTask();
+        Task createRequest = generateRandomTask(1);
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
@@ -92,7 +92,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         commandManager.undo();
 
         // assert
-        RunningList runningList = runningListService.getRunningList();
+        RunningList runningList = runningListService.getRunningList(1);
         List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
             .stream().map(WeekWorkLog::getStatus)
             .collect(toList());
@@ -103,7 +103,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreating() throws Exception {
 
         // arrange
-        Task createRequest = generateRandomTask();
+        Task createRequest = generateRandomTask(1);
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
@@ -114,7 +114,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         commandManager.redo();
 
         // assert
-        RunningList runningList = runningListService.getRunningList();
+        RunningList runningList = runningListService.getRunningList(1);
         List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
             .stream().map(WeekWorkLog::getStatus)
             .collect(toList());

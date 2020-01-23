@@ -25,14 +25,14 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
     public void testCreating() {
 
         // arrange
-        Task request = generateRandomTask();
+        Task request = generateRandomTask(1);
 
         // act
         runningListCommandService.createTask(request);
 
         // assert
 
-        List<Task> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getTasks(1);
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());
@@ -43,7 +43,7 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
     public void testUndoCreating() throws Exception {
 
         // arrange
-        Task request = generateRandomTask();
+        Task request = generateRandomTask(1);
 
         // act
         runningListCommandService.createTask(request);
@@ -51,7 +51,7 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
 
         // assert
 
-        List<Task> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getTasks(1);
         Assert.assertNotNull(tasks);
         Assert.assertTrue(tasks.isEmpty());
     }
@@ -60,7 +60,7 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreating() throws Exception {
 
         // arrange
-        Task request = generateRandomTask();
+        Task request = generateRandomTask(1);
 
         // act
         runningListCommandService.createTask(request);
@@ -69,7 +69,7 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
 
         // assert
 
-        List<Task> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getTasks(1);
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());

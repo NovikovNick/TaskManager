@@ -12,9 +12,10 @@ import org.springframework.stereotype.Repository;
 public interface TaskJpaRepository extends JpaRepository<TaskJpa, Integer> {
 
     @Query("SELECT DISTINCT t from TaskJpa t "
-        + " where t.deleted = FALSE "
+        + " where t.deleted = FALSE"
+        + " AND t.userId = :userId"
         + " ORDER BY t.priority ASC")
-    List<TaskJpa> findAllByOrderByPriorityAsc();
+    List<TaskJpa> findAllByUserIdOrderByPriorityAsc(@Param("userId") Integer userId);
 
     @Query("SELECT DISTINCT t from TaskJpa t "
         + " JOIN t.tags tag "

@@ -5,15 +5,15 @@ import java.util.List;
 
 public interface TagService {
 
-    List<Tag> getSelectedTags();
+    List<Tag> getSelectedTags(Integer userId);
 
-    List<Tag> getAllTags();
+    List<Tag> getTags(Integer userId);
 
     void addTagToTask(String tag, Integer taskId);
 
     void removeTagFromTask(String tag, Integer taskId);
 
-    void  selectTag(String tag);
+    void selectTag(Integer userId, String tag);
 
-    void removeSelectedTag(String tag);
+    void removeSelectedTag(Integer userId, String tag);
 }

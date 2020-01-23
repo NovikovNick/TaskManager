@@ -25,6 +25,10 @@ public class TagJpa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false, name = "user_id")
+    private Integer userId;
+
+
     @Column(nullable = false)
     private String title;
 

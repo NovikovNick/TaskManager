@@ -8,7 +8,7 @@ public interface RunningListArchiveService {
 
     RunningList getPrev(WeekId weekId) throws NoSuchRunningListArchiveException;
 
-    RunningList getNext(WeekId weekId) throws NoSuchRunningListArchiveException;
+    RunningList getNext(Integer userId, WeekId weekId) throws NoSuchRunningListArchiveException;
 
     boolean hasPreviousArchive(WeekId weekId);
 

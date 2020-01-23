@@ -15,7 +15,7 @@ public interface RunningListCommandService {
 
     void update(Task request);
 
-    void archive(WeekId weekId) throws RunningListArchiveAlreadyExistException;
+    void archive(Integer userId, WeekId weekId) throws RunningListArchiveAlreadyExistException;
 
-    void reorderTask(Integer startIndex, Integer endIndex);
+    void reorderTask(Integer userId, Integer startIndex, Integer endIndex);
 }

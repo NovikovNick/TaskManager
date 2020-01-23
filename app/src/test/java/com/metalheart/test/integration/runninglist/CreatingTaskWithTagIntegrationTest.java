@@ -27,7 +27,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
     public void testCreatingWithTags() throws Exception {
 
         // arrange
-        Task request = getTask("task", "tag1", "tag2");
+        Task request = getTask(1, "task", "tag1", "tag2");
 
 
         // act
@@ -35,7 +35,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
 
 
         // assert
-        List<Task> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList(1).getTasks();
         Assert.assertFalse(CollectionUtils.isEmpty(tasks));
 
         List<Tag> tags = tasks.get(0).getTags();
@@ -46,7 +46,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
     public void testUndoCreatingWithTags() throws Exception {
 
         // arrange
-        Task request = getTask("task", "tag1", "tag2");
+        Task request = getTask(1, "task", "tag1", "tag2");
 
 
         // act
@@ -54,7 +54,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
         commandManager.undo();
 
         // assert
-        List<Task> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList(1).getTasks();
         Assert.assertTrue(CollectionUtils.isEmpty(tasks));
     }
 
@@ -62,7 +62,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreatingWithTags() throws Exception {
 
         // arrange
-        Task request = getTask("task", "tag1", "tag2");
+        Task request = getTask(1, "task", "tag1", "tag2");
 
 
         // act
@@ -71,7 +71,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
         commandManager.redo();
 
         // assert
-        List<Task> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList(1).getTasks();
         Assert.assertFalse(CollectionUtils.isEmpty(tasks));
 
         List<Tag> tags = tasks.get(0).getTags();

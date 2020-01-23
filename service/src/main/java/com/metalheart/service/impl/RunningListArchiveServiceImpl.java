@@ -45,12 +45,12 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
     }
 
     @Override
-    public RunningList getNext(WeekId weekId) throws NoSuchRunningListArchiveException {
+    public RunningList getNext(Integer userId, WeekId weekId) throws NoSuchRunningListArchiveException {
 
         WeekId nextWeekId = dateService.getNextWeekId(weekId);
 
         if (dateService.getCurrentWeekId().equals(nextWeekId)) {
-            return runningListService.getRunningList();
+            return runningListService.getRunningList(userId);
         }
 
         return getArchive(nextWeekId);

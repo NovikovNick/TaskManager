@@ -25,7 +25,7 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
     public void testRemoving() {
 
         // arrange
-        Task request = generateRandomTask();
+        Task request = generateRandomTask(1);
         Task task = runningListCommandService.createTask(request);
         Integer taskId = task.getId();
 
@@ -33,14 +33,14 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.delete(taskId);
 
         // assert
-        Assert.assertTrue(taskService.getAllTasks().isEmpty());
+        Assert.assertTrue(taskService.getTasks(1).isEmpty());
     }
 
     @Test
     public void testUndoRemoving() throws Exception {
 
         // arrange
-        Task request = generateRandomTask();
+        Task request = generateRandomTask(1);
         Task task = runningListCommandService.createTask(request);
 
         // act
@@ -48,7 +48,7 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
         commandManager.undo();
 
         // assert
-        List<Task> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getTasks(1);
         Assert.assertFalse(tasks.isEmpty());
         Assert.assertEquals(1, tasks.size());
         Assert.assertEquals(request.getTitle(), tasks.get(0).getTitle());
@@ -58,7 +58,7 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreating() throws Exception {
 
         // arrange
-        Task request = generateRandomTask();
+        Task request = generateRandomTask(1);
         Task task = runningListCommandService.createTask(request);
         Integer taskId = task.getId();
 
@@ -68,6 +68,6 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
         commandManager.redo();
 
         // assert
-        Assert.assertTrue(taskService.getAllTasks().isEmpty());
+        Assert.assertTrue(taskService.getTasks(1).isEmpty());
     }
 }

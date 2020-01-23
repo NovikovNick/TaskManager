@@ -42,7 +42,7 @@ public class AppConfiguration {
                     .password(properties.getSecurity().getDefaultPassword())
                     .build());
             }
-            taskService.reorder();
+            //taskService.reorder();
         };
     }
 }

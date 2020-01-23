@@ -52,10 +52,10 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TagJpaRepository tagJpaRepository;
 
-    @Override
+    /*@Override
     public void reorder() {
 
-        List<Task> taskList = getAllTasks();
+        List<Task> taskList = getTasks();
         int maxPriority = taskList.size();
         taskPriorityRepository.setMaxPriority(maxPriority);
 
@@ -65,16 +65,16 @@ public class TaskServiceImpl implements TaskService {
         save(taskList);
 
         log.info("All task have been ordered");
-    }
+    }*/
 
     @Override
-    public List<Task> getAllTasks() {
+    public List<Task> getTasks(Integer userId) {
 
-        List<Integer> selectedTags = selectedTagRepository.getSelectedTags();
+        List<Integer> selectedTags = selectedTagRepository.getSelectedTags(userId);
 
         List<TaskJpa> res;
         if (selectedTags.isEmpty()) {
-            res = taskJpaRepository.findAllByOrderByPriorityAsc();
+            res = taskJpaRepository.findAllByUserIdOrderByPriorityAsc(userId);
         } else {
             res = taskJpaRepository.findAllByTags(selectedTags, Long.valueOf(selectedTags.size()));
         }
@@ -137,7 +137,7 @@ public class TaskServiceImpl implements TaskService {
 
             List<TagJpa> tags = task.getTags().stream()
                 .map(tag -> {
-                    TagJpa tagJpa = tagJpaRepository.findTagByTitle(tag.getTitle());
+                    TagJpa tagJpa = tagJpaRepository.findTagByUserIdAndTitle(task.getUserId(), tag.getTitle());
                     if (Objects.isNull(tagJpa)) {
                         tagJpa = tagJpaRepository.save(conversionService.convert(tag, TagJpa.class));
                     }

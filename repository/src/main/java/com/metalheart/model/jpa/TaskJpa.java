@@ -32,6 +32,9 @@ public class TaskJpa {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Column(nullable = false, name = "user_id")
+    private Integer userId;
+
     @Column(nullable = false)
     private String title;
 

@@ -183,13 +183,13 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     }
 
     @Override
-    public void archive(WeekId weekId) throws RunningListArchiveAlreadyExistException {
+    public void archive(Integer userId, WeekId weekId) throws RunningListArchiveAlreadyExistException {
 
         if (runningListArchiveService.isArchiveExist(weekId)) {
             throw new RunningListArchiveAlreadyExistException(weekId);
         }
 
-        RunningList runningList = runningListService.getRunningList();
+        RunningList runningList = runningListService.getRunningList(userId);
         runningList.setWeekId(weekId);
 
         runningListCommandManager.execute(new RunningListAction<Void>() {
@@ -216,9 +216,9 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     }
 
     @Override
-    public void reorderTask(Integer startIndex, Integer endIndex) {
+    public void reorderTask(Integer userId, Integer startIndex, Integer endIndex) {
 
-        List<Task> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getTasks(userId);
         List<Task> previousTaskOrder = tasks.stream()
             .map(Task::clone)
             .collect(toList());

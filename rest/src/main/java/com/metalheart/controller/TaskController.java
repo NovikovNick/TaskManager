@@ -3,6 +3,7 @@ package com.metalheart.controller;
 import com.metalheart.EndPoint;
 import com.metalheart.model.RunningList;
 import com.metalheart.model.Task;
+import com.metalheart.model.User;
 import com.metalheart.model.request.AddTagToTaskRequest;
 import com.metalheart.model.request.ChangeTaskPriorityRequest;
 import com.metalheart.model.request.ChangeTaskStatusRequest;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,62 +54,69 @@ public class TaskController {
     private ConversionService conversionService;
 
     @PostMapping(path = EndPoint.CREATE_TASK, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public RunningListViewModel createTask(@Valid @RequestBody CreateTaskRequest request) {
+    public RunningListViewModel createTask(@AuthenticationPrincipal User user,
+                                           @Valid @RequestBody CreateTaskRequest request) {
 
-        runningListCommandService.createTask(conversionService.convert(request, Task.class));
+        Task task = conversionService.convert(request, Task.class);
+        task.setUserId(user.getId());
+        runningListCommandService.createTask(task);
 
-        return conversionService.convert(runningListService.getRunningList(), RunningListViewModel.class);
+        return conversionService.convert(runningListService.getRunningList(user.getId()), RunningListViewModel.class);
     }
 
     @PostMapping(path = EndPoint.CHANGE_TASK_STATUS, consumes = APPLICATION_JSON_VALUE, produces =
         APPLICATION_JSON_VALUE)
-    public RunningListViewModel changeStatus(@Valid @RequestBody ChangeTaskStatusRequest request) {
+    public RunningListViewModel changeStatus(@AuthenticationPrincipal User user,
+                                             @Valid @RequestBody ChangeTaskStatusRequest request) {
 
         runningListCommandService.changeTaskStatus(request.getTaskId(), request.getDayIndex(), request.getStatus());
 
-        return conversionService.convert(runningListService.getRunningList(), RunningListViewModel.class);
+        return conversionService.convert(runningListService.getRunningList(user.getId()), RunningListViewModel.class);
     }
 
     @PutMapping(
         path = EndPoint.CHANGE_TASK_PRIORITY,
         consumes = APPLICATION_JSON_VALUE,
         produces = APPLICATION_JSON_VALUE)
-    public RunningListViewModel reorderTask(@Valid @RequestBody ChangeTaskPriorityRequest request) {
+    public RunningListViewModel reorderTask(@AuthenticationPrincipal User user,
+                                            @Valid @RequestBody ChangeTaskPriorityRequest request) {
 
-        runningListCommandService.reorderTask(request.getStartIndex(), request.getEndIndex());
+        runningListCommandService.reorderTask(user.getId(), request.getStartIndex(), request.getEndIndex());
 
-        return conversionService.convert(runningListService.getRunningList(), RunningListViewModel.class);
+        return conversionService.convert(runningListService.getRunningList(user.getId()), RunningListViewModel.class);
     }
 
 
     @DeleteMapping(path = EndPoint.DELETE_TASK, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public RunningListViewModel delete(@PathVariable("taskId") Integer taskId) {
+    public RunningListViewModel delete(@AuthenticationPrincipal User user, @PathVariable("taskId") Integer taskId) {
 
         runningListCommandService.delete(taskId);
 
-        return conversionService.convert(runningListService.getRunningList(), RunningListViewModel.class);
+        return conversionService.convert(runningListService.getRunningList(user.getId()), RunningListViewModel.class);
     }
 
     @PutMapping(
         path = EndPoint.UPDATE_TASK,
         consumes = APPLICATION_JSON_VALUE,
         produces = APPLICATION_JSON_VALUE)
-    public RunningListViewModel updateTask(@Valid @RequestBody UpdateTaskRequest request) {
+    public RunningListViewModel updateTask(@AuthenticationPrincipal User user,
+                                           @Valid @RequestBody UpdateTaskRequest request) {
 
 
         runningListCommandService.update(conversionService.convert(request, Task.class));
 
-        return conversionService.convert(runningListService.getRunningList(), RunningListViewModel.class);
+        return conversionService.convert(runningListService.getRunningList(user.getId()), RunningListViewModel.class);
     }
 
     @PostMapping(
         path = EndPoint.ADD_TAG_TO_TASK,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Add tag to task", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> addTaskTag(AddTagToTaskRequest request) {
+    public ResponseEntity<RunningListViewModel> addTaskTag(@AuthenticationPrincipal User user,
+                                                           AddTagToTaskRequest request) {
 
         tagService.addTagToTask(request.getTag(), request.getTaskId());
-        RunningList runningList = runningListService.getRunningList();
+        RunningList runningList = runningListService.getRunningList(user.getId());
         RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
         return ResponseEntity.ok(viewModel);
     }
@@ -116,10 +125,11 @@ public class TaskController {
         path = EndPoint.REMOVE_TAG_FROM_TASK,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Remove tag from task", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> removeTaskTag(RemoveTagFromTaskRequest request) {
+    public ResponseEntity<RunningListViewModel> removeTaskTag(@AuthenticationPrincipal User user,
+                                                              RemoveTagFromTaskRequest request) {
 
         tagService.removeTagFromTask(request.getTag(), request.getTaskId());
-        RunningList runningList = runningListService.getRunningList();
+        RunningList runningList = runningListService.getRunningList(user.getId());
         RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
         return ResponseEntity.ok(viewModel);
     }
@@ -128,9 +138,9 @@ public class TaskController {
         path = EndPoint.GET_TASK_TAG_LIST,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Remove tag from task", response = TagViewModel.class, responseContainer = "List")
-    public List<TagViewModel> getTags() {
+    public List<TagViewModel> getTags(@AuthenticationPrincipal User user) {
 
-        return tagService.getAllTags().stream()
+        return tagService.getTags(user.getId()).stream()
             .map(tag -> conversionService.convert(tag, TagViewModel.class))
             .collect(Collectors.toList());
     }

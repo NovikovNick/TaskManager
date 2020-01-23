@@ -21,6 +21,8 @@ public class Task implements Cloneable {
     @LogContextField(LogContextField.Field.TASK_ID)
     private Integer id;
 
+    private Integer userId;
+
     private String title;
 
     private String description;

@@ -39,16 +39,16 @@ public class TagServiceImpl implements TagService {
 
     @Transactional
     @Override
-    public List<Tag> getSelectedTags() {
-        return selectedTagRepository.getSelectedTags().stream()
+    public List<Tag> getSelectedTags(Integer userId) {
+        return selectedTagRepository.getSelectedTags(userId).stream()
             .map(tagJpaRepository::getOne)
             .map(tag -> conversionService.convert(tag, Tag.class))
             .collect(Collectors.toList());
     }
 
     @Override
-    public List<Tag> getAllTags() {
-        return tagJpaRepository.findAll().stream()
+    public List<Tag> getTags(Integer userId) {
+        return tagJpaRepository.findAllByUserId(userId).stream()
             .map(tag -> conversionService.convert(tag, Tag.class))
             .collect(Collectors.toList());
     }
@@ -57,9 +57,9 @@ public class TagServiceImpl implements TagService {
     @Override
     public void addTagToTask(String tagTitle, Integer taskId) {
 
-        TagJpa tag = getTag(tagTitle);
-
         TaskJpa task = taskJpaRepository.getOne(taskId);
+        TagJpa tag = getTag(task.getUserId(), tagTitle);
+
         task.getTags().add(tag);
         taskJpaRepository.save(task);
     }
@@ -68,34 +68,35 @@ public class TagServiceImpl implements TagService {
     @Override
     public void removeTagFromTask(String tagTitle, Integer taskId) {
 
-        TagJpa tag = tagJpaRepository.findTagByTitle(tagTitle);
-
         TaskJpa task = taskJpaRepository.getOne(taskId);
+        TagJpa tag = tagJpaRepository.findTagByUserIdAndTitle(task.getUserId(), tagTitle);
+
         task.getTags().remove(tag);
         taskJpaRepository.save(task);
     }
 
     @Override
-    public void selectTag(String tag) {
-        selectedTagRepository.addSelectedTag(getTag(tag).getId());
+    public void selectTag(Integer userId, String tag) {
+        selectedTagRepository.addSelectedTag(userId, getTag(userId, tag).getId());
     }
 
     @Override
-    public void removeSelectedTag(String tag) {
+    public void removeSelectedTag(Integer userId, String tag) {
         if (tagJpaRepository.existsByTitle(tag)) {
-            selectedTagRepository.removeSelectedTag(getTag(tag).getId());
+            selectedTagRepository.removeSelectedTag(userId, getTag(userId, tag).getId());
         }
     }
 
-    private TagJpa getTag(String tagTitle) {
+    private TagJpa getTag(Integer userId, String tagTitle) {
 
         if (tagJpaRepository.existsByTitle(tagTitle)) {
 
-            return tagJpaRepository.findTagByTitle(tagTitle);
+            return tagJpaRepository.findTagByUserIdAndTitle(userId, tagTitle);
 
         } else {
 
             return tagJpaRepository.save(TagJpa.builder()
+                .userId(userId)
                 .title(tagTitle)
                 .createdAt(dateService.now())
                 .build());

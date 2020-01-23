@@ -39,7 +39,7 @@ public class RunningListServiceImpl implements RunningListService {
     private WorkLogService workLogService;
 
     @Override
-    public RunningList getRunningList() {
+    public RunningList getRunningList(Integer userId) {
 
         WeekId weekId = dateService.getCurrentWeekId();
 
@@ -47,23 +47,23 @@ public class RunningListServiceImpl implements RunningListService {
 
         return RunningList.builder()
             .calendar(calendar)
-            .tasks(getTaskWithStatuses(calendar))
+            .tasks(getTaskWithStatuses(userId, calendar))
             .editable(true)
             .hasNext(false)
             .hasPrevious(archiveService.hasPreviousArchive(weekId))
             .canUndo(runningListCommandManager.canUndo())
             .canRedo(runningListCommandManager.canRedo())
-            .selectedTags(tagService.getSelectedTags())
-            .allTags(tagService.getAllTags())
+            .selectedTags(tagService.getSelectedTags(userId))
+            .allTags(tagService.getTags(userId))
             .weekId(weekId)
             .build();
     }
 
 
-    private List<Task> getTaskWithStatuses(Calendar calendar) {
+    private List<Task> getTaskWithStatuses(Integer userId, Calendar calendar) {
 
         // todo: optimize
-        List<Task> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getTasks(userId);
 
         for (Task task : tasks) {
             task.setStatus(workLogService.get(task.getId(), calendar.getCurrentDay()));

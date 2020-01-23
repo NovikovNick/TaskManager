@@ -52,15 +52,14 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
         String taskTitle = RandomStringUtils.random(30);
         String taskDescription = RandomStringUtils.random(300);
 
-        Task request = Task.builder()
-            .title(taskTitle)
-            .description(taskDescription).build();
+        Task request = getTask(1, taskTitle);
+        request.setDescription(taskDescription);
 
         runningListCommandService.createTask(request);
 
 
         // act
-        runningListCommandService.archive(previousWeekId);
+        runningListCommandService.archive(1, previousWeekId);
 
         // assert
 
@@ -88,15 +87,14 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
         String taskTitle = RandomStringUtils.random(30);
         String taskDescription = RandomStringUtils.random(300);
 
-        Task request = Task.builder()
-            .title(taskTitle)
-            .description(taskDescription).build();
+        Task request = getTask(1, taskTitle);
+        request.setDescription(taskDescription);
 
         runningListCommandService.createTask(request);
 
 
         // act
-        runningListCommandService.archive(previousWeekId);
+        runningListCommandService.archive(1, previousWeekId);
         commandManager.undo();
 
 
@@ -116,15 +114,14 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
         String taskTitle = RandomStringUtils.random(30);
         String taskDescription = RandomStringUtils.random(300);
 
-        Task request = Task.builder()
-            .title(taskTitle)
-            .description(taskDescription).build();
+        Task request = getTask(1, taskTitle);
+        request.setDescription(taskDescription);
 
         runningListCommandService.createTask(request);
 
 
         // act
-        runningListCommandService.archive(previousWeekId);
+        runningListCommandService.archive(1, previousWeekId);
         commandManager.undo();
         commandManager.redo();
 

@@ -25,7 +25,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
     public void testCreating() {
 
         // arrange
-        Task createRequest = getTask("Created task");
+        Task createRequest = getTask(1, "Created task");
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         Task updateRequest = Task.builder()
@@ -39,7 +39,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.update(updateRequest);
 
         // assert
-        List<Task> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getTasks(1);
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());
@@ -51,7 +51,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
     public void testUndoCreating() throws Exception {
 
         // arrange
-        Task createRequest = getTask("Created task");
+        Task createRequest = getTask(1, "Created task");
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         Task updateRequest = Task.builder()
@@ -65,7 +65,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
         commandManager.undo();
 
         // assert
-        List<Task> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getTasks(1);
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());
@@ -77,7 +77,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreating() throws Exception {
 
         // arrange
-        Task createRequest = getTask("Created task");
+        Task createRequest = getTask(1, "Created task");
         Task createdTask = runningListCommandService.createTask(createRequest);
 
         Task updateRequest = Task.builder()
@@ -92,7 +92,7 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
         commandManager.redo();
 
         // assert
-        List<Task> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getTasks(1);
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());

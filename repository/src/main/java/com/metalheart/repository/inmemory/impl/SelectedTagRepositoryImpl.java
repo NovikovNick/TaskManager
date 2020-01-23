@@ -14,17 +14,17 @@ public class SelectedTagRepositoryImpl implements SelectedTagRepository {
     Set<Integer> tags = Collections.synchronizedSet(new HashSet<>());
 
     @Override
-    public void addSelectedTag(Integer tagId) {
+    public void addSelectedTag(Integer userId, Integer tagId) {
         tags.add(tagId);
     }
 
     @Override
-    public void removeSelectedTag(Integer tagId) {
+    public void removeSelectedTag(Integer userId, Integer tagId) {
         tags.remove(tagId);
     }
 
     @Override
-    public List<Integer> getSelectedTags() {
+    public List<Integer> getSelectedTags(Integer userId) {
         return new ArrayList<>(tags);
     }
 

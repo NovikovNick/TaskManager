@@ -32,15 +32,15 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
     public void testOrderFromTopToMiddleWithTag() {
 
         // arrange
-        IntStream.range(0, 5).forEach(i -> runningListCommandService.createTask(getTask(PREFIX + i)));
-        IntStream.range(5, 10).forEach(i -> runningListCommandService.createTask(getTask(PREFIX + i, "tag1")));
+        IntStream.range(0, 5).forEach(i -> runningListCommandService.createTask(getTask(1, PREFIX + i)));
+        IntStream.range(5, 10).forEach(i -> runningListCommandService.createTask(getTask(1, PREFIX + i, "tag1")));
 
         // act
-        tagService.selectTag("tag1");
-        runningListCommandService.reorderTask(0, 3);
+        tagService.selectTag(1, "tag1");
+        runningListCommandService.reorderTask(1, 0, 3);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList(1).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 6, tasks.get(0).getTitle());
@@ -54,17 +54,17 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
     public void testOrderFromTopToMiddleWithotTag() {
 
         // arrange
-        IntStream.range(0, 5).forEach(i -> runningListCommandService.createTask(getTask(PREFIX + i)));
-        IntStream.range(5, 10).forEach(i -> runningListCommandService.createTask(getTask(PREFIX + i, "tag1")));
+        IntStream.range(0, 5).forEach(i -> runningListCommandService.createTask(getTask(1, PREFIX + i)));
+        IntStream.range(5, 10).forEach(i -> runningListCommandService.createTask(getTask(1, PREFIX + i, "tag1")));
 
         // act
-        tagService.selectTag("tag1");
-        runningListCommandService.reorderTask(0, 3);
-        tagService.removeSelectedTag("tag1");
+        tagService.selectTag(1, "tag1");
+        runningListCommandService.reorderTask(1, 0, 3);
+        tagService.removeSelectedTag(1, "tag1");
 
 
         // assert
-        List<Task> tasks = runningListService.getRunningList().getTasks();
+        List<Task> tasks = runningListService.getRunningList(1).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(10, tasks.size());
 

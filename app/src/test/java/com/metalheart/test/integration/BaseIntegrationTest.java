@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -73,21 +74,22 @@ public abstract class BaseIntegrationTest {
         selectedTagRepository.deleteAll();
     }
 
-    protected Task generateRandomTask() {
-        return getTask(RandomStringUtils.random(20));
+    protected Task generateRandomTask(Integer userId) {
+        return getTask(userId, RandomStringUtils.random(20));
     }
 
 
-    protected Task getTask(String title) {
-        return Task.builder().title(title).build();
+    protected Task getTask(Integer userId, String title) {
+        return Task.builder().title(title).userId(userId).build();
     }
 
-    protected Task getTask(String title, String... tags) {
+    protected Task getTask(Integer userId, String title, String... tags) {
 
         return Task.builder()
+            .userId(userId)
             .title(title)
             .tags(Arrays.stream(tags)
-                .map(tag -> Tag.builder().title(tag).build())
+                .map(tag -> Tag.builder().userId(userId).title(tag).build())
                 .collect(Collectors.toList()))
             .build();
     }
