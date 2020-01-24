@@ -1,62 +1,61 @@
 package com.metalheart.repository.inmemory.impl;
 
 import com.metalheart.model.RunningListAction;
+import com.metalheart.model.RunningListCommandDeque;
 import com.metalheart.repository.inmemory.RunningListCommandRepository;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RunningListCommandRepositoryImpl implements RunningListCommandRepository {
 
-    private Deque<RunningListAction> doneActions;
+    private Map<Integer, RunningListCommandDeque> commandsDequeByUser = new HashMap<>();
 
-    private Deque<RunningListAction> undoneActions;
-
-    public RunningListCommandRepositoryImpl() {
-        doneActions = new ArrayDeque<>();
-        undoneActions = new ArrayDeque<>();
+    @Override
+    public void addAction(Integer userId, RunningListAction action) {
+        getUserCommandDeque(userId).addAction(action);
     }
 
     @Override
-    public void addAction(RunningListAction action) {
-        doneActions.addFirst(action);
-        undoneActions.clear();
+    public RunningListAction popDone(Integer userId) {
+        return getUserCommandDeque(userId).popDone();
     }
 
     @Override
-    public RunningListAction popDone() {
-        return doneActions.pollFirst();
+    public void pushUndone(Integer userId, RunningListAction action) {
+        getUserCommandDeque(userId).pushUndone(action);
     }
 
     @Override
-    public void pushUndone(RunningListAction action) {
-        undoneActions.addFirst(action);
+    public RunningListAction popUndone(Integer userId) {
+        return getUserCommandDeque(userId).popUndone();
     }
 
     @Override
-    public RunningListAction popUndone() {
-        return undoneActions.pollFirst();
+    public void pushDone(Integer userId, RunningListAction action) {
+        getUserCommandDeque(userId).pushDone(action);
     }
 
     @Override
-    public void pushDone(RunningListAction action) {
-        doneActions.addFirst(action);
+    public boolean hasDone(Integer userId) {
+        return getUserCommandDeque(userId).hasDone();
     }
 
     @Override
-    public boolean hasDone() {
-        return !doneActions.isEmpty();
+    public boolean hasUndone(Integer userId) {
+        return getUserCommandDeque(userId).hasUndone();
     }
 
     @Override
-    public boolean hasUndone() {
-        return !undoneActions.isEmpty();
+    public void clear(Integer userId) {
+        getUserCommandDeque(userId).clear();
     }
 
-    @Override
-    public void clear() {
-        doneActions.clear();
-        undoneActions.clear();
+    private RunningListCommandDeque getUserCommandDeque(Integer userId) {
+        if (!commandsDequeByUser.containsKey(userId)) {
+            commandsDequeByUser.put(userId, new RunningListCommandDeque());
+        }
+        return commandsDequeByUser.get(userId);
     }
 }

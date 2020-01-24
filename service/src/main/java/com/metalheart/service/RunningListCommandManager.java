@@ -6,15 +6,15 @@ import com.metalheart.model.RunningListAction;
 
 public interface RunningListCommandManager {
 
-    <T> T execute(RunningListAction<T> action);
+    <T> T execute(Integer userId, RunningListAction<T> action);
 
-    void redo() throws UnableToRedoException;
+    void redo(Integer userId) throws UnableToRedoException;
 
-    boolean canRedo();
+    boolean canRedo(Integer userId);
 
-    void undo() throws UnableToUndoException;
+    void undo(Integer userId) throws UnableToUndoException;
 
-    boolean canUndo();
+    boolean canUndo(Integer userId);
 
-    void clear();
+    void clear(Integer userId);
 }

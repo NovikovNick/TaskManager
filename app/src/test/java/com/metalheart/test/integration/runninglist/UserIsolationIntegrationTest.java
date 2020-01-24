@@ -34,9 +34,9 @@ public class UserIsolationIntegrationTest extends BaseIntegrationTest {
         User user1 = userService.createUser(createUser("user1"));
         User user2 = userService.createUser(createUser("user2"));
 
-        runningListCommandService.createTask(getTask(user1.getId(), "First user1 task"));
-        runningListCommandService.createTask(getTask(user1.getId(), "Second user1 task"));
-        runningListCommandService.createTask(getTask(user2.getId(), "First user2 task"));
+        runningListCommandService.createTask(1, getTask(user1.getId(), "First user1 task"));
+        runningListCommandService.createTask(1, getTask(user1.getId(), "Second user1 task"));
+        runningListCommandService.createTask(1, getTask(user2.getId(), "First user2 task"));
 
 
         // act

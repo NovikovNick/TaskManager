@@ -4,19 +4,19 @@ import com.metalheart.model.RunningListAction;
 
 public interface RunningListCommandRepository {
 
-    void addAction(RunningListAction action);
+    void addAction(Integer userId, RunningListAction action);
 
-    RunningListAction popDone();
+    RunningListAction popDone(Integer userId);
 
-    RunningListAction popUndone();
+    RunningListAction popUndone(Integer userId);
 
-    void pushUndone(RunningListAction action);
+    void pushUndone(Integer userId, RunningListAction action);
 
-    void pushDone(RunningListAction action);
+    void pushDone(Integer userId, RunningListAction action);
 
-    boolean hasDone();
+    boolean hasDone(Integer userId);
 
-    boolean hasUndone();
+    boolean hasUndone(Integer userId);
 
-    void clear();
+    void clear(Integer userId);
 }

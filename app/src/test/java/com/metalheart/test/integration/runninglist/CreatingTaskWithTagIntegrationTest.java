@@ -27,15 +27,16 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
     public void testCreatingWithTags() throws Exception {
 
         // arrange
-        Task request = getTask(1, "task", "tag1", "tag2");
+        Integer userId = generateUser();
+        Task request = getTask(userId, "task", "tag1", "tag2");
 
 
         // act
-        runningListCommandService.createTask(request);
+        runningListCommandService.createTask(userId, request);
 
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(1).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertFalse(CollectionUtils.isEmpty(tasks));
 
         List<Tag> tags = tasks.get(0).getTags();
@@ -46,15 +47,16 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
     public void testUndoCreatingWithTags() throws Exception {
 
         // arrange
-        Task request = getTask(1, "task", "tag1", "tag2");
+        Integer userId = generateUser();
+        Task request = getTask(userId, "task", "tag1", "tag2");
 
 
         // act
-        runningListCommandService.createTask(request);
-        commandManager.undo();
+        runningListCommandService.createTask(userId, request);
+        commandManager.undo(userId);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(1).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertTrue(CollectionUtils.isEmpty(tasks));
     }
 
@@ -62,16 +64,17 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreatingWithTags() throws Exception {
 
         // arrange
-        Task request = getTask(1, "task", "tag1", "tag2");
+        Integer userId = generateUser();
+        Task request = getTask(userId, "task", "tag1", "tag2");
 
 
         // act
-        runningListCommandService.createTask(request);
-        commandManager.undo();
-        commandManager.redo();
+        runningListCommandService.createTask(userId, request);
+        commandManager.undo(userId);
+        commandManager.redo(userId);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(1).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertFalse(CollectionUtils.isEmpty(tasks));
 
         List<Tag> tags = tasks.get(0).getTags();

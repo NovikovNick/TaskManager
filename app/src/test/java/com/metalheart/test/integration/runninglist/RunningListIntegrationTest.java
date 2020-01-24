@@ -38,16 +38,17 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
     public void testTodoStatus() {
 
         // arrange
-        Task createRequest = generateRandomTask(1);
-        Task createdTask = runningListCommandService.createTask(createRequest);
+        Integer userId = generateUser();
+        Task createRequest = generateRandomTask(userId);
+        Task createdTask = runningListCommandService.createTask(userId, createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        runningListCommandService.changeTaskStatus(createdTask.getId(), 0, TO_DO);
+        runningListCommandService.changeTaskStatus(userId, createdTask.getId(), 0, TO_DO);
 
         // assert
-        RunningList runningList = runningListService.getRunningList(1);
+        RunningList runningList = runningListService.getRunningList(userId);
         List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
             .stream().map(WeekWorkLog::getStatus)
             .collect(toList());
@@ -59,16 +60,17 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
     public void testInProcessStatus() {
 
         // arrange
-        Task createRequest = generateRandomTask(1);
-        Task createdTask = runningListCommandService.createTask(createRequest);
+        Integer userId = generateUser();
+        Task createRequest = generateRandomTask(userId);
+        Task createdTask = runningListCommandService.createTask(userId, createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        runningListCommandService.changeTaskStatus(createdTask.getId(), 0, IN_PROGRESS);
+        runningListCommandService.changeTaskStatus(userId, createdTask.getId(), 0, IN_PROGRESS);
 
         // assert
-        RunningList runningList = runningListService.getRunningList(1);
+        RunningList runningList = runningListService.getRunningList(userId);
         List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
             .stream().map(WeekWorkLog::getStatus)
             .collect(toList());
@@ -79,17 +81,18 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
     public void testNoneStatus() {
 
         // arrange
-        Task createRequest = generateRandomTask(1);
-        Task createdTask = runningListCommandService.createTask(createRequest);
+        Integer userId = generateUser();
+        Task createRequest = generateRandomTask(userId);
+        Task createdTask = runningListCommandService.createTask(userId, createRequest);
 
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        runningListCommandService.changeTaskStatus(createdTask.getId(), 0, TO_DO);
-        runningListCommandService.changeTaskStatus(createdTask.getId(), 0, NONE);
+        runningListCommandService.changeTaskStatus(userId, createdTask.getId(), 0, TO_DO);
+        runningListCommandService.changeTaskStatus(userId, createdTask.getId(), 0, NONE);
 
         // assert
-        RunningList runningList = runningListService.getRunningList(1);
+        RunningList runningList = runningListService.getRunningList(userId);
         List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
             .stream().map(WeekWorkLog::getStatus)
             .collect(toList());
@@ -100,19 +103,20 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
     public void testDelayedStatus() {
 
         // arrange
-        Task createRequest = generateRandomTask(1);
-        Task createdTask = runningListCommandService.createTask(createRequest);
+        Integer userId = generateUser();
+        Task createRequest = generateRandomTask(userId);
+        Task createdTask = runningListCommandService.createTask(userId, createRequest);
 
         setDate(this.dateService, 2019, 1, 3);
 
         // act
-        runningListCommandService.changeTaskStatus(createdTask.getId(), 0, TO_DO);
-        runningListCommandService.changeTaskStatus(createdTask.getId(), 1, TO_DO);
-        runningListCommandService.changeTaskStatus(createdTask.getId(), 2, TO_DO);
-        runningListCommandService.changeTaskStatus(createdTask.getId(), 3, TO_DO);
+        runningListCommandService.changeTaskStatus(userId, createdTask.getId(), 0, TO_DO);
+        runningListCommandService.changeTaskStatus(userId, createdTask.getId(), 1, TO_DO);
+        runningListCommandService.changeTaskStatus(userId, createdTask.getId(), 2, TO_DO);
+        runningListCommandService.changeTaskStatus(userId, createdTask.getId(), 3, TO_DO);
 
         // assert
-        RunningList runningList = runningListService.getRunningList(1);
+        RunningList runningList = runningListService.getRunningList(userId);
         List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
             .stream().map(WeekWorkLog::getStatus)
             .collect(toList());
@@ -123,15 +127,16 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
     public void testDoneStatus() {
 
         // arrange
-        Task createRequest = generateRandomTask(1);
-        Task createdTask = runningListCommandService.createTask(createRequest);
+        Integer userId = generateUser();
+        Task createRequest = generateRandomTask(userId);
+        Task createdTask = runningListCommandService.createTask(userId, createRequest);
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        runningListCommandService.changeTaskStatus(createdTask.getId(), 0, DONE);
+        runningListCommandService.changeTaskStatus(userId, createdTask.getId(), 0, DONE);
 
         // assert
-        RunningList runningList = runningListService.getRunningList(1);
+        RunningList runningList = runningListService.getRunningList(userId);
         List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
             .stream().map(WeekWorkLog::getStatus)
             .collect(toList());
@@ -142,15 +147,16 @@ public class RunningListIntegrationTest extends BaseIntegrationTest {
     public void testCancelStatus() {
 
         // arrange
-        Task createRequest = generateRandomTask(1);
-        Task createdTask = runningListCommandService.createTask(createRequest);
+        Integer userId = generateUser();
+        Task createRequest = generateRandomTask(userId);
+        Task createdTask = runningListCommandService.createTask(userId, createRequest);
         setDate(this.dateService, 2019, 1, 0);
 
         // act
-        runningListCommandService.changeTaskStatus(createdTask.getId(), 2, CANCELED);
+        runningListCommandService.changeTaskStatus(userId, createdTask.getId(), 2, CANCELED);
 
         // assert
-        RunningList runningList = runningListService.getRunningList(1);
+        RunningList runningList = runningListService.getRunningList(userId);
         List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
             .stream().map(WeekWorkLog::getStatus)
             .collect(toList());

@@ -1,7 +1,8 @@
 package com.metalheart.test.integration.rest;
 
-import com.metalheart.config.AppProperties;
 import com.metalheart.EndPoint;
+import com.metalheart.model.User;
+import com.metalheart.service.UserService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.net.HttpURLConnection;
 import org.junit.Test;
@@ -19,13 +20,16 @@ public class ValidationIntegrationTest extends BaseIntegrationTest {
     private int port;
 
     @Autowired
-    private AppProperties properties;
+    private UserService userService;
 
     @Test
     public void testValidation() {
 
+        User user = createUser("user1");
+        userService.createUser(user);
+
         given()
-            .auth().preemptive().basic(properties.getSecurity().getDefaultUsername(), properties.getSecurity().getDefaultPassword())
+            .auth().preemptive().basic(user.getUsername(), user.getPassword())
             .port(port)
         .when()
             .queryParam("year", 2000)

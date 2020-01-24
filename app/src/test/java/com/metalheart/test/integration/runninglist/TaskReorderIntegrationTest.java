@@ -30,12 +30,13 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         // act
+        Integer userId = generateUser();
         IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(getTask(1, PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)))
             .collect(Collectors.toList());
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(1).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 0, tasks.get(0).getTitle());
@@ -49,15 +50,16 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
     public void testOrderFromTopToBottom() {
 
         // arrange
+        Integer userId = generateUser();
         IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(getTask(1, PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)))
             .collect(Collectors.toList());
 
         // act
-        runningListCommandService.reorderTask(1, 0, 4);
+        runningListCommandService.reorderTask(userId, 0, 4);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(1).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 1, tasks.get(0).getTitle());
@@ -71,15 +73,16 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
     public void testOrderFromBottomToTop() {
 
         // arrange
+        Integer userId = generateUser();
         IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(getTask(1, PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)))
             .collect(Collectors.toList());
 
         // act
-        runningListCommandService.reorderTask(1, 4, 0);
+        runningListCommandService.reorderTask(userId, 4, 0);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(1).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 4, tasks.get(0).getTitle());
@@ -93,15 +96,16 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
     public void testOrderFromBottomToMiddle() {
 
         // arrange
+        Integer userId = generateUser();
         IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(getTask(1, PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)))
             .collect(Collectors.toList());
 
         // act
-        runningListCommandService.reorderTask(1, 4, 2);
+        runningListCommandService.reorderTask(userId, 4, 2);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(1).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 0, tasks.get(0).getTitle());
@@ -115,15 +119,16 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
     public void testOrderFromTopToMiddle() {
 
         // arrange
+        Integer userId = generateUser();
         IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(getTask(1, PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)))
             .collect(Collectors.toList());
 
         // act
-        runningListCommandService.reorderTask(1, 0, 2);
+        runningListCommandService.reorderTask(userId, 0, 2);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(1).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 1, tasks.get(0).getTitle());
@@ -137,17 +142,18 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
     public void testUndoOrderFromTopToMiddle() throws Exception {
 
         // arrange
+        Integer userId = generateUser();
         IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(getTask(1, PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)))
             .collect(Collectors.toList());
 
         // act
-        runningListCommandService.reorderTask(1, 0, 2);
-        commandManager.undo();
+        runningListCommandService.reorderTask(userId, 0, 2);
+        commandManager.undo(userId);
 
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(1).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 0, tasks.get(0).getTitle());
@@ -161,17 +167,18 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
     public void testRedoOrderFromTopToMiddle() throws Exception {
 
         // arrange
+        Integer userId = generateUser();
         IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(getTask(1, PREFIX + i)))
+            .mapToObj(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)))
             .collect(Collectors.toList());
 
         // act
-        runningListCommandService.reorderTask(1, 0, 2);
-        commandManager.undo();
-        commandManager.redo();
+        runningListCommandService.reorderTask(userId, 0, 2);
+        commandManager.undo(userId);
+        commandManager.redo(userId);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(1).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 1, tasks.get(0).getTitle());

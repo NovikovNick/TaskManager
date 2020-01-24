@@ -25,30 +25,32 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
     public void testRemoving() {
 
         // arrange
-        Task request = generateRandomTask(1);
-        Task task = runningListCommandService.createTask(request);
+        Integer userId = generateUser();
+        Task request = generateRandomTask(userId);
+        Task task = runningListCommandService.createTask(userId, request);
         Integer taskId = task.getId();
 
         // act
-        runningListCommandService.delete(taskId);
+        runningListCommandService.delete(userId, taskId);
 
         // assert
-        Assert.assertTrue(taskService.getTasks(1).isEmpty());
+        Assert.assertTrue(taskService.getTasks(userId).isEmpty());
     }
 
     @Test
     public void testUndoRemoving() throws Exception {
 
         // arrange
-        Task request = generateRandomTask(1);
-        Task task = runningListCommandService.createTask(request);
+        Integer userId = generateUser();
+        Task request = generateRandomTask(userId);
+        Task task = runningListCommandService.createTask(userId, request);
 
         // act
-        runningListCommandService.delete(task.getId());
-        commandManager.undo();
+        runningListCommandService.delete(userId, task.getId());
+        commandManager.undo(userId);
 
         // assert
-        List<Task> tasks = taskService.getTasks(1);
+        List<Task> tasks = taskService.getTasks(userId);
         Assert.assertFalse(tasks.isEmpty());
         Assert.assertEquals(1, tasks.size());
         Assert.assertEquals(request.getTitle(), tasks.get(0).getTitle());
@@ -58,16 +60,17 @@ public class RemovingTaskIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreating() throws Exception {
 
         // arrange
-        Task request = generateRandomTask(1);
-        Task task = runningListCommandService.createTask(request);
+        Integer userId = generateUser();
+        Task request = generateRandomTask(userId);
+        Task task = runningListCommandService.createTask(userId, request);
         Integer taskId = task.getId();
 
         // act
-        runningListCommandService.delete(taskId);
-        commandManager.undo();
-        commandManager.redo();
+        runningListCommandService.delete(userId, taskId);
+        commandManager.undo(userId);
+        commandManager.redo(userId);
 
         // assert
-        Assert.assertTrue(taskService.getTasks(1).isEmpty());
+        Assert.assertTrue(taskService.getTasks(userId).isEmpty());
     }
 }

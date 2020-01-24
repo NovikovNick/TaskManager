@@ -47,9 +47,9 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     private RunningListService runningListService;
 
     @Override
-    public Task createTask(Task request) {
+    public Task createTask(Integer userId, Task request) {
 
-        return runningListCommandManager.execute(new RunningListAction<>() {
+        return runningListCommandManager.execute(userId, new RunningListAction<>() {
 
             private Task task;
 
@@ -76,7 +76,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     }
 
     @Override
-    public void changeTaskStatus(Integer taskId, Integer dayIndex, TaskStatus status) {
+    public void changeTaskStatus(Integer userId, Integer taskId, Integer dayIndex, TaskStatus status) {
 
         WeekWorkLogJpaPK id = WeekWorkLogJpaPK.builder().taskId(taskId).dayIndex(dayIndex).build();
 
@@ -88,7 +88,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
             .status(status)
             .build();
 
-        runningListCommandManager.execute(new RunningListAction<Void>() {
+        runningListCommandManager.execute(userId, new RunningListAction<Void>() {
 
             @Override
             public Void execute() {
@@ -123,9 +123,9 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     }
 
     @Override
-    public void delete(Integer taskId) {
+    public void delete(Integer userId, Integer taskId) {
 
-        runningListCommandManager.execute(new RunningListAction<Void>() {
+        runningListCommandManager.execute(userId, new RunningListAction<Void>() {
 
             @Override
             public Void execute() {
@@ -149,7 +149,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     }
 
     @Override
-    public void update(Task request) {
+    public void update(Integer userId, Task request) {
 
         Task previousState = taskService.getTask(request.getId());
 
@@ -159,7 +159,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
         task.setModifiedAt(ZonedDateTime.now());
         task.setTags(request.getTags());
 
-        runningListCommandManager.execute(new RunningListAction<Void>() {
+        runningListCommandManager.execute(userId, new RunningListAction<Void>() {
 
             @Override
             public Void execute() {
@@ -192,7 +192,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
         RunningList runningList = runningListService.getRunningList(userId);
         runningList.setWeekId(weekId);
 
-        runningListCommandManager.execute(new RunningListAction<Void>() {
+        runningListCommandManager.execute(userId, new RunningListAction<Void>() {
 
             @Override
             public Void execute() {
@@ -236,7 +236,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
             tasks.get(i).setPriority(previousPriorities.get(i));
         }
 
-        runningListCommandManager.execute(new RunningListAction<Void>() {
+        runningListCommandManager.execute(userId, new RunningListAction<Void>() {
 
             @Override
             public Void execute() {

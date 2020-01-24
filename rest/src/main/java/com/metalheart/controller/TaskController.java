@@ -59,7 +59,7 @@ public class TaskController {
 
         Task task = conversionService.convert(request, Task.class);
         task.setUserId(user.getId());
-        runningListCommandService.createTask(task);
+        runningListCommandService.createTask(user.getId(), task);
 
         return conversionService.convert(runningListService.getRunningList(user.getId()), RunningListViewModel.class);
     }
@@ -69,7 +69,8 @@ public class TaskController {
     public RunningListViewModel changeStatus(@AuthenticationPrincipal User user,
                                              @Valid @RequestBody ChangeTaskStatusRequest request) {
 
-        runningListCommandService.changeTaskStatus(request.getTaskId(), request.getDayIndex(), request.getStatus());
+        runningListCommandService.changeTaskStatus(user.getId(), request.getTaskId(), request.getDayIndex(),
+            request.getStatus());
 
         return conversionService.convert(runningListService.getRunningList(user.getId()), RunningListViewModel.class);
     }
@@ -90,7 +91,7 @@ public class TaskController {
     @DeleteMapping(path = EndPoint.DELETE_TASK, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public RunningListViewModel delete(@AuthenticationPrincipal User user, @PathVariable("taskId") Integer taskId) {
 
-        runningListCommandService.delete(taskId);
+        runningListCommandService.delete(user.getId(), taskId);
 
         return conversionService.convert(runningListService.getRunningList(user.getId()), RunningListViewModel.class);
     }
@@ -103,7 +104,7 @@ public class TaskController {
                                            @Valid @RequestBody UpdateTaskRequest request) {
 
 
-        runningListCommandService.update(conversionService.convert(request, Task.class));
+        runningListCommandService.update(user.getId(), conversionService.convert(request, Task.class));
 
         return conversionService.convert(runningListService.getRunningList(user.getId()), RunningListViewModel.class);
     }

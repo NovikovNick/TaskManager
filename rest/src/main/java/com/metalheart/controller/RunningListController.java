@@ -146,7 +146,7 @@ public class RunningListController {
     public ResponseEntity<RunningListViewModel> undo(@AuthenticationPrincipal User user) {
 
         try {
-            commandManager.undo();
+            commandManager.undo(user.getId());
             RunningList runningList = runningListService.getRunningList(user.getId());
             RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
             return ResponseEntity.ok(viewModel);
@@ -168,7 +168,7 @@ public class RunningListController {
     public ResponseEntity<RunningListViewModel> redo(@AuthenticationPrincipal User user) {
 
         try {
-            commandManager.redo();
+            commandManager.redo(user.getId());
             RunningList runningList = runningListService.getRunningList(user.getId());
             RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
             return ResponseEntity.ok(viewModel);

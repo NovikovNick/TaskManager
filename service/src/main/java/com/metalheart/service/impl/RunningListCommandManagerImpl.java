@@ -16,51 +16,51 @@ public class RunningListCommandManagerImpl implements RunningListCommandManager 
     private RunningListCommandRepository commandRepository;
 
     @Override
-    public <T> T execute(RunningListAction<T> action) {
+    public <T> T execute(Integer userId, RunningListAction<T> action) {
 
         T res = action.execute();
-        commandRepository.addAction(action);
+        commandRepository.addAction(userId, action);
         return res;
     }
 
     @Transactional
     @Override
-    public void undo() throws UnableToUndoException {
+    public void undo(Integer userId) throws UnableToUndoException {
 
-        if (!canUndo()) {
+        if (!canUndo(userId)) {
             throw new UnableToUndoException();
         }
 
-        RunningListAction action = commandRepository.popDone();
+        RunningListAction action = commandRepository.popDone(userId);
         action.undo();
-        commandRepository.pushUndone(action);
+        commandRepository.pushUndone(userId, action);
     }
 
     @Override
-    public void redo() throws UnableToRedoException {
+    public void redo(Integer userId) throws UnableToRedoException {
 
-        if (!canRedo()) {
+        if (!canRedo(userId)) {
             throw new UnableToRedoException();
         }
 
-        RunningListAction action = commandRepository.popUndone();
+        RunningListAction action = commandRepository.popUndone(userId);
         action.redo();
-        commandRepository.pushDone(action);
+        commandRepository.pushDone(userId, action);
 
     }
 
     @Override
-    public boolean canRedo() {
-        return commandRepository.hasUndone();
+    public boolean canRedo(Integer userId) {
+        return commandRepository.hasUndone(userId);
     }
 
     @Override
-    public boolean canUndo() {
-        return commandRepository.hasDone();
+    public boolean canUndo(Integer userId) {
+        return commandRepository.hasDone(userId);
     }
 
     @Override
-    public void clear() {
-        commandRepository.clear();
+    public void clear(Integer userId) {
+        commandRepository.clear(userId);
     }
 }

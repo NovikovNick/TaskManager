@@ -25,8 +25,9 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
     public void testCreating() {
 
         // arrange
-        Task createRequest = getTask(1, "Created task");
-        Task createdTask = runningListCommandService.createTask(createRequest);
+        Integer userId = generateUser();
+        Task createRequest = getTask(userId, "Created task");
+        Task createdTask = runningListCommandService.createTask(userId, createRequest);
 
         Task updateRequest = Task.builder()
             .id(createdTask.getId())
@@ -36,10 +37,10 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
 
         // act
 
-        runningListCommandService.update(updateRequest);
+        runningListCommandService.update(userId, updateRequest);
 
         // assert
-        List<Task> tasks = taskService.getTasks(1);
+        List<Task> tasks = taskService.getTasks(userId);
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());
@@ -51,8 +52,9 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
     public void testUndoCreating() throws Exception {
 
         // arrange
-        Task createRequest = getTask(1, "Created task");
-        Task createdTask = runningListCommandService.createTask(createRequest);
+        Integer userId = generateUser();
+        Task createRequest = getTask(userId, "Created task");
+        Task createdTask = runningListCommandService.createTask(userId, createRequest);
 
         Task updateRequest = Task.builder()
             .id(createdTask.getId())
@@ -61,11 +63,11 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
             .build();
 
         // act
-        runningListCommandService.update(updateRequest);
-        commandManager.undo();
+        runningListCommandService.update(userId, updateRequest);
+        commandManager.undo(userId);
 
         // assert
-        List<Task> tasks = taskService.getTasks(1);
+        List<Task> tasks = taskService.getTasks(userId);
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());
@@ -77,8 +79,9 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreating() throws Exception {
 
         // arrange
-        Task createRequest = getTask(1, "Created task");
-        Task createdTask = runningListCommandService.createTask(createRequest);
+        Integer userId = generateUser();
+        Task createRequest = getTask(userId, "Created task");
+        Task createdTask = runningListCommandService.createTask(userId, createRequest);
 
         Task updateRequest = Task.builder()
             .id(createdTask.getId())
@@ -87,12 +90,12 @@ public class UpdateTaskIntegrationTest extends BaseIntegrationTest {
             .build();
 
         // act
-        runningListCommandService.update(updateRequest);
-        commandManager.undo();
-        commandManager.redo();
+        runningListCommandService.update(userId, updateRequest);
+        commandManager.undo(userId);
+        commandManager.redo(userId);
 
         // assert
-        List<Task> tasks = taskService.getTasks(1);
+        List<Task> tasks = taskService.getTasks(userId);
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());

@@ -45,21 +45,21 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
     public void testArchive() throws Exception {
 
         // arrange
-
+        Integer userId = generateUser();
         WeekId weekId = dateService.getCurrentWeekId();
         WeekId previousWeekId = dateService.getPreviousWeekId(weekId);
 
         String taskTitle = RandomStringUtils.random(30);
         String taskDescription = RandomStringUtils.random(300);
 
-        Task request = getTask(1, taskTitle);
+        Task request = getTask(userId, taskTitle);
         request.setDescription(taskDescription);
 
-        runningListCommandService.createTask(request);
+        runningListCommandService.createTask(userId, request);
 
 
         // act
-        runningListCommandService.archive(1, previousWeekId);
+        runningListCommandService.archive(userId, previousWeekId);
 
         // assert
 
@@ -81,21 +81,22 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
         // arrange
 
+        Integer userId = generateUser();
         WeekId weekId = dateService.getCurrentWeekId();
         WeekId previousWeekId = dateService.getPreviousWeekId(weekId);
 
         String taskTitle = RandomStringUtils.random(30);
         String taskDescription = RandomStringUtils.random(300);
 
-        Task request = getTask(1, taskTitle);
+        Task request = getTask(userId, taskTitle);
         request.setDescription(taskDescription);
 
-        runningListCommandService.createTask(request);
+        runningListCommandService.createTask(userId, request);
 
 
         // act
-        runningListCommandService.archive(1, previousWeekId);
-        commandManager.undo();
+        runningListCommandService.archive(userId, previousWeekId);
+        commandManager.undo(userId);
 
 
         // assert
@@ -108,22 +109,24 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
         // arrange
 
+        Integer userId = generateUser();
+
         WeekId weekId = dateService.getCurrentWeekId();
         WeekId previousWeekId = dateService.getPreviousWeekId(weekId);
 
         String taskTitle = RandomStringUtils.random(30);
         String taskDescription = RandomStringUtils.random(300);
 
-        Task request = getTask(1, taskTitle);
+        Task request = getTask(userId, taskTitle);
         request.setDescription(taskDescription);
 
-        runningListCommandService.createTask(request);
+        runningListCommandService.createTask(userId, request);
 
 
         // act
-        runningListCommandService.archive(1, previousWeekId);
-        commandManager.undo();
-        commandManager.redo();
+        runningListCommandService.archive(userId, previousWeekId);
+        commandManager.undo(userId);
+        commandManager.redo(userId);
 
         // assert
 

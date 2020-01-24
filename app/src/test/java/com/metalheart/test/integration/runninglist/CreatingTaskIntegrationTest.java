@@ -1,6 +1,7 @@
 package com.metalheart.test.integration.runninglist;
 
 import com.metalheart.model.Task;
+import com.metalheart.model.User;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.TaskService;
@@ -25,14 +26,15 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
     public void testCreating() {
 
         // arrange
-        Task request = generateRandomTask(1);
+        Integer userId = generateUser();
+        Task request = generateRandomTask(userId);
 
         // act
-        runningListCommandService.createTask(request);
+        runningListCommandService.createTask(userId, request);
 
         // assert
 
-        List<Task> tasks = taskService.getTasks(1);
+        List<Task> tasks = taskService.getTasks(userId);
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());
@@ -43,15 +45,16 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
     public void testUndoCreating() throws Exception {
 
         // arrange
-        Task request = generateRandomTask(1);
+        Integer userId = generateUser();
+        Task request = generateRandomTask(userId);
 
         // act
-        runningListCommandService.createTask(request);
-        commandManager.undo();
+        runningListCommandService.createTask(userId, request);
+        commandManager.undo(userId);
 
         // assert
 
-        List<Task> tasks = taskService.getTasks(1);
+        List<Task> tasks = taskService.getTasks(userId);
         Assert.assertNotNull(tasks);
         Assert.assertTrue(tasks.isEmpty());
     }
@@ -60,16 +63,17 @@ public class CreatingTaskIntegrationTest extends BaseIntegrationTest {
     public void testRedoCreating() throws Exception {
 
         // arrange
-        Task request = generateRandomTask(1);
+        Integer userId = generateUser();
+        Task request = generateRandomTask(userId);
 
         // act
-        runningListCommandService.createTask(request);
-        commandManager.undo();
-        commandManager.redo();
+        runningListCommandService.createTask(userId, request);
+        commandManager.undo(userId);
+        commandManager.redo(userId);
 
         // assert
 
-        List<Task> tasks = taskService.getTasks(1);
+        List<Task> tasks = taskService.getTasks(userId);
         Assert.assertNotNull(tasks);
 
         Assert.assertEquals(1, tasks.size());

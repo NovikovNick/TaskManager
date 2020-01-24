@@ -1,9 +1,10 @@
 package com.metalheart.test.integration.rest;
 
-import com.metalheart.config.AppProperties;
 import com.metalheart.EndPoint;
+import com.metalheart.model.User;
 import com.metalheart.model.request.AuthenticationRequest;
 import com.metalheart.model.response.RunningListViewModel;
+import com.metalheart.service.UserService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import io.restassured.http.ContentType;
 import java.net.HttpURLConnection;
@@ -24,14 +25,17 @@ public class LoginIntegrationTest extends BaseIntegrationTest {
     private int port;
 
     @Autowired
-    private AppProperties properties;
+    private UserService userService;
 
     @Test
     public void successLoginTest() {
 
+        User user = createUser("user1");
+        userService.createUser(user);
+
         AuthenticationRequest request = AuthenticationRequest.builder()
-            .username(properties.getSecurity().getDefaultUsername())
-            .password(properties.getSecurity().getDefaultPassword())
+            .username(user.getUsername())
+            .password(user.getPassword())
             .build();
 
         String sessionId = given()
@@ -70,9 +74,14 @@ public class LoginIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void failLoginTest() {
+
+
+        User user = createUser("user1");
+        userService.createUser(user);
+
         AuthenticationRequest request = AuthenticationRequest.builder()
-            .username(properties.getSecurity().getDefaultUsername())
-            .password(RandomStringUtils.random(8))
+            .username(user.getUsername())
+            .password(user.getPassword() + RandomStringUtils.random(1))
             .build();
 
         given()

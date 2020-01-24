@@ -32,14 +32,15 @@ public class TagIntegrationTest extends BaseIntegrationTest {
     public void testCreating() {
 
         // arrange
-        Task createRequest = getTask(1, "Created task");
-        Task createdTask = runningListCommandService.createTask(createRequest);
+        Integer userId = generateUser();
+        Task createRequest = getTask(userId, "Created task");
+        Task createdTask = runningListCommandService.createTask(userId, createRequest);
 
         // act
         tagService.addTagToTask("tag1", createdTask.getId());
 
         // assert
-        List<Tag> tags = tagService.getTags(1);
+        List<Tag> tags = tagService.getTags(userId);
         Task fetchedTask = taskService.getTask(createdTask.getId());
         Assert.assertNotNull(fetchedTask);
         Assert.assertFalse(CollectionUtils.isEmpty(fetchedTask.getTags()));
@@ -51,19 +52,20 @@ public class TagIntegrationTest extends BaseIntegrationTest {
     public void testSelection() {
 
         // arrange
-        Task createdTask1 = runningListCommandService.createTask(getTask(1, "task1"));
-        Task createdTask2 = runningListCommandService.createTask(getTask(1, "task2"));
-        Task createdTask3 = runningListCommandService.createTask(getTask(1, "task3"));
+        Integer userId = generateUser();
+        Task createdTask1 = runningListCommandService.createTask(userId, getTask(userId, "task1"));
+        Task createdTask2 = runningListCommandService.createTask(userId, getTask(userId, "task2"));
+        Task createdTask3 = runningListCommandService.createTask(userId, getTask(userId, "task3"));
         tagService.addTagToTask("tag1", createdTask1.getId());
         tagService.addTagToTask("tag1", createdTask2.getId());
 
 
         // act
-        tagService.selectTag(1, "tag1");
+        tagService.selectTag(userId, "tag1");
 
         // assert
 
-        RunningList runningList = runningListService.getRunningList(1);
+        RunningList runningList = runningListService.getRunningList(userId);
         Assert.assertEquals(2, runningList.getTasks().size());
     }
 
@@ -71,9 +73,10 @@ public class TagIntegrationTest extends BaseIntegrationTest {
     public void testSeveralTagSelection() {
 
         // arrange
-        Task createdTask1 = runningListCommandService.createTask(getTask(1, "task1"));
-        Task createdTask2 = runningListCommandService.createTask(getTask(1, "task2"));
-        Task createdTask3 = runningListCommandService.createTask(getTask(1, "task3"));
+        Integer userId = generateUser();
+        Task createdTask1 = runningListCommandService.createTask(userId, getTask(userId, "task1"));
+        Task createdTask2 = runningListCommandService.createTask(userId, getTask(userId, "task2"));
+        Task createdTask3 = runningListCommandService.createTask(userId, getTask(userId, "task3"));
         tagService.addTagToTask("tag1", createdTask1.getId());
         tagService.addTagToTask("tag2", createdTask1.getId());
         tagService.addTagToTask("tag1", createdTask2.getId());
@@ -82,12 +85,12 @@ public class TagIntegrationTest extends BaseIntegrationTest {
 
 
         // act
-        tagService.selectTag(1, "tag1");
+        tagService.selectTag(userId, "tag1");
 
         // assert
-        Assert.assertEquals(1, tagService.getSelectedTags(1).size());
+        Assert.assertEquals(1, tagService.getSelectedTags(userId).size());
 
-        RunningList runningList = runningListService.getRunningList(1);
+        RunningList runningList = runningListService.getRunningList(userId);
 
         List<Task> tasks = runningList.getTasks();
         Assert.assertEquals(2, tasks.size());
@@ -99,9 +102,10 @@ public class TagIntegrationTest extends BaseIntegrationTest {
     public void testSeveralTagSelection2() {
 
         // arrange
-        Task createdTask1 = runningListCommandService.createTask(getTask(1, "task1"));
-        Task createdTask2 = runningListCommandService.createTask(getTask(1, "task2"));
-        Task createdTask3 = runningListCommandService.createTask(getTask(1, "task3"));
+        Integer userId = generateUser();
+        Task createdTask1 = runningListCommandService.createTask(userId, getTask(userId, "task1"));
+        Task createdTask2 = runningListCommandService.createTask(userId, getTask(userId, "task2"));
+        Task createdTask3 = runningListCommandService.createTask(userId, getTask(userId, "task3"));
         tagService.addTagToTask("tag1", createdTask1.getId());
         tagService.addTagToTask("tag2", createdTask1.getId());
         tagService.addTagToTask("tag1", createdTask2.getId());
@@ -110,13 +114,13 @@ public class TagIntegrationTest extends BaseIntegrationTest {
 
 
         // act
-        tagService.selectTag(1, "tag1");
-        RunningList runningList = runningListService.getRunningList(1);
-        tagService.selectTag(1, "tag2");
-        runningList = runningListService.getRunningList(1);
+        tagService.selectTag(userId, "tag1");
+        RunningList runningList = runningListService.getRunningList(userId);
+        tagService.selectTag(userId, "tag2");
+        runningList = runningListService.getRunningList(userId);
 
         // assert
-        Assert.assertEquals(2, tagService.getSelectedTags(1).size());
+        Assert.assertEquals(2, tagService.getSelectedTags(userId).size());
 
 
 
@@ -130,9 +134,10 @@ public class TagIntegrationTest extends BaseIntegrationTest {
     public void testStrictSeveralTagSelection() {
 
         // arrange
-        Task createdTask1 = runningListCommandService.createTask(getTask(1, "task1"));
-        Task createdTask2 = runningListCommandService.createTask(getTask(1, "task2"));
-        Task createdTask3 = runningListCommandService.createTask(getTask(1, "task3"));
+        Integer userId = generateUser();
+        Task createdTask1 = runningListCommandService.createTask(userId, getTask(userId, "task1"));
+        Task createdTask2 = runningListCommandService.createTask(userId, getTask(userId, "task2"));
+        Task createdTask3 = runningListCommandService.createTask(userId, getTask(userId, "task3"));
 
         tagService.addTagToTask("tag1", createdTask1.getId());
         tagService.addTagToTask("tag2", createdTask1.getId());
@@ -144,13 +149,13 @@ public class TagIntegrationTest extends BaseIntegrationTest {
 
 
         // act
-        tagService.selectTag(1, "tag1");
-        tagService.selectTag(1, "tag2");
+        tagService.selectTag(userId, "tag1");
+        tagService.selectTag(userId, "tag2");
 
         // assert
-        Assert.assertEquals(2, tagService.getSelectedTags(1).size());
+        Assert.assertEquals(2, tagService.getSelectedTags(userId).size());
 
-        RunningList runningList = runningListService.getRunningList(1);
+        RunningList runningList = runningListService.getRunningList(userId);
         List<Task> tasks = runningList.getTasks();
         Assert.assertEquals(2, tasks.size());
         Assert.assertEquals(2, tasks.get(0).getTags().size());

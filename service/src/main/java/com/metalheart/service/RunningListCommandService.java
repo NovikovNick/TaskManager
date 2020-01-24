@@ -7,13 +7,13 @@ import com.metalheart.model.WeekId;
 
 public interface RunningListCommandService {
 
-    Task createTask(Task request);
+    Task createTask(Integer userId, Task request);
 
-    void changeTaskStatus(Integer taskId, Integer dayIndex, TaskStatus status);
+    void changeTaskStatus(Integer userId, Integer taskId, Integer dayIndex, TaskStatus status);
 
-    void delete(Integer taskId);
+    void delete(Integer userId, Integer taskId);
 
-    void update(Task request);
+    void update(Integer userId, Task request);
 
     void archive(Integer userId, WeekId weekId) throws RunningListArchiveAlreadyExistException;
 

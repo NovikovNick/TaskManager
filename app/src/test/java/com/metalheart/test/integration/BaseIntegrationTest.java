@@ -8,10 +8,12 @@ import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.User;
 import com.metalheart.model.WeekId;
+import com.metalheart.model.jpa.UserJpa;
 import com.metalheart.repository.inmemory.SelectedTagRepository;
 import com.metalheart.repository.jpa.RunningListArchiveJpaRepository;
 import com.metalheart.repository.jpa.TagJpaRepository;
 import com.metalheart.repository.jpa.TaskJpaRepository;
+import com.metalheart.repository.jpa.UserJpaRepository;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListCommandManager;
@@ -64,14 +66,18 @@ public abstract class BaseIntegrationTest {
     @Autowired
     private TagJpaRepository tagJpaRepository;
 
+    @Autowired
+    private UserJpaRepository userJpaRepository;
+
     @Before
     public void cleanUp() {
         archiveJpaRepository.deleteAll();
         workLogJpaRepository.deleteAll();
         taskJpaRepository.deleteAll();
         tagJpaRepository.deleteAll();
-        commandManager.clear();
+        userJpaRepository.findAll().forEach(user -> commandManager.clear(user.getId()));
         selectedTagRepository.deleteAll();
+        userJpaRepository.deleteAll();
     }
 
     protected Task generateRandomTask(Integer userId) {
@@ -107,6 +113,15 @@ public abstract class BaseIntegrationTest {
         when(dateServiceMock.getPreviousWeekId(any())).thenReturn(WeekId.builder().year(year).week(week - 1).build());
         when(dateServiceMock.getCurrentWeekId()).thenReturn(WeekId.builder().year(year).week(week).build());
         when(dateServiceMock.getNextWeekId(any())).thenReturn(WeekId.builder().year(year).week(week + 1).build());
+    }
+
+    protected Integer generateUser() {
+        String username = RandomStringUtils.random(5);
+        return userJpaRepository.save(UserJpa.builder()
+            .email(username + "@mail.com")
+            .username(username)
+            .password(username)
+            .build()).getId();
     }
 
     protected User createUser(String username) {
