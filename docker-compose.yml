@@ -16,6 +16,8 @@ services:
 #    depends_on:
 #     - running-list-db
 #    network_mode: "host"
+
+
 #  running-list-front:
 #    build: ./frontend
 #    ports:

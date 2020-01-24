@@ -6,6 +6,7 @@ import com.metalheart.model.Calendar;
 import com.metalheart.model.Tag;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
+import com.metalheart.model.User;
 import com.metalheart.model.WeekId;
 import com.metalheart.repository.inmemory.SelectedTagRepository;
 import com.metalheart.repository.jpa.RunningListArchiveJpaRepository;
@@ -19,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -107,5 +107,13 @@ public abstract class BaseIntegrationTest {
         when(dateServiceMock.getPreviousWeekId(any())).thenReturn(WeekId.builder().year(year).week(week - 1).build());
         when(dateServiceMock.getCurrentWeekId()).thenReturn(WeekId.builder().year(year).week(week).build());
         when(dateServiceMock.getNextWeekId(any())).thenReturn(WeekId.builder().year(year).week(week + 1).build());
+    }
+
+    protected User createUser(String username) {
+        return User.builder()
+            .email(username + "@mail.com")
+            .username(username)
+            .password(username)
+            .build();
     }
 }
