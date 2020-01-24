@@ -121,11 +121,12 @@ public class RunningListController {
         path = EndPoint.RUNNING_LIST_ARCHIVE_PREV,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get archive for previous week", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> getPrevArchive(@Valid GetArchiveRequest request) {
+    public ResponseEntity<RunningListViewModel> getPrevArchive(@AuthenticationPrincipal User user,
+                                                               @Valid GetArchiveRequest request) {
 
         try {
             WeekId weekId = conversionService.convert(request, WeekId.class);
-            RunningList runningList = archiveService.getPrev(weekId);
+            RunningList runningList = archiveService.getPrev(user.getId(), weekId);
             RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
             return ResponseEntity.ok(viewModel);
         } catch (NoSuchRunningListArchiveException e) {

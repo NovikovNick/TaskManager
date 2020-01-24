@@ -32,10 +32,11 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
     public void testPreviousArchive() {
 
         // arrange
+        Integer userId = generateUser();
         WeekId weekId = dateService.getCurrentWeekId();
 
         // act
-        boolean hasPreviousArchive = archiveService.hasPreviousArchive(weekId);
+        boolean hasPreviousArchive = archiveService.hasPreviousArchive(userId, weekId);
 
         // assert
         Assert.assertFalse(hasPreviousArchive);
@@ -63,9 +64,9 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
         // assert
 
-        Assert.assertTrue(archiveService.hasPreviousArchive(weekId));
+        Assert.assertTrue(archiveService.hasPreviousArchive(userId, weekId));
 
-        RunningList archive = archiveService.getPrev(weekId);
+        RunningList archive = archiveService.getPrev(userId, weekId);
         Assert.assertNotNull(archive);
 
         List<Task> tasks = archive.getTasks();
@@ -101,7 +102,7 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
         // assert
 
-        Assert.assertFalse(archiveService.hasPreviousArchive(weekId));
+        Assert.assertFalse(archiveService.hasPreviousArchive(userId, weekId));
     }
 
     @Test
@@ -130,9 +131,9 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
         // assert
 
-        Assert.assertTrue(archiveService.hasPreviousArchive(weekId));
+        Assert.assertTrue(archiveService.hasPreviousArchive(userId, weekId));
 
-        RunningList archive = archiveService.getPrev(weekId);
+        RunningList archive = archiveService.getPrev(userId, weekId);
         Assert.assertNotNull(archive);
 
         List<Task> tasks = archive.getTasks();

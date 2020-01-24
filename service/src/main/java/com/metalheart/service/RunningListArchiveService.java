@@ -6,15 +6,15 @@ import com.metalheart.model.WeekId;
 
 public interface RunningListArchiveService {
 
-    RunningList getPrev(WeekId weekId) throws NoSuchRunningListArchiveException;
+    RunningList getPrev(Integer userId, WeekId weekId) throws NoSuchRunningListArchiveException;
 
     RunningList getNext(Integer userId, WeekId weekId) throws NoSuchRunningListArchiveException;
 
-    boolean hasPreviousArchive(WeekId weekId);
+    boolean hasPreviousArchive(Integer userId, WeekId weekId);
 
-    boolean isArchiveExist(WeekId weekId);
+    boolean isArchiveExist(Integer userId, WeekId weekId);
 
-    RunningList save(RunningList archiveToSave);
+    RunningList save(Integer userId, RunningList archiveToSave);
 
-    void delete(WeekId weekId);
+    void delete(Integer userId, WeekId weekId);
 }

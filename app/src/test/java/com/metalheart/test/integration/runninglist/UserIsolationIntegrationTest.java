@@ -1,13 +1,18 @@
 package com.metalheart.test.integration.runninglist;
 
+import com.metalheart.model.RunningList;
 import com.metalheart.model.Task;
 import com.metalheart.model.User;
+import com.metalheart.model.WeekId;
+import com.metalheart.service.DateService;
+import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.TaskService;
 import com.metalheart.service.UserService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.util.List;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +22,18 @@ public class UserIsolationIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private TaskService taskService;
 
+
     @Autowired
     private RunningListCommandManager commandManager;
 
     @Autowired
     private RunningListCommandService runningListCommandService;
+
+    @Autowired
+    private RunningListArchiveService archiveService;
+
+    @Autowired
+    private DateService dateService;
 
     @Autowired
     private UserService userService;
@@ -59,5 +71,40 @@ public class UserIsolationIntegrationTest extends BaseIntegrationTest {
 
     }
 
+    @Test
+    public void testArchive() throws Exception {
 
+        // arrange
+        Integer user1Id = generateUser();
+        Integer user2Id = generateUser();
+
+        WeekId weekId = dateService.getCurrentWeekId();
+        WeekId previousWeekId = dateService.getPreviousWeekId(weekId);
+
+        runningListCommandService.createTask(user1Id, getTask(user1Id, "User 1 task"));
+        runningListCommandService.createTask(user2Id, getTask(user2Id, "User 2 task"));
+
+
+        // act
+        runningListCommandService.archive(user1Id, previousWeekId);
+        runningListCommandService.archive(user2Id, previousWeekId);
+
+        // assert
+
+        Assert.assertTrue(archiveService.hasPreviousArchive(user1Id, weekId));
+        Assert.assertTrue(archiveService.hasPreviousArchive(user2Id, weekId));
+
+        RunningList archive1 = archiveService.getPrev(user1Id, weekId);
+        RunningList archive2 = archiveService.getPrev(user2Id, weekId);
+
+        Assert.assertNotNull(archive1);
+        Assert.assertNotNull(archive2);
+
+        Assert.assertEquals(1, archive1.getTasks().size());
+        Assert.assertEquals(1, archive2.getTasks().size());
+
+        Assert.assertEquals("User 1 task", archive1.getTasks().get(0).getTitle());
+        Assert.assertEquals("User 2 task", archive2.getTasks().get(0).getTitle());
+
+    }
 }

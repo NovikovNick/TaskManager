@@ -50,7 +50,7 @@ public class RunningListServiceImpl implements RunningListService {
             .tasks(getTaskWithStatuses(userId, calendar))
             .editable(true)
             .hasNext(false)
-            .hasPrevious(archiveService.hasPreviousArchive(weekId))
+            .hasPrevious(archiveService.hasPreviousArchive(userId, weekId))
             .canUndo(runningListCommandManager.canUndo(userId))
             .canRedo(runningListCommandManager.canRedo(userId))
             .selectedTags(tagService.getSelectedTags(userId))

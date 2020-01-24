@@ -185,8 +185,8 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     @Override
     public void archive(Integer userId, WeekId weekId) throws RunningListArchiveAlreadyExistException {
 
-        if (runningListArchiveService.isArchiveExist(weekId)) {
-            throw new RunningListArchiveAlreadyExistException(weekId);
+        if (runningListArchiveService.isArchiveExist(userId, weekId)) {
+            throw new RunningListArchiveAlreadyExistException(userId, weekId);
         }
 
         RunningList runningList = runningListService.getRunningList(userId);
@@ -196,20 +196,20 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
             @Override
             public Void execute() {
-                runningListArchiveService.save(runningList);
+                runningListArchiveService.save(userId, runningList);
                 log.info("Archive has been saved");
                 return null;
             }
 
             @Override
             public void redo() {
-                runningListArchiveService.save(runningList);
+                runningListArchiveService.save(userId, runningList);
                 log.info("Undone operation of archive saving was redone");
             }
 
             @Override
             public void undo() {
-                runningListArchiveService.delete(runningList.getWeekId());
+                runningListArchiveService.delete(userId, runningList.getWeekId());
                 log.info("Operation of archive saving was undone");
             }
         });

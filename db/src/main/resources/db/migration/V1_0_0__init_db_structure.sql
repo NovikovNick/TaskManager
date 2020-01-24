@@ -60,11 +60,13 @@ ALTER TABLE week_work_log OWNER TO metalheart;
 -- ----------------------------------------------------------------------------
 CREATE TABLE running_list_archive
 (
+  user_id           integer                     ,
   year              integer                     ,
   week              integer                     ,
   archive           text                        not null,
 
-  primary key (year, week)
+  primary key (user_id, year, week),
+  constraint fk_running_list_archive_user_id  foreign key (user_id) references "user"
 
 ) WITH (OIDS = FALSE);
 ALTER TABLE running_list_archive OWNER TO metalheart;

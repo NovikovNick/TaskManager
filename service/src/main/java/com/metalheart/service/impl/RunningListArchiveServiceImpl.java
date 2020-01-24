@@ -37,11 +37,11 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
 
     @Transactional
     @Override
-    public RunningList getPrev(WeekId weekId) throws NoSuchRunningListArchiveException {
+    public RunningList getPrev(Integer userId, WeekId weekId) throws NoSuchRunningListArchiveException {
 
         WeekId prevWeekId = dateService.getPreviousWeekId(weekId);
 
-        return getArchive(prevWeekId);
+        return getArchive(userId, prevWeekId);
     }
 
     @Override
@@ -53,58 +53,63 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
             return runningListService.getRunningList(userId);
         }
 
-        return getArchive(nextWeekId);
+        return getArchive(userId, nextWeekId);
     }
 
 
     @Override
-    public boolean hasPreviousArchive(WeekId weekId) {
-        return isArchiveExist(dateService.getPreviousWeekId(weekId));
+    public boolean hasPreviousArchive(Integer userId, WeekId weekId) {
+        return isArchiveExist(userId, dateService.getPreviousWeekId(weekId));
     }
 
 
-    private boolean hasNextArchive(WeekId weekId) {
+    private boolean hasNextArchive(Integer userId, WeekId weekId) {
         WeekId nextWeekId = dateService.getNextWeekId(weekId);
         if (dateService.getCurrentWeekId().equals(nextWeekId)) {
             return true;
         }
 
-        return isArchiveExist(nextWeekId);
+        return isArchiveExist(userId, nextWeekId);
     }
 
-    private RunningList getArchive(WeekId weekId) throws NoSuchRunningListArchiveException {
+    private RunningList getArchive(Integer userId, WeekId weekId) throws NoSuchRunningListArchiveException {
 
-        if (!isArchiveExist(weekId)) {
-            throw new NoSuchRunningListArchiveException(weekId);
+        if (!isArchiveExist(userId, weekId)) {
+            throw new NoSuchRunningListArchiveException(userId, weekId);
         }
 
-        RunningList runningList = getRunningList(weekId);
+        RunningList runningList = getRunningList(userId, weekId);
         runningList.setEditable(false);
-        runningList.setHasPrevious(hasPreviousArchive(weekId));
-        runningList.setHasNext(hasNextArchive(weekId));
+        runningList.setHasPrevious(hasPreviousArchive(userId, weekId));
+        runningList.setHasNext(hasNextArchive(userId, weekId));
         return runningList;
     }
 
     @Override
-    public boolean isArchiveExist(WeekId weekId) {
+    public boolean isArchiveExist(Integer userId, WeekId weekId) {
         var pk = conversionService.convert(weekId, RunningListArchiveJpaPK.class);
+        pk.setUserId(userId);
         return runningListArchiveRepository.existsById(pk);
     }
 
     @Override
-    public RunningList save(RunningList runningList) {
+    public RunningList save(Integer userId, RunningList runningList) {
         RunningListArchiveJpa entity = conversionService.convert(runningList, RunningListArchiveJpa.class);
+        entity.getId().setUserId(userId);
         runningListArchiveRepository.save(entity);
         return runningList;
     }
 
     @Override
-    public void delete(WeekId weekId) {
-        runningListArchiveRepository.deleteById(conversionService.convert(weekId, RunningListArchiveJpaPK.class));
+    public void delete(Integer userId, WeekId weekId) {
+        RunningListArchiveJpaPK pk = conversionService.convert(weekId, RunningListArchiveJpaPK.class);
+        pk.setUserId(userId);
+        runningListArchiveRepository.deleteById(pk);
     }
 
-    private RunningList getRunningList(WeekId weekId) {
+    private RunningList getRunningList(Integer userId, WeekId weekId) {
         var pk = conversionService.convert(weekId, RunningListArchiveJpaPK.class);
+        pk.setUserId(userId);
         RunningListArchiveJpa archive = runningListArchiveRepository.getOne(pk);
         return conversionService.convert(archive, RunningList.class);
     }

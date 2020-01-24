@@ -15,6 +15,9 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class RunningListArchiveJpaPK implements Serializable {
 
+    @Column(name = "user_id", nullable = false)
+    private Integer userId;
+
     @Column(name = "year", nullable = false)
     private Integer year;
 
