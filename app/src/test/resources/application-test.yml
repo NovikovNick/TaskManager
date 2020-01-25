@@ -9,5 +9,6 @@ taskmanager:
     includeRequestHeaders: false
     includeResponse: false
     includeResponseHeaders: false
+    backUrl: http://localhost:8080
     frontUrl: http://localhost:3000
 

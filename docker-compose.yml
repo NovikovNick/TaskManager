@@ -11,15 +11,3 @@ services:
     ports:
       - 5432:5432
     network_mode: "host"
-#  running-list-server:
-#    image: running-list-server:latest
-#    depends_on:
-#     - running-list-db
-#    network_mode: "host"
-
-
-#  running-list-front:
-#    build: ./frontend
-#    ports:
-#      - 80:80
-#    network_mode: "host"

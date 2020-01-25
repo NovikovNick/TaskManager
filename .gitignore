@@ -15,7 +15,6 @@ web-app/WEB-INF/classes
 gradle
 
 *.log
-application.yml
 
 docker/*.jar
 docker/*.jar.original

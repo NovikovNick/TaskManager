@@ -22,6 +22,6 @@ docker {
         baseImage = 'adoptopenjdk/openjdk11:alpine-jre'
         ports = [8080]
         images = ['running-list-server:latest']
-        jvmArgs = ['-Dspring.profiles.active=production', '-Xmx512m']
+        jvmArgs = ['-Djava.security.egd=file:/dev/./urandom', '-Dspring.profiles.active=production', '-Xmx512m']
     }
 }

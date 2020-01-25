@@ -1,20 +1,14 @@
 package com.metalheart.test.integration.rest;
 
 import com.metalheart.EndPoint;
-import com.metalheart.config.AppProperties;
-import com.metalheart.model.jpa.UserJpa;
 import com.metalheart.model.request.AuthenticationRequest;
 import com.metalheart.model.request.UserRegistrationRequest;
 import com.metalheart.model.response.RunningListViewModel;
-import com.metalheart.repository.jpa.UserJpaRepository;
-import com.metalheart.service.UserService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.mail.util.MimeMessageParser;
@@ -23,10 +17,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
 
 import static io.restassured.RestAssured.given;
@@ -36,6 +30,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
+@ActiveProfiles("test")
 public class RegistrationIntegrationTest extends BaseIntegrationTest {
 
     @LocalServerPort

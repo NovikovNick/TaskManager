@@ -22,6 +22,7 @@ import org.springframework.security.web.header.HeaderWriterFilter;
 import org.springframework.security.web.savedrequest.RequestCacheAwareFilter;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
 import org.springframework.security.web.session.SessionManagementFilter;
+import org.springframework.web.filter.CorsFilter;
 
 import static org.junit.Assert.assertTrue;
 
@@ -43,6 +44,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest {
         assertTrue(filters.get(i++) instanceof WebAsyncManagerIntegrationFilter);
         assertTrue(filters.get(i++) instanceof SecurityContextPersistenceFilter);
         assertTrue(filters.get(i++) instanceof HeaderWriterFilter);
+        assertTrue(filters.get(i++) instanceof CorsFilter);
         assertTrue(filters.get(i++) instanceof LogoutFilter);
         assertTrue(filters.get(i++) instanceof OAuth2AuthorizationRequestRedirectFilter);
         assertTrue(filters.get(i++) instanceof OAuth2LoginAuthenticationFilter);
