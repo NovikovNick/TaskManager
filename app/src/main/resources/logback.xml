@@ -5,7 +5,7 @@
     <property scope="context" name="application-name" value="engage-real-time-stats"/>
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>./taskmanager.log</file>
+        <file>${LOG_DIR}/runninglist.log</file>
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="com.metalheart.log.LogLayout"/>
         </encoder>
