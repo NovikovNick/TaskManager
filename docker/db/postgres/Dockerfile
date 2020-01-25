@@ -1,3 +1,0 @@
-FROM postgres:10.5
-
-COPY init.sh /docker-entrypoint-initdb.d/init-db.sh
