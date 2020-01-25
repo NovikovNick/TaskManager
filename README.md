@@ -4,52 +4,11 @@ tail -f ./taskmanager.log | jq '.'
 tail -f ./taskmanager.log | jq '. | select(.level == "ERROR")'
 
 
-#### Data:
-##### Task:
-- Title
-- Parent task
-- Create date
-- Last modification date
-- type
-- status 
-- priority
-##### Task type can be:
-- Project
-- Epic
-- Story
-- Task
-##### Task status can be:
-- To do
-- In progress
-- Canceled
-- Done
-##### Week work log:
-- date
-- action
-- task
-##### Action  can be:
-- change status
-- change priority
-##### Current week running list:
-- week
-- task 
-- priority
-- collapsed
+```$xslt
 
-##### History:
-- week
-- log (json)
+./gradlew clean build
 
+docker build -t running-list-front:latest ./frontend
+docker exec -it /taskmanager_running-list-front_1 sh
 
-#### Functionality:
-- Running list - work log for a week by projects
-    - CRUD task
-    - change order
-    - track work 
-    - previous week
-    - close week
-- Task card 
-    - change description
-- Time tracker - track time for a project
-- Useful links
-- Notes
+```

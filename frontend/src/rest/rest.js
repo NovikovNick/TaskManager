@@ -1,3 +1,5 @@
+import setting from "../config"
+
 /**
  * Parses the JSON returned by a network request
  *
@@ -54,7 +56,7 @@ export function getTaskList() {
         credentials: 'include',
         cache: 'no-cache'
     };
-    return rest('taskmanager/runninglist', settings)
+    return rest(setting.API_URL + '/taskmanager/runninglist', settings)
 }
 
 export function createTask(formData) {
@@ -68,7 +70,7 @@ export function createTask(formData) {
         credentials: 'include',
         body: JSON.stringify(formData)
     };
-    return rest('/taskmanager/task', settings)
+    return rest(setting.API_URL + '/taskmanager/task', settings)
 }
 
 export function updateTask(formData) {
@@ -82,25 +84,8 @@ export function updateTask(formData) {
         credentials: 'include',
         body: JSON.stringify(formData)
     };
-    return rest('/taskmanager/task', settings)
+    return rest(setting.API_URL + '/taskmanager/task', settings)
 }
-
-export function removeTask(taskId) {
-    const settings = {
-        method: 'DELETE',
-        cache: 'no-cache',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-            taskId: taskId
-        })
-    };
-    return rest('/taskmanager/task', settings)
-}
-
 
 export function changeTaskStatus(taskId, status, dayIndex) {
     const settings = {
@@ -117,7 +102,7 @@ export function changeTaskStatus(taskId, status, dayIndex) {
             dayIndex: dayIndex
         })
     };
-    return rest("taskmanager/task/status", settings)
+    return rest(setting.API_URL + "/taskmanager/task/status", settings)
 }
 
 export function changePriority(startIndex, endIndex) {
@@ -134,7 +119,7 @@ export function changePriority(startIndex, endIndex) {
             endIndex: endIndex,
         })
     };
-    return rest("taskmanager/task/priority", settings)
+    return rest(setting.API_URL + "/taskmanager/task/priority", settings)
 }
 
 export function deleteTask(taskId) {
@@ -147,7 +132,7 @@ export function deleteTask(taskId) {
         },
         credentials: 'include'
     };
-    return rest("taskmanager/task/" + taskId, settings)
+    return rest(setting.API_URL + "/taskmanager/task/" + taskId, settings)
 }
 
 export function getNextTaskList(year, week) {
@@ -156,7 +141,7 @@ export function getNextTaskList(year, week) {
         credentials: 'include',
         cache: 'no-cache'
     };
-    return rest('/taskmanager/runninglist/archive/next?year=' + year + '&week=' + week, settings);
+    return rest(setting.API_URL + '/taskmanager/runninglist/archive/next?year=' + year + '&week=' + week, settings);
 }
 
 export function getPrevTaskList(year, week) {
@@ -165,7 +150,7 @@ export function getPrevTaskList(year, week) {
         credentials: 'include',
         cache: 'no-cache'
     };
-    return rest('/taskmanager/runninglist/archive/prev?year=' + year + '&week=' + week, settings);
+    return rest(setting.API_URL + '/taskmanager/runninglist/archive/prev?year=' + year + '&week=' + week, settings);
 }
 
 export function archive() {
@@ -178,7 +163,7 @@ export function archive() {
         },
         credentials: 'include',
     };
-    return rest('/taskmanager/runninglist/archive', settings);
+    return rest(setting.API_URL + '/taskmanager/runninglist/archive', settings);
 }
 
 export function undo() {
@@ -191,7 +176,7 @@ export function undo() {
         },
         credentials: 'include',
     };
-    return rest('/taskmanager/runninglist', settings);
+    return rest(setting.API_URL + '/taskmanager/runninglist', settings);
 }
 
 export function redo() {
@@ -204,9 +189,8 @@ export function redo() {
         },
         credentials: 'include',
     };
-    return rest('/taskmanager/runninglist', settings);
+    return rest(setting.API_URL + '/taskmanager/runninglist', settings);
 }
-
 
 export function removeTag(tag) {
     const settings = {
@@ -221,7 +205,7 @@ export function removeTag(tag) {
             tag: tag
         })
     };
-    return rest('taskmanager/tag', settings);
+    return rest(setting.API_URL + '/taskmanager/tag', settings);
 }
 
 export function addTag(tag) {
@@ -237,7 +221,7 @@ export function addTag(tag) {
             tag: tag
         })
     };
-    return rest('taskmanager/tag', settings);
+    return rest(setting.API_URL + '/taskmanager/tag', settings);
 }
 
 export function signOut(){
@@ -245,7 +229,7 @@ export function signOut(){
         method: 'GET',
         credentials: 'include',
     };
-    return rest('/auth/signout', settings)
+    return rest(setting.API_URL + '/auth/signout', settings)
 }
 
 export function signIn({username, password}) {
@@ -262,7 +246,7 @@ export function signIn({username, password}) {
             password: password
         })
     };
-    return rest('/auth/signin', settings);
+    return rest(setting.API_URL + '/auth/signin', settings);
 }
 
 export function getUserProfile() {
@@ -271,7 +255,7 @@ export function getUserProfile() {
         credentials: 'include',
         cache: 'no-cache'
     };
-    return rest('/user', settings);
+    return rest(setting.API_URL +'/user', settings);
 }
 
 export function signUp({username, email, password, confirmPassword}) {
@@ -290,5 +274,5 @@ export function signUp({username, email, password, confirmPassword}) {
             confirmPassword: confirmPassword
         })
     };
-    return rest('/user', settings);
+    return rest(setting.API_URL + '/user', settings);
 }
