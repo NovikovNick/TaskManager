@@ -21,7 +21,7 @@ docker {
     springBootApplication {
         baseImage = 'adoptopenjdk/openjdk11:alpine-jre'
         ports = [8080]
-        images = ['running-list-server:latest']
+        images = ['nicknovikov/running-list-server:latest']
         jvmArgs = ['-Djava.security.egd=file:/dev/./urandom', '-Dspring.profiles.active=production', '-Xmx512m']
     }
 }
