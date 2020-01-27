@@ -5,7 +5,6 @@ import com.metalheart.config.RepositoryConfiguration;
 import com.metalheart.config.RestConfiguration;
 import com.metalheart.config.ServiceConfiguration;
 import com.metalheart.model.User;
-import com.metalheart.service.TaskService;
 import com.metalheart.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -25,9 +24,6 @@ public class AppConfiguration {
     private AppProperties properties;
 
     @Autowired
-    private TaskService taskService;
-
-    @Autowired
     private UserService userService;
 
     @Bean
@@ -42,7 +38,6 @@ public class AppConfiguration {
                     .password(properties.getSecurity().getDefaultPassword())
                     .build());
             }
-            //taskService.reorder();
         };
     }
 }

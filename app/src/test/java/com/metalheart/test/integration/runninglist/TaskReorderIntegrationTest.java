@@ -1,16 +1,17 @@
 package com.metalheart.test.integration.runninglist;
 
 import com.metalheart.model.Task;
+import com.metalheart.repository.jpa.TaskJpaRepository;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static java.util.stream.IntStream.range;
 
 public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
@@ -25,25 +26,28 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private RunningListCommandManager commandManager;
 
+    @Autowired
+    private TaskJpaRepository taskJpaRepository;
+
     @Test
     public void testOrderAfterTaskCreation() {
 
         // arrange
         // act
         Integer userId = generateUser();
-        IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)))
-            .collect(Collectors.toList());
+        range(0, 5).forEach(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)));
+
 
         // assert
         List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
-        Assert.assertEquals(PREFIX + 0, tasks.get(0).getTitle());
-        Assert.assertEquals(PREFIX + 1, tasks.get(1).getTitle());
-        Assert.assertEquals(PREFIX + 2, tasks.get(2).getTitle());
-        Assert.assertEquals(PREFIX + 3, tasks.get(3).getTitle());
-        Assert.assertEquals(PREFIX + 4, tasks.get(4).getTitle());
+        int i = 0;
+        Assert.assertEquals(PREFIX + 0, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 1, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 2, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 3, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 4, tasks.get(i++).getTitle());
     }
 
     @Test
@@ -51,9 +55,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         Integer userId = generateUser();
-        IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)))
-            .collect(Collectors.toList());
+        range(0, 5).forEach(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)));
 
         // act
         runningListCommandService.reorderTask(userId, 0, 4);
@@ -62,11 +64,12 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
-        Assert.assertEquals(PREFIX + 1, tasks.get(0).getTitle());
-        Assert.assertEquals(PREFIX + 2, tasks.get(1).getTitle());
-        Assert.assertEquals(PREFIX + 3, tasks.get(2).getTitle());
-        Assert.assertEquals(PREFIX + 4, tasks.get(3).getTitle());
-        Assert.assertEquals(PREFIX + 0, tasks.get(4).getTitle());
+        int i = 0;
+        Assert.assertEquals(PREFIX + 1, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 2, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 3, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 4, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 0, tasks.get(i++).getTitle());
     }
 
     @Test
@@ -74,9 +77,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         Integer userId = generateUser();
-        IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)))
-            .collect(Collectors.toList());
+        range(0, 5).forEach(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)));
 
         // act
         runningListCommandService.reorderTask(userId, 4, 0);
@@ -85,11 +86,12 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
-        Assert.assertEquals(PREFIX + 4, tasks.get(0).getTitle());
-        Assert.assertEquals(PREFIX + 0, tasks.get(1).getTitle());
-        Assert.assertEquals(PREFIX + 1, tasks.get(2).getTitle());
-        Assert.assertEquals(PREFIX + 2, tasks.get(3).getTitle());
-        Assert.assertEquals(PREFIX + 3, tasks.get(4).getTitle());
+        int i = 0;
+        Assert.assertEquals(PREFIX + 4, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 0, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 1, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 2, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 3, tasks.get(i++).getTitle());
     }
 
     @Test
@@ -97,9 +99,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         Integer userId = generateUser();
-        IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)))
-            .collect(Collectors.toList());
+        range(0, 5).forEach(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)));
 
         // act
         runningListCommandService.reorderTask(userId, 4, 2);
@@ -108,11 +108,12 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
-        Assert.assertEquals(PREFIX + 0, tasks.get(0).getTitle());
-        Assert.assertEquals(PREFIX + 1, tasks.get(1).getTitle());
-        Assert.assertEquals(PREFIX + 4, tasks.get(2).getTitle());
-        Assert.assertEquals(PREFIX + 2, tasks.get(3).getTitle());
-        Assert.assertEquals(PREFIX + 3, tasks.get(4).getTitle());
+        int i = 0;
+        Assert.assertEquals(PREFIX + 0, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 1, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 4, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 2, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 3, tasks.get(i++).getTitle());
     }
 
     @Test
@@ -120,9 +121,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         Integer userId = generateUser();
-        IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)))
-            .collect(Collectors.toList());
+        range(0, 5).forEach(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)));
 
         // act
         runningListCommandService.reorderTask(userId, 0, 2);
@@ -131,11 +130,12 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
-        Assert.assertEquals(PREFIX + 1, tasks.get(0).getTitle());
-        Assert.assertEquals(PREFIX + 2, tasks.get(1).getTitle());
-        Assert.assertEquals(PREFIX + 0, tasks.get(2).getTitle());
-        Assert.assertEquals(PREFIX + 3, tasks.get(3).getTitle());
-        Assert.assertEquals(PREFIX + 4, tasks.get(4).getTitle());
+        int i = 0;
+        Assert.assertEquals(PREFIX + 1, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 2, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 0, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 3, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 4, tasks.get(i++).getTitle());
     }
 
     @Test
@@ -143,9 +143,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         Integer userId = generateUser();
-        IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)))
-            .collect(Collectors.toList());
+        range(0, 5).forEach(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)));
 
         // act
         runningListCommandService.reorderTask(userId, 0, 2);
@@ -156,11 +154,12 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
-        Assert.assertEquals(PREFIX + 0, tasks.get(0).getTitle());
-        Assert.assertEquals(PREFIX + 1, tasks.get(1).getTitle());
-        Assert.assertEquals(PREFIX + 2, tasks.get(2).getTitle());
-        Assert.assertEquals(PREFIX + 3, tasks.get(3).getTitle());
-        Assert.assertEquals(PREFIX + 4, tasks.get(4).getTitle());
+        int i = 0;
+        Assert.assertEquals(PREFIX + 0, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 1, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 2, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 3, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 4, tasks.get(i++).getTitle());
     }
 
     @Test
@@ -168,9 +167,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         Integer userId = generateUser();
-        IntStream.range(0, 5)
-            .mapToObj(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)))
-            .collect(Collectors.toList());
+        range(0, 5).forEach(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)));
 
         // act
         runningListCommandService.reorderTask(userId, 0, 2);
@@ -181,10 +178,61 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         List<Task> tasks = runningListService.getRunningList(userId).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
-        Assert.assertEquals(PREFIX + 1, tasks.get(0).getTitle());
-        Assert.assertEquals(PREFIX + 2, tasks.get(1).getTitle());
-        Assert.assertEquals(PREFIX + 0, tasks.get(2).getTitle());
-        Assert.assertEquals(PREFIX + 3, tasks.get(3).getTitle());
-        Assert.assertEquals(PREFIX + 4, tasks.get(4).getTitle());
+        int i = 0;
+        Assert.assertEquals(PREFIX + 1, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 2, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 0, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 3, tasks.get(i++).getTitle());
+        Assert.assertEquals(PREFIX + 4, tasks.get(i++).getTitle());
+    }
+
+    @Test
+    public void testMaxPriority() throws Exception {
+
+        // arrange
+        Integer userId = generateUser();
+        range(0, 5).forEach(i -> runningListCommandService.createTask(userId, getTask(userId, PREFIX + i)));
+
+        // act
+        Integer maxPriority = taskJpaRepository.getMaxPriority(userId);
+
+        // assert
+        Assert.assertEquals(Integer.valueOf(5), maxPriority);
+    }
+
+    @Test
+    public void testOrderForSeveralUsers() {
+
+        // arrange
+        Integer user1 = generateUser();
+        Integer user2 = generateUser();
+
+        range(0, 5).forEach(i -> runningListCommandService.createTask(user1, getTask(user1, PREFIX + i)));
+        range(0, 5).forEach(i -> runningListCommandService.createTask(user2, getTask(user2, PREFIX + i)));
+
+        // act
+        runningListCommandService.reorderTask(user1, 4, 0);
+        runningListCommandService.reorderTask(user2, 4, 0);
+
+        // assert
+        {// user  1
+            List<Task> tasks = runningListService.getRunningList(user1).getTasks();
+            int i = 0;
+            Assert.assertEquals(PREFIX + 4, tasks.get(i++).getTitle());
+            Assert.assertEquals(PREFIX + 0, tasks.get(i++).getTitle());
+            Assert.assertEquals(PREFIX + 1, tasks.get(i++).getTitle());
+            Assert.assertEquals(PREFIX + 2, tasks.get(i++).getTitle());
+            Assert.assertEquals(PREFIX + 3, tasks.get(i++).getTitle());
+        }
+
+        {// user 2
+            List<Task> tasks = runningListService.getRunningList(user2).getTasks();
+            int i = 0;
+            Assert.assertEquals(PREFIX + 4, tasks.get(i++).getTitle());
+            Assert.assertEquals(PREFIX + 0, tasks.get(i++).getTitle());
+            Assert.assertEquals(PREFIX + 1, tasks.get(i++).getTitle());
+            Assert.assertEquals(PREFIX + 2, tasks.get(i++).getTitle());
+            Assert.assertEquals(PREFIX + 3, tasks.get(i++).getTitle());
+        }
     }
 }

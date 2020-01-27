@@ -4,6 +4,7 @@ import com.metalheart.model.User;
 import com.metalheart.model.jpa.UserJpa;
 import com.metalheart.repository.jpa.UserJpaRepository;
 import com.metalheart.service.UserService;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import static com.metalheart.config.ServiceConfiguration.APP_CONVERSION_SERVICE;
 
@@ -34,10 +34,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        UserJpa user = repository.findByUsername(username)
+        User user = findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("There is no such user with username: " + username));
+        return user;
+    }
 
-        return conversionService.convert(user, User.class);
+    @Override
+    public Optional<User> findByUsername(String username) {
+
+        Optional<UserJpa> user = repository.findByUsername(username);
+        if (user.isPresent()) {
+            return Optional.of(conversionService.convert(user.get(), User.class));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -53,7 +63,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         return conversionService.convert(res, User.class);
     }
-
 
 
     @Override

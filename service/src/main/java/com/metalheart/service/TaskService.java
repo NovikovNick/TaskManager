@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface TaskService {
 
-    /*void reorder();*/
+    void reorder(Integer userId);
 
     List<Task> getTasks(Integer userId);
 

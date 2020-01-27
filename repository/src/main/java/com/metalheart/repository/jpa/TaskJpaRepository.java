@@ -30,4 +30,9 @@ public interface TaskJpaRepository extends JpaRepository<TaskJpa, Integer> {
         + " SET t.deleted = :deleted"
         + " where t.id = :taskId ")
     void setDeleted(@Param("taskId") Integer taskId, @Param("deleted") Boolean deleted);
+
+    @Query("SELECT count(t) from TaskJpa t "
+        + " where t.userId = :userId "
+        + " and t.deleted = FALSE ")
+    Integer getMaxPriority(@Param("userId") Integer userId);
 }

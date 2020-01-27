@@ -3,6 +3,8 @@ package com.metalheart.controller;
 import com.metalheart.EndPoint;
 import com.metalheart.model.request.AuthenticationRequest;
 import com.metalheart.service.AuthService;
+import com.metalheart.service.TaskService;
+import com.metalheart.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -25,6 +27,12 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private UserService userService;
+
     @RequestMapping(value = EndPoint.AUTH_SIGN_IN, method = RequestMethod.POST)
     public AuthenticationResult signin(
         @RequestBody @Valid AuthenticationRequest authenticationRequest,
@@ -36,6 +44,9 @@ public class AuthController {
         session.setAttribute(
             HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
             SecurityContextHolder.getContext());
+
+        Integer userId = userService.findByUsername(authenticationRequest.getUsername()).get().getId();
+        taskService.reorder(userId);
 
         return AuthenticationResult.builder()
             .username(authenticationRequest.getUsername())

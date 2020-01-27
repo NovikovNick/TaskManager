@@ -8,7 +8,6 @@ import com.metalheart.model.jpa.TaskJpa;
 import com.metalheart.model.jpa.WeekWorkLogJpa;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
 import com.metalheart.repository.inmemory.SelectedTagRepository;
-import com.metalheart.repository.inmemory.TaskPriorityRepository;
 import com.metalheart.repository.jpa.TagJpaRepository;
 import com.metalheart.repository.jpa.TaskJpaRepository;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
@@ -40,9 +39,6 @@ public class TaskServiceImpl implements TaskService {
     private WeekWorkLogJpaRepository weekWorkLogJpaRepository;
 
     @Autowired
-    private TaskPriorityRepository taskPriorityRepository;
-
-    @Autowired
     @Qualifier(APP_CONVERSION_SERVICE)
     private ConversionService conversionService;
 
@@ -52,20 +48,18 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TagJpaRepository tagJpaRepository;
 
-    /*@Override
-    public void reorder() {
+    @Override
+    public void reorder(Integer userId) {
 
-        List<Task> taskList = getTasks();
-        int maxPriority = taskList.size();
-        taskPriorityRepository.setMaxPriority(maxPriority);
+        List<Task> taskList = getTasks(userId);
 
         for (int i = 0; i < taskList.size(); i++) {
             taskList.get(i).setPriority(i);
         }
         save(taskList);
 
-        log.info("All task have been ordered");
-    }*/
+        log.info("All task have been ordered for user id " + userId);
+    }
 
     @Override
     public List<Task> getTasks(Integer userId) {
@@ -118,7 +112,7 @@ public class TaskServiceImpl implements TaskService {
 
         task = task.toBuilder()
             .createdAt(ZonedDateTime.now())
-            .priority(taskPriorityRepository.incrementAndGetMaxPriority())
+            .priority(taskJpaRepository.getMaxPriority(task.getUserId()))
             .build();
 
         task = save(task);
