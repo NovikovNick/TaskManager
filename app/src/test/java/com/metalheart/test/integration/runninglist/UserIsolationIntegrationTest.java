@@ -12,7 +12,6 @@ import com.metalheart.service.TaskService;
 import com.metalheart.service.UserService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.util.List;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +104,40 @@ public class UserIsolationIntegrationTest extends BaseIntegrationTest {
 
         Assert.assertEquals("User 1 task", archive1.getTasks().get(0).getTitle());
         Assert.assertEquals("User 2 task", archive2.getTasks().get(0).getTitle());
+
+    }
+
+
+    @Test
+    public void testSameTaskTitle() {
+
+        // arrange
+
+        User user1 = userService.createUser(createUser("user1"));
+        User user2 = userService.createUser(createUser("user2"));
+
+        String title = "First user1 task";
+
+        runningListCommandService.createTask(1, getTask(user1.getId(), title));
+        runningListCommandService.createTask(1, getTask(user2.getId(), title));
+
+
+        // act
+
+        List<Task> user1Tasks = taskService.getTasks(user1.getId());
+        List<Task> user2Tasks = taskService.getTasks(user2.getId());
+
+
+        // assert
+
+        Assert.assertNotNull(user1Tasks);
+        Assert.assertNotNull(user2Tasks);
+
+        Assert.assertEquals(1, user1Tasks.size());
+        Assert.assertEquals(1, user2Tasks.size());
+
+        Assert.assertEquals(title, user1Tasks.get(0).getTitle());
+        Assert.assertEquals(title, user2Tasks.get(0).getTitle());
 
     }
 }

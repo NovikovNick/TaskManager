@@ -77,7 +77,7 @@ function Social() {
 
     return (
         <Row>
-            <Button className={"login-google"} href={"http://localhost:8080/oauth2/authorization/google"}>
+            <Button className={"login-google"} href={"http://runninglist.ru:8080/oauth2/authorization/google"}>
                 <FontAwesomeIcon icon={faGoogle}/> Google
             </Button>
         </Row>

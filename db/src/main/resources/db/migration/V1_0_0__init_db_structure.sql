@@ -20,8 +20,8 @@ ALTER TABLE "user" OWNER TO metalheart;
 CREATE TABLE task
 (
   id                serial                      PRIMARY KEY,
-  user_id           integer                     not null ,
-  title             varchar(255)                not null UNIQUE,
+  user_id           integer                     not null,
+  title             varchar(255)                not null,
   description       text                        ,
   priority          integer                     ,
   deleted           boolean                     default false,
