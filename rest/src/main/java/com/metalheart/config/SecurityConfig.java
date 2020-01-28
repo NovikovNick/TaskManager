@@ -5,9 +5,12 @@ import com.metalheart.security.AuthenticationAfterRegistrationFilter;
 import com.metalheart.security.LogoutHandler;
 import com.metalheart.security.OAuth2Registration;
 import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -26,6 +29,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static com.metalheart.EndPoint.AUTH_SIGN_OUT;
 
+@Slf4j
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -40,6 +44,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private LogoutHandler logoutHandler;
+
+    @Autowired
+    private Environment env;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -75,11 +82,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
         .exceptionHandling()
             .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
-            .and()
-        .requiresChannel()
-            .anyRequest()
-            .requiresSecure()
-        ;
+            .and();
+
+        if (env.acceptsProfiles(Profiles.of("production"))) {
+            http.requiresChannel().anyRequest().requiresSecure();
+        }
     }
 
     @Bean
@@ -87,12 +94,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(ImmutableList.of(appProperties.getRest().getFrontUrl()));
         configuration.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
-        // setAllowCredentials(true) is important, otherwise:
-        // The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
         configuration.setAllowCredentials(true);
-        // setAllowedHeaders is important! Without it, OPTIONS preflight request
-        // will fail with 403 Invalid CORS request
         configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setExposedHeaders(ImmutableList.of("Set-Cookie"));
+
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

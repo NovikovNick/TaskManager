@@ -8,8 +8,9 @@ import {Formik} from "formik";
 
 function Login() {
     const {t} = useTranslation();
+    const [errors, setErrors] = useState({});
 
-    const onSubmit = (values, {setErrors, resetForm}) => {
+    const onSubmit = (values, {resetForm}) => {
 
         REST.signIn(values)
             .then(res => {
@@ -28,7 +29,6 @@ function Login() {
                   handleChange,
                   handleSubmit,
                   values,
-                  errors,
                   touched
               }) => (
 
@@ -39,13 +39,18 @@ function Login() {
                     <Form.Group as={Row} controlId="validationFormik01">
                         <Form.Control
                             name="username"
-                            onChange={handleChange}
+                            onChange={(v) => {
+                                if (errors && errors.username) {
+                                    const { username, ...rest } = errors;
+                                    setErrors(rest);
+                                }
+                                handleChange(v);
+                            }}
                             defaultValue={values.username}
                             isValid={touched.username && !errors.username}
                             isInvalid={!!errors.username}
                             placeholder={t("Username")}
                         />
-                        <Form.Control.Feedback>{t('Looks good!')}</Form.Control.Feedback>
                         <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
                     </Form.Group>
 
@@ -53,13 +58,18 @@ function Login() {
                         <Form.Control
                             type="password"
                             name="password"
-                            onChange={handleChange}
+                            onChange={(v) => {
+                                if (errors && errors.password) {
+                                    const { password, ...rest } = errors;
+                                    setErrors(rest);
+                                }
+                                handleChange(v);
+                            }}
                             defaultValue={values.password}
                             isValid={touched.password && !errors.password}
                             isInvalid={!!errors.password}
                             placeholder={t("Password")}
                         />
-                        <Form.Control.Feedback type="valid">{t('Looks good!')}</Form.Control.Feedback>
                         <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
                     </Form.Group>
 
@@ -87,26 +97,39 @@ function Social() {
 function Registration() {
     const {t} = useTranslation();
 
-    const onSubmit = (values, {setErrors, resetForm}) => {
+    const [errors, setErrors] = useState({});
+    const [valid, setValid] = useState({});
+
+    const onSubmit = (values, {resetForm}) => {
 
         REST.signUp(values)
             .then(res => {
                 window.location = "/";
                 resetForm({})
             })
-            .catch(setErrors);
+            .catch(response => {
+                setErrors(response)
+
+                // if key doesn't present in errors, then it is valid
+                var valid = Object.keys(values).reduce(function(obj, k) {
+                    if (!response.hasOwnProperty(k)) obj[k] = values[k];
+                    return obj;
+                }, {});
+                setValid(valid);
+            });
     };
 
     return (
         <Formik
             enableReinitialize
             initialValues={{username: '', email: '', password: '', confirmPassword: ''}}
-            onSubmit={onSubmit}>
+            onSubmit={onSubmit}
+            initialErrors={errors}
+        >
             {({
                   handleChange,
                   handleSubmit,
                   values,
-                  errors,
                   touched
               }) => (
 
@@ -117,26 +140,44 @@ function Registration() {
                     <Form.Group as={Row} controlId="validationFormik11">
                         <Form.Control
                             name="username"
-                            onChange={handleChange}
+                            onChange={(v) => {
+                                if (errors && errors.username) {
+                                    const { username, ...rest } = errors;
+                                    setErrors(rest);
+                                }
+                                if (valid && valid.username) {
+                                    const { username, ...rest } = valid;
+                                    setValid(rest);
+                                }
+                                handleChange(v);
+                            }}
                             defaultValue={values.username}
-                            isValid={touched.username && !errors.username}
+                            isValid={touched.username && valid.username}
                             isInvalid={!!errors.username}
                             placeholder={t("Username")}
                         />
-                        <Form.Control.Feedback>{t('Looks good!')}</Form.Control.Feedback>
                         <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group as={Row} controlId="validationFormik12">
                         <Form.Control
                             name="email"
-                            onChange={handleChange}
+                            onChange={(v) => {
+                                if (errors && errors.email) {
+                                    const { email, ...rest } = errors;
+                                    setErrors(rest);
+                                }
+                                if (valid && valid.email) {
+                                    const { email, ...rest } = valid;
+                                    setValid(rest);
+                                }
+                                handleChange(v);
+                            }}
                             defaultValue={values.email}
-                            isValid={touched.email && !errors.email}
+                            isValid={touched.email && valid.email}
                             isInvalid={!!errors.email}
                             placeholder={t("Email")}
                         />
-                        <Form.Control.Feedback>{t('Looks good!')}</Form.Control.Feedback>
                         <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
                     </Form.Group>
 
@@ -144,13 +185,22 @@ function Registration() {
                         <Form.Control
                             type="password"
                             name="password"
-                            onChange={handleChange}
+                            onChange={(v) => {
+                                if (errors && errors.password) {
+                                    const { password, ...rest } = errors;
+                                    setErrors(rest);
+                                }
+                                if (valid && valid.password) {
+                                    const { password, ...rest } = valid;
+                                    setValid(rest);
+                                }
+                                handleChange(v);
+                            }}
                             defaultValue={values.password}
-                            isValid={touched.password && !errors.password}
+                            isValid={touched.password && valid.password}
                             isInvalid={!!errors.password}
                             placeholder={t("Password")}
                         />
-                        <Form.Control.Feedback type="valid">{t('Looks good!')}</Form.Control.Feedback>
                         <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
                     </Form.Group>
 
@@ -158,13 +208,22 @@ function Registration() {
                         <Form.Control
                             type="password"
                             name="confirmPassword"
-                            onChange={handleChange}
+                            onChange={(v) => {
+                                if (errors && errors.confirmPassword) {
+                                    const { confirmPassword, ...rest } = errors;
+                                    setErrors(rest);
+                                }
+                                if (valid && valid.confirmPassword) {
+                                    const { confirmPassword, ...rest } = valid;
+                                    setValid(rest);
+                                }
+                                handleChange(v);
+                            }}
                             defaultValue={values.confirmPassword}
-                            isValid={touched.confirmPassword && !errors.confirmPassword}
+                            isValid={touched.confirmPassword && valid.confirmPassword}
                             isInvalid={!!errors.confirmPassword}
                             placeholder={t("Confirm password")}
                         />
-                        <Form.Control.Feedback type="valid">{t('Looks good!')}</Form.Control.Feedback>
                         <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
                     </Form.Group>
 

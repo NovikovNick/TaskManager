@@ -1,2 +1,2 @@
 window.env = {};
-window.env.API_URL="https://localhost:8443"
+window.env.API_URL="http://192.168.1.207:8080"
