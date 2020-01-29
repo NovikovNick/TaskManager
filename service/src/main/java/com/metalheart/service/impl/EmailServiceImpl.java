@@ -9,6 +9,7 @@ import javax.mail.internet.MimeMessage;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -43,6 +44,9 @@ public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private I18nServiceImpl i18n;
+
+    @Value("${spring.mail.username}")
+    private String springMailUsername;
 
     @Override
     public void sendResetPassword(String email, String link) {
@@ -98,6 +102,7 @@ public class EmailServiceImpl implements EmailService {
                 MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                 StandardCharsets.UTF_8.name());
 
+            helper.setFrom(springMailUsername);
             helper.setTo(data.to);
             helper.setSubject(data.subject);
             helper.setText(htmlContent, true);

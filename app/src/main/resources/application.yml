@@ -10,11 +10,11 @@ spring:
       client-id: ${OAUTH2_GOOGLE_CLIENT_ID}
       client-secret: ${OAUTH2_GOOGLE_CLIENT_SECRET}
   mail:
-    protocol: smtp
-    host: smtp.gmail.com
-    port: 25
-    username: ${SMTP_GOOGLE_USERNAME}
-    password: ${SMTP_GOOGLE_PASSWORD}
+    protocol: smtps
+    host: smtp.yandex.ru
+    port: 465
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
     properties.mail.smtp:
       auth: true
       starttls.enable: true
