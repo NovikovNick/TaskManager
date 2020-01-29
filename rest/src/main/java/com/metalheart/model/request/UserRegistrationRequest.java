@@ -1,5 +1,6 @@
 package com.metalheart.model.request;
 
+import com.metalheart.validation.constraint.UniqueEmail;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -21,6 +22,7 @@ public class UserRegistrationRequest {
     @NotNull
     @NotEmpty
     @Email
+    @UniqueEmail
     private String email;
 
     @NotNull

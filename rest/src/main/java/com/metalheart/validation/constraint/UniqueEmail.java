@@ -1,6 +1,6 @@
 package com.metalheart.validation.constraint;
 
-import com.metalheart.validation.validator.EmailExistValidator;
+import com.metalheart.validation.validator.UniqueEmailValidator;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -10,10 +10,10 @@ import javax.validation.Payload;
 
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy= EmailExistValidator.class)
-public @interface EmailExist {
+@Constraint(validatedBy= UniqueEmailValidator.class)
+public @interface UniqueEmail {
 
-    String message() default "{EmailExist.message}";
+    String message() default "{com.metalheart.validation.constraint.UniqueEmail.message}";
 
     Class<?>[] groups() default {};
 
