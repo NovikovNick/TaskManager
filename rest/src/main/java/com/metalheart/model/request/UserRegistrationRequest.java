@@ -1,5 +1,6 @@
 package com.metalheart.model.request;
 
+import com.metalheart.validation.constraint.ConfirmedPassword;
 import com.metalheart.validation.constraint.UniqueEmail;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -13,7 +14,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserRegistrationRequest {
+@ConfirmedPassword
+public class UserRegistrationRequest implements PasswordAware{
 
     @NotNull
     @NotEmpty
