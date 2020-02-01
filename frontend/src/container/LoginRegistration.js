@@ -14,10 +14,14 @@ function Login() {
 
         REST.signIn(values)
             .then(res => {
-                window.location = "/";
                 resetForm({})
+                window.location = "/";
+
             })
-            .catch(setErrors);
+            .catch(() => setErrors({
+                username: [t("Authentication failed")],
+                password: [t("Authentication failed")]
+            }));
     };
 
     return (

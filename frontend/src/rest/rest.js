@@ -246,7 +246,19 @@ export function signIn({username, password}) {
             password: password
         })
     };
-    return rest(setting.API_URL + '/auth/signin', settings);
+
+    const url = setting.API_URL + '/auth/signin';
+
+    return new Promise((resolve, reject) => {
+        fetch(url, settings)
+            .then(response => {
+                if (response.status === 403) {
+                    reject()
+                } else {
+                    resolve(response.json)
+                }
+            });
+    });
 }
 
 export function getUserProfile() {

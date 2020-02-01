@@ -33,7 +33,8 @@ i18n
                     "create_task_title":"Create task",
                     "create_task_submit_btn":"Create",
 
-                    "Looks good!":"Correct"
+                    "Looks good!":"Correct",
+                    "Authentication failed":"Authentication failed"
                 }
             },
             ru: {
@@ -61,13 +62,15 @@ i18n
                     "create_task_title":"Создать задачу",
                     "create_task_submit_btn":"Создать",
 
-                    "Looks good!":"Корректно"
+                    "Looks good!":"Корректно",
+
+                    "Authentication failed":"Неверные логин и пароль"
                 }
             }
         },
         fallbackLng: "en",
 
-        // debug: true,
+        debug: true,
 
         interpolation: {
             escapeValue: false, // not needed for react as it escapes by default
