@@ -1,0 +1,47 @@
+{
+  "mon": "mon",
+  "tue": "tue",
+  "wed": "wed",
+  "thu": "thu",
+  "fri": "fri",
+  "sat": "sat",
+  "san": "san",
+  "NONE": "Postpone",
+  "TO_DO": "To do",
+  "IN_PROGRESS": "Track time",
+  "CANCELED": "Cancel",
+  "DONE": "Finish",
+  "Update task":"Update task",
+  "Create task":"Create task",
+  "title":"Title",
+  "description":"Description",
+
+  "update_task_title":"Update task",
+  "update_task_submit_btn":"Save",
+
+  "create_task_title":"Create task",
+  "create_task_submit_btn":"Create",
+
+  "Looks good!":"Correct",
+
+  "tags": "tags",
+
+  "Login": "Login",
+  "Username": "Username",
+  "Password": "Password",
+  "Sign in": "Sign in",
+  "or connect with": "or connect with",
+  "Authentication failed":"Authentication failed",
+
+  "Registration": "Registration",
+  "Email": "Email",
+  "Confirm password": "Confirm password",
+  "Sign up": "Sign up",
+  "Or sign up using...": "Or sign up using...",
+  "Have an account?": "Have an account?",
+  "Register": "Register",
+  "Don't have an account?": "Don't have an account?",
+
+  "Filter by tags": "Filter by tags",
+  "signout": "signout"
+}

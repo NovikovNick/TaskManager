@@ -106,6 +106,7 @@ export function TaskModalForm({schema}) {
                                 <Col sm={'9'}>
 
                                     <ReactTags tags={values.tags || []}
+                                               placeholder={t("Add tags")}
                                                suggestions={values.tagsSuggestion || []}
                                                handleDelete={(i) => setFieldValue('tags', values.tags.filter((tag, index) => index !== i))}
                                                handleAddition={(tag) => setFieldValue('tags', [...values.tags, tag])}/>
@@ -114,7 +115,7 @@ export function TaskModalForm({schema}) {
 
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button type="submit">{t('Create task')}</Button>
+                            <Button type="submit">{t(schema.uiSchema.lang.submit)}</Button>
                         </Modal.Footer>
                     </Form>
                 </Modal>

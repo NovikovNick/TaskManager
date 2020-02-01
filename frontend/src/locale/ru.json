@@ -1,0 +1,48 @@
+{
+  "mon": "пн",
+  "tue": "вт",
+  "wed": "ср",
+  "thu": "чт",
+  "fri": "пт",
+  "sat": "сб",
+  "san": "вс",
+  "NONE": "Отложить",
+  "TO_DO": "Запланировать",
+  "IN_PROGRESS": "В процессе",
+  "CANCELED": "Отменить",
+  "DONE": "Закончить",
+  "Update task":"Сохранить изменения",
+  "Create task":"Создать задачу",
+  "title":"Название",
+  "description":"Описание",
+
+  "update_task_title":"Редактирование задачи",
+  "update_task_submit_btn":"Сохранить изменения",
+
+  "create_task_title":"Новая задача",
+  "create_task_submit_btn":"Создать",
+
+  "Looks good!":"Корректно",
+
+  "tags": "Тэги",
+
+  "Login": "Вход",
+  "Username": "Логин",
+  "Password": "Пароль",
+  "Sign in": "Войти",
+  "or connect with": "или войти через",
+  "Authentication failed":"Неверные логин и пароль",
+
+  "Registration": "Регистрация",
+  "Email": "Почта",
+  "Confirm password": "Подтверди пароль",
+  "Sign up": "Зарегистрироваться",
+  "Or sign up using...": "или зарегистрироваться через",
+  "Have an account?": "Уже есть аккаунт у нас?",
+  "Register": "Создать",
+  "Don't have an account?": "Еще нету аккаунта у нас?",
+
+  "Filter by tags": "Фильтровать по тэгам",
+  "Add tags": "Добавить тэгов",
+  "signout": "Выйти"
+}

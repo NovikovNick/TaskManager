@@ -22,6 +22,7 @@ import {
 import Button from "react-bootstrap/Button";
 import RunningListDaysHeader from "../component/RunningListDaysHeader";
 import {WithContext as ReactTags} from "react-tag-input";
+import {useTranslation} from "react-i18next";
 
 const KeyCodes = {
     comma: 188,
@@ -33,6 +34,21 @@ const getItemStyle = (isDragging, draggableStyle) => ({
     background: isDragging ? "white" : "none",
     ...draggableStyle
 });
+
+function Tags({runningList, handleDelete, handleAddition}) {
+
+    const {t} = useTranslation();
+    return (
+        <div className={"running-list-tags"}>
+            <ReactTags tags={runningList.selectedTags || []}
+                       placeholder={t("Filter by tags")}
+                       suggestions={runningList.allTags || []}
+                       handleDelete={handleDelete}
+                       handleAddition={handleAddition}
+                       delimiters={[KeyCodes.comma, KeyCodes.enter]}/>
+        </div>
+    );
+}
 
 class RunningList extends Component {
 
@@ -282,11 +298,10 @@ class RunningList extends Component {
                     <div className={'running-list-title'}>
 
                         <div className={"running-list-tags"}>
-                            <ReactTags tags={runningList.selectedTags || []}
-                                       suggestions={runningList.allTags || []}
-                                       handleDelete={this.handleDelete}
-                                       handleAddition={this.handleAddition}
-                                       delimiters={[KeyCodes.comma, KeyCodes.enter]}/>
+                            <Tags
+                                runningList={runningList}
+                                handleDelete={this.handleDelete}
+                                handleAddition={this.handleAddition}/>
                         </div>
                     </div>
                     <div className={'running-list-controls'}>

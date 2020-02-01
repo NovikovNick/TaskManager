@@ -253,7 +253,7 @@ export default function LoginRegistration() {
         <div className="login-reg-panel_wrapper">
 
             <video style={{float: "right"}} loop autoPlay>
-                <source src="/vidio/office.mp4" type="video/mp4" />
+                <source src="/video/office.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
 
@@ -261,15 +261,15 @@ export default function LoginRegistration() {
 
                 <Fade in={onRegistration}>
                     <div className={"login-info-box"}>
-                        <h2>Have an account?</h2>
-                        <Button bsPrefix="switch-btn" onClick={() => switchForm(false)}>Login</Button>
+                        <h2>{t("Have an account?")}</h2>
+                        <Button bsPrefix="switch-btn" onClick={() => switchForm(false)}>{t("Login")}</Button>
                     </div>
                 </Fade>
 
                 <Fade in={!onRegistration}>
                     <div className={"register-info-box"}>
-                        <h2>Don't have an account?</h2>
-                        <Button bsPrefix="switch-btn" onClick={() => switchForm(true)}>Register</Button>
+                        <h2>{t("Don't have an account?")}</h2>
+                        <Button bsPrefix="switch-btn" onClick={() => switchForm(true)}>{t("Register")}</Button>
                     </div>
                 </Fade>
 
