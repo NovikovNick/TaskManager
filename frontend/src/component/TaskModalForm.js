@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
@@ -28,14 +28,26 @@ export function TaskModalForm({schema}) {
 
     const {t} = useTranslation();
 
-    const onSubmit = (values, {setErrors, resetForm}) => {
+    const [errors, setErrors] = useState({});
+    const [valid, setValid] = useState({});
+
+    const onSubmit = (values, {resetForm}) => {
 
         schema.onSubmit(values)
             .then(res => {
                 schema.onSuccess(res);
                 resetForm({})
             })
-            .catch(setErrors);
+            .catch(response => {
+                setErrors(response)
+
+                // if key doesn't present in errors, then it is valid
+                var valid = Object.keys(values).reduce(function(obj, k) {
+                    if (!response.hasOwnProperty(k)) obj[k] = values[k];
+                    return obj;
+                }, {});
+                setValid(valid);
+            });
     };
 
     return (
@@ -49,7 +61,6 @@ export function TaskModalForm({schema}) {
                   setFieldValue,
                   handleSubmit,
                   values,
-                  errors,
                   touched,
                   resetForm
               }) => (
@@ -71,15 +82,22 @@ export function TaskModalForm({schema}) {
                                 <Col sm={'9'}>
                                     <Form.Control
                                         name="title"
-                                        onChange={handleChange}
+                                        onChange={(v) => {
+                                            if (errors && errors.title) {
+                                                const { title, ...rest } = errors;
+                                                setErrors(rest);
+                                            }
+                                            if (valid && valid.title) {
+                                                const { title, ...rest } = valid;
+                                                setValid(rest);
+                                            }
+                                            handleChange(v);
+                                        }}
                                         defaultValue={values.title}
-                                        isValid={touched.title && !errors.title}
+                                        isValid={touched.title && valid.title}
                                         isInvalid={!!errors.title}
                                     />
-                                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.title}
-                                    </Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>
                                 </Col>
                             </Form.Group>
 
@@ -89,15 +107,22 @@ export function TaskModalForm({schema}) {
                                     <Form.Control
                                         as="textarea"
                                         name="description"
-                                        onChange={handleChange}
+                                        onChange={(v) => {
+                                            if (errors && errors.description) {
+                                                const { description, ...rest } = errors;
+                                                setErrors(rest);
+                                            }
+                                            if (valid && valid.description) {
+                                                const { description, ...rest } = valid;
+                                                setValid(rest);
+                                            }
+                                            handleChange(v);
+                                        }}
                                         defaultValue={values.description}
-                                        isValid={touched.description && !errors.description}
+                                        isValid={touched.description && valid.description}
                                         isInvalid={!!errors.description}
                                     />
-                                    <Form.Control.Feedback type="valid">{t('Looks good!')}</Form.Control.Feedback>
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.description}
-                                    </Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">{errors.description}</Form.Control.Feedback>
                                 </Col>
                             </Form.Group>
 
