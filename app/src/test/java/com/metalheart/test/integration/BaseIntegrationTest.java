@@ -28,7 +28,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = App.class
 )
-@Profile("test")
+@ActiveProfiles("test")
 public abstract class BaseIntegrationTest {
 
     @ClassRule
@@ -95,7 +95,7 @@ public abstract class BaseIntegrationTest {
             .userId(userId)
             .title(title)
             .tags(Arrays.stream(tags)
-                .map(tag -> Tag.builder().userId(userId).title(tag).build())
+                .map(tag -> Tag.builder().title(tag).build())
                 .collect(Collectors.toList()))
             .build();
     }

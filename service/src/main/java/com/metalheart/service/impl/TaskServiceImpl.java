@@ -110,10 +110,16 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task create(Task task) {
 
+        Integer userId = task.getUserId();
+
         task = task.toBuilder()
             .createdAt(ZonedDateTime.now())
-            .priority(taskJpaRepository.getMaxPriority(task.getUserId()))
+            .priority(taskJpaRepository.getMaxPriority(userId))
             .build();
+
+        if (CollectionUtils.isNotEmpty(task.getTags())) {
+            task.getTags().forEach(tag -> tag.setUserId(userId));
+        }
 
         task = save(task);
 

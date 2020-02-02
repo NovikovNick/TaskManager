@@ -20,7 +20,6 @@ import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
 
 import static io.restassured.RestAssured.given;
@@ -30,7 +29,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
-@ActiveProfiles("test")
 public class RegistrationIntegrationTest extends BaseIntegrationTest {
 
     @LocalServerPort

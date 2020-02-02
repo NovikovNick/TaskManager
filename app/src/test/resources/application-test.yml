@@ -1,3 +1,14 @@
+spring:
+  mail:
+    protocol: smtp
+    host: smtp.test.com
+    port: 25
+    username: test@mail.com
+    password: mot_de_passe
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+
 taskmanager:
   security:
     defaultUsername: test
