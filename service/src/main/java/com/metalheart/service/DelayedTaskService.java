@@ -9,4 +9,6 @@ public interface DelayedTaskService {
     DelayedTask add(DelayedTask task);
 
     DelayedTask get(UUID taskId);
+
+    boolean remove(UUID taskId);
 }

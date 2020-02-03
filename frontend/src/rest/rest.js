@@ -224,7 +224,7 @@ export function addTag(tag) {
     return rest(setting.API_URL + '/taskmanager/tag', settings);
 }
 
-export function signOut(){
+export function signOut() {
     const settings = {
         method: 'GET',
         credentials: 'include',
@@ -267,7 +267,7 @@ export function getUserProfile() {
         credentials: 'include',
         cache: 'no-cache'
     };
-    return rest(setting.API_URL +'/user', settings);
+    return rest(setting.API_URL + '/user', settings);
 }
 
 export function signUp({username, email, password, confirmPassword}) {
@@ -286,5 +286,29 @@ export function signUp({username, email, password, confirmPassword}) {
             confirmPassword: confirmPassword
         })
     };
-    return rest(setting.API_URL + '/user', settings);
+
+    const url = setting.API_URL + '/user';
+
+    return new Promise((resolve, reject) => {
+        fetch(url, settings)
+            .then(response => {
+                switch (response.status) {
+                    case 200:
+                        resolve(true);
+                        return response;
+                    case 400:
+                        return response;
+                    case 502:
+                        resolve(false);
+                        return response;
+
+                    default:
+                        console.error("Illegal http response status: " + response.status);
+                        reject(response.json)
+                }
+            })
+            .then(parseJSON)
+            .then((response) => reject(response.json));
+        ;
+    });
 }

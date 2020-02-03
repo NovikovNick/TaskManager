@@ -42,6 +42,13 @@
   "Register": "Register",
   "Don't have an account?": "Don't have an account?",
 
-  "Filter by tags": "Filter by tags",
+  "Filter by tags": "Фильтровать по тэгам",
+  "Add tags": "Добавить тэгов",
+
+  "Check your email inbox": "Check your email inbox",
+  "We sent an email link to complite your registration": "We sent an email link to complite your registration",
+  "Server error": "Server error",
+  "Email server is not available at the moment": "Email server is not available at the moment",
+
   "signout": "signout"
 }

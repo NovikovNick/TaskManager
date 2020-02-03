@@ -44,5 +44,11 @@
 
   "Filter by tags": "Фильтровать по тэгам",
   "Add tags": "Добавить тэгов",
+
+  "Check your email inbox": "Проверьте свою почту",
+  "We sent an email link to complite your registration": "Пройдите по ссылке в письме, что бы завершить регистрацию",
+  "Server error": "Ошибка на сервере",
+  "Email server is not available at the moment": "Почтовый сервер не доступен в данный момент",
+
   "signout": "Выйти"
 }

@@ -3,6 +3,7 @@ package com.metalheart.aop;
 import com.metalheart.log.LogContextField;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Aspect
@@ -37,7 +39,13 @@ public class LogOperationContextAspect {
             return;
         }
 
-        for (Field field : arg.getClass().getDeclaredFields()) {
+        List<Field> fields = Arrays.stream(arg.getClass().getDeclaredFields()).collect(toList());
+
+        if (Objects.nonNull(arg.getClass().getSuperclass())) {
+            fields.addAll(Arrays.stream(arg.getClass().getSuperclass().getDeclaredFields()).collect(toList()));
+        }
+
+        for (Field field : fields) {
             LogContextField annotation = field.getAnnotation(LogContextField.class);
 
             if (Objects.nonNull(annotation)) {

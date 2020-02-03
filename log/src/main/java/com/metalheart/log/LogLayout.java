@@ -1,6 +1,8 @@
 package com.metalheart.log;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
+import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LayoutBase;
@@ -9,9 +11,14 @@ import com.metalheart.model.ExceptionDetail;
 import com.metalheart.model.LogInfo;
 import com.metalheart.model.RestRequestInfo;
 import com.metalheart.model.RestResponseInfo;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toList;
 
 public class LogLayout extends LayoutBase<ILoggingEvent> {
 
@@ -76,13 +83,24 @@ public class LogLayout extends LayoutBase<ILoggingEvent> {
 
     private ExceptionDetail getExceptionDetail(ILoggingEvent event) {
 
-        if (isNull(event.getThrowableProxy())) {
+        ThrowableProxy exception = (ThrowableProxy) event.getThrowableProxy();
+        if (isNull(exception)) {
             return null;
         }
 
+        Map<String, Object> details = new HashMap<>();
+        for (Field field : Arrays.stream(exception.getThrowable().getClass().getDeclaredFields()).collect(toList())) {
+            field.setAccessible(true);
+            try {
+                details.put(field.getName(), field.get(exception.getThrowable()));
+            } catch (IllegalAccessException e) {
+            }
+        }
+
         return ExceptionDetail.builder()
-            .stacktrace(ThrowableProxyUtil.asString(event.getThrowableProxy()))
-            .message(event.getThrowableProxy().getMessage())
+            .stacktrace(ThrowableProxyUtil.asString(exception))
+            .message(exception.getMessage())
+            .details(details)
             .build();
     }
 }

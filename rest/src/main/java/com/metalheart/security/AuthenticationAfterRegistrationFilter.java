@@ -1,9 +1,10 @@
 package com.metalheart.security;
 
 import com.metalheart.config.AppProperties;
-import com.metalheart.integration.gateway.RegistrationGateway;
-import com.metalheart.model.RegistrationResponse;
+import com.metalheart.model.User;
+import com.metalheart.service.RegistrationService;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -26,7 +27,7 @@ public class AuthenticationAfterRegistrationFilter extends OncePerRequestFilter 
     private AppProperties properties;
 
     @Autowired
-    private RegistrationGateway registrationGateway;
+    private RegistrationService registrationService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -40,19 +41,19 @@ public class AuthenticationAfterRegistrationFilter extends OncePerRequestFilter 
 
                 String registrationToken = path.substring(1);
 
-                RegistrationResponse user = registrationGateway.confirmRegistration(UUID.fromString(registrationToken));
+                Optional<User> user =
+                    registrationService.confirmRegistration(UUID.fromString(registrationToken));
 
-                if (user.getUser() == null) {
+                if (user.isPresent()) {
 
-                    return;
-
-                } else {
-
-                    Token token = new Token(user.getUser());
+                    Token token = new Token(user.get());
                     token.setAuthenticated(true);
                     SecurityContextHolder.getContext().setAuthentication(token);
 
                     response.sendRedirect(properties.getRest().getFrontUrl());
+                    return;
+
+                } else {
                     return;
                 }
 

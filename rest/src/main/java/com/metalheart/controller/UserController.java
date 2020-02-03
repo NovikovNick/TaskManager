@@ -1,9 +1,10 @@
 package com.metalheart.controller;
 
-import com.metalheart.integration.gateway.RegistrationGateway;
 import com.metalheart.model.User;
 import com.metalheart.model.request.UserRegistrationRequest;
 import com.metalheart.model.response.UserViewModel;
+import com.metalheart.service.RegistrationService;
+import java.util.HashMap;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,7 +31,7 @@ public class UserController {
     private ConversionService conversionService;
 
     @Autowired
-    private RegistrationGateway registrationGateway;
+    private RegistrationService registrationService;
 
     @GetMapping(USER_REGISTRATION)
     public UserViewModel getUser(@AuthenticationPrincipal User user) {
@@ -41,7 +42,8 @@ public class UserController {
     public ResponseEntity createUser(@RequestBody @Valid UserRegistrationRequest request) {
 
         User userToCreate = conversionService.convert(request, User.class);
-        registrationGateway.startRegistration(userToCreate);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        boolean started = registrationService.startRegistration(userToCreate);
+
+        return ResponseEntity.status(started ? HttpStatus.OK : HttpStatus.BAD_GATEWAY).body(new HashMap<>());
     }
 }

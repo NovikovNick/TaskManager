@@ -9,6 +9,8 @@ import lombok.Data;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RestResponseInfo {
+
+    private int status;
     private Map<String, String> headers;
     private String payload;
 }

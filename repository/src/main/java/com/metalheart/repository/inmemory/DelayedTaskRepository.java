@@ -9,4 +9,6 @@ public interface DelayedTaskRepository {
     <T extends DelayedTask> T add(T delayedTask);
 
     <T extends DelayedTask> T get(UUID taskId);
+
+    boolean remove(UUID taskId);
 }

@@ -1,5 +1,6 @@
 package com.metalheart.model;
 
+import com.metalheart.log.LogContextField;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import lombok.AllArgsConstructor;
@@ -18,12 +19,14 @@ import static java.util.Arrays.asList;
 @Builder
 public class User implements UserDetails {
 
+    @LogContextField(LogContextField.Field.USER_ID)
     private Integer id;
 
     private String username;
 
     private String password;
 
+    @LogContextField(LogContextField.Field.EMAIL)
     private String email;
 
     private ZonedDateTime lastLoginAt;

@@ -12,7 +12,9 @@ public @interface LogContextField {
     Field value();
 
     enum Field {
-
+        DELAYED_TASK_ID,
+        USER_ID,
+        EMAIL,
         TASK_ID,
         DAY_INDEX,
         STATUS;
