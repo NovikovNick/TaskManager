@@ -3,12 +3,12 @@ package com.metalheart.controller;
 import com.metalheart.EndPoint;
 import com.metalheart.RestConstants;
 import com.metalheart.exception.NoSuchRunningListArchiveException;
-import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.exception.UnableToRedoException;
 import com.metalheart.exception.UnableToUndoException;
 import com.metalheart.model.RunningList;
 import com.metalheart.model.User;
 import com.metalheart.model.WeekId;
+import com.metalheart.model.request.ArchiveRequest;
 import com.metalheart.model.request.CRUDTagRequest;
 import com.metalheart.model.request.GetArchiveRequest;
 import com.metalheart.model.response.RunningListViewModel;
@@ -84,16 +84,16 @@ public class RunningListController {
             code = RestConstants.HTTP_UNPROCESSABLE_ENTITY,
             message = "If running list archive has already exist")
     })
-    public ResponseEntity<RunningListViewModel> archive(@AuthenticationPrincipal User user) {
-
+    public ResponseEntity<RunningListViewModel> archive(@AuthenticationPrincipal User user,
+                                                        @Valid @RequestBody ArchiveRequest request) {
         try {
-            WeekId weekId = dateService.getCurrentWeekId();
-            runningListCommandService.archive(user.getId(), weekId);
+
+            runningListCommandService.archive(user.getId(), conversionService.convert(request, WeekId.class));
             RunningList runningList = runningListService.getRunningList(user.getId());
             RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
             return ResponseEntity.ok(viewModel);
-        } catch (RunningListArchiveAlreadyExistException e) {
-            log.warn(e.getMessage(), e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
             return ResponseEntity.unprocessableEntity().build();
         }
     }

@@ -1,6 +1,5 @@
 package com.metalheart.service;
 
-import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.WeekId;
@@ -15,7 +14,7 @@ public interface RunningListCommandService {
 
     void update(Integer userId, Task request);
 
-    void archive(Integer userId, WeekId weekId) throws RunningListArchiveAlreadyExistException;
+    void archive(Integer userId, WeekId weekId);
 
     void reorderTask(Integer userId, Integer startIndex, Integer endIndex);
 }

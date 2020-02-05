@@ -14,9 +14,9 @@ spring:
       client-id: ${OAUTH2_GOOGLE_CLIENT_ID}
       client-secret: ${OAUTH2_GOOGLE_CLIENT_SECRET}
   mail:
-    protocol: smtps
-    host: smtp.yandex.ru
-    port: 465
+    protocol: smtp
+    host: smtp.gmail.com
+    port: 25
     username: ${SMTP_USERNAME}
     password: ${SMTP_PASSWORD}
     properties.mail.smtp:

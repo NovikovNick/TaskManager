@@ -153,7 +153,7 @@ export function getPrevTaskList(year, week) {
     return rest(setting.API_URL + '/taskmanager/runninglist/archive/prev?year=' + year + '&week=' + week, settings);
 }
 
-export function archive() {
+export function archive(weekId) {
     const settings = {
         method: 'POST',
         cache: 'no-cache',
@@ -161,6 +161,10 @@ export function archive() {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
         },
+        body: JSON.stringify({
+            year: weekId.year,
+            week: weekId.week
+        }),
         credentials: 'include',
     };
     return rest(setting.API_URL + '/taskmanager/runninglist/archive', settings);

@@ -50,5 +50,8 @@
   "Server error": "Ошибка на сервере",
   "Email server is not available at the moment": "Почтовый сервер не доступен в данный момент",
 
+  "Archive form": "На какую неделю сохранить задачи?",
+  "Save": "Сохранить",
+
   "signout": "Выйти"
 }

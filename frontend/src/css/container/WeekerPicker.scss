@@ -1,0 +1,66 @@
+@import "../colors";
+
+$headerBackground: linear-gradient(bottom, $headerColor, lighten($headerColor, 10%));
+$loginRegistrationBackground: linear-gradient(bottom, #7d437b, #000000);
+
+.weeker_picker_wrapper {
+  display: block;
+  width: 300px;
+  margin: auto;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  border-radius: .25rem;
+
+  &.is-invalid {
+    & + .invalid-feedback {
+      display: block;
+      width: 100%;
+      text-align: center;
+      font-size: 17px;
+    }
+  }
+
+  .DayPicker-Month {
+    border-collapse: separate;
+  }
+
+  .DayPicker-WeekNumber {
+    outline: none;
+  }
+
+  .DayPicker-Day {
+    outline: none;
+    border: 1px solid transparent;
+    border-radius: unset;
+  }
+
+  .DayPicker-Day--hoverRange {
+    background-color: #EFEFEF !important;
+  }
+
+  .DayPicker-Day--selectedRange {
+    background: $headerBackground;
+  }
+
+  .DayPicker-Day--selectedRangeStart {
+    background: $headerBackground;
+  }
+
+  .DayPicker-Day--selectedRangeEnd {
+    background-color: $headerBackground !important;
+    border-right: 1px solid $headerBackground;
+  }
+
+  .DayPicker-Day--selectedRange:not(.DayPicker-Day--outside).DayPicker-Day--selected,
+  .DayPicker-Day--hoverRange:not(.DayPicker-Day--outside).DayPicker-Day--selected {
+    border-radius: 0 !important;
+    color: white !important;
+  }
+
+  .DayPicker-Day--hoverRange:hover {
+    border-radius: 0 !important;
+  }
+}
+
+

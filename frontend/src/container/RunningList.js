@@ -9,6 +9,8 @@ import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import RunningListItem from "../component/RunningListItem";
 import {CreateTaskModalForm, UpdateTaskModalForm} from "../component/TaskModalForm";
 
+import ArchiveModalForm from "../component/ArchiveModalForm"
+
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faChevronLeft,
@@ -69,6 +71,13 @@ class RunningList extends Component {
                 onSuccess: this.onUpdateTask,
                 closeForm: this.toggleUpdateTaskForm
             },
+            archiveForm: {
+                uiSchema: {active: false},
+                formData: {weekId: {}},
+                onSubmit: REST.archive,
+                onSuccess: this.onArchiveTask,
+                closeForm: this.toggleArchiveForm
+            },
             ...props
         };
 
@@ -106,17 +115,6 @@ class RunningList extends Component {
         const that = this;
 
         REST.getTaskList()
-            .then(runningList => {
-                that.setState({runningList: runningList});
-                that.state.actions.setRunningList(runningList);
-            });
-    }
-
-    onArchive = () => {
-
-        const that = this;
-
-        REST.archive()
             .then(runningList => {
                 that.setState({runningList: runningList});
                 that.state.actions.setRunningList(runningList);
@@ -201,6 +199,17 @@ class RunningList extends Component {
         this.loadTaskList();
     }
 
+    toggleArchiveForm = () => {
+        const {archiveForm} = this.state
+        archiveForm.uiSchema.active = !archiveForm.uiSchema.active;
+        this.setState({archiveForm: archiveForm})
+    }
+
+    onArchiveTask = () => {
+
+        this.toggleArchiveForm();
+        this.loadTaskList();
+    }
 
     handleChangeTaskTitle = (task) => {
         const that = this;
@@ -238,7 +247,7 @@ class RunningList extends Component {
 
     render() {
 
-        const {runningList, createTaskForm, updateTaskForm} = this.state;
+        const {runningList, createTaskForm, updateTaskForm, archiveForm} = this.state;
 
         return (
             <div className="metalheart-running-list">
@@ -246,6 +255,8 @@ class RunningList extends Component {
                 <UpdateTaskModalForm schema={updateTaskForm}/>
 
                 <CreateTaskModalForm schema={createTaskForm}/>
+
+                <ArchiveModalForm schema={archiveForm} />
 
                 <div style={{'position': 'relative', 'marginTop': '40px'}}>
 
@@ -314,7 +325,7 @@ class RunningList extends Component {
                             <FontAwesomeIcon icon={faRedo}/>
                         </Button>
 
-                        <Button variant="outline-light" disabled={!runningList.editable} onClick={this.onArchive}>
+                        <Button variant="outline-light" disabled={!runningList.editable} onClick={this.toggleArchiveForm}>
                             <FontAwesomeIcon icon={faSave}/>
                         </Button>
 

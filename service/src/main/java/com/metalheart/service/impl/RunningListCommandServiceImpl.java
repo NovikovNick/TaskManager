@@ -1,6 +1,5 @@
 package com.metalheart.service.impl;
 
-import com.metalheart.exception.RunningListArchiveAlreadyExistException;
 import com.metalheart.model.RunningList;
 import com.metalheart.model.RunningListAction;
 import com.metalheart.model.Task;
@@ -183,11 +182,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     }
 
     @Override
-    public void archive(Integer userId, WeekId weekId) throws RunningListArchiveAlreadyExistException {
-
-        if (runningListArchiveService.isArchiveExist(userId, weekId)) {
-            throw new RunningListArchiveAlreadyExistException(userId, weekId);
-        }
+    public void archive(Integer userId, WeekId weekId) {
 
         RunningList runningList = runningListService.getRunningList(userId);
         runningList.setWeekId(weekId);

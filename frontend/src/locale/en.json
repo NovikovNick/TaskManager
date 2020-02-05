@@ -50,5 +50,8 @@
   "Server error": "Server error",
   "Email server is not available at the moment": "Email server is not available at the moment",
 
+  "Archive form": "Choose archive week",
+  "Save": "Save",
+
   "signout": "signout"
 }
