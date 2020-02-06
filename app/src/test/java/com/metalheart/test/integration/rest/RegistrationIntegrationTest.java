@@ -9,6 +9,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Properties;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.mail.util.MimeMessageParser;
@@ -19,7 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
 
 import static io.restassured.RestAssured.given;
@@ -35,14 +36,19 @@ public class RegistrationIntegrationTest extends BaseIntegrationTest {
     private int port;
 
     @MockBean
-    private JavaMailSender sender;
+    private JavaMailSenderImpl sender;
 
     @Test
     public void registrationTest() throws Exception {
 
         // arrange
-        MimeMessage email = new MimeMessage((Session) null);
+        Properties props = System.getProperties();
+        props.put("mail.host", "smtp.dummydomain.com");
+        props.put("mail.transport.protocol", "smtp");
+        Session session = Session.getDefaultInstance(props, null);
+        MimeMessage email = new MimeMessage(session);
         when(sender.createMimeMessage()).thenReturn(email);
+        when(sender.getSession()).thenReturn(session);
 
         UserRegistrationRequest request = getRegistrationRequest();
 
