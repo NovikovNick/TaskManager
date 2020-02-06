@@ -82,14 +82,14 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void removeSelectedTag(Integer userId, String tag) {
-        if (tagJpaRepository.existsByTitle(tag)) {
+        if (tagJpaRepository.existsByUserIdAndTitle(userId, tag)) {
             selectedTagRepository.removeSelectedTag(userId, getTag(userId, tag).getId());
         }
     }
 
     private TagJpa getTag(Integer userId, String tagTitle) {
 
-        if (tagJpaRepository.existsByTitle(tagTitle)) {
+        if (tagJpaRepository.existsByUserIdAndTitle(userId, tagTitle)) {
 
             return tagJpaRepository.findTagByUserIdAndTitle(userId, tagTitle);
 

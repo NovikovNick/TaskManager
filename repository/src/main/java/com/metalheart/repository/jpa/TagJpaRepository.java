@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TagJpaRepository extends JpaRepository<TagJpa, Integer> {
 
-    boolean existsByTitle(String title);
+    boolean existsByUserIdAndTitle(Integer userId, String title);
 
     TagJpa findTagByUserIdAndTitle(Integer userId, String title);
 

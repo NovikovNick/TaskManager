@@ -161,4 +161,37 @@ public class TagIntegrationTest extends BaseIntegrationTest {
         Assert.assertEquals(2, tasks.get(0).getTags().size());
         Assert.assertEquals(2, tasks.get(1).getTags().size());
     }
+
+    @Test
+    public void testCreatingSameTagForDifferentUsers() {
+
+        // arrange
+        Integer userId1 = generateUser();
+        Integer userId2 = generateUser();
+
+        Task user1task = runningListCommandService.createTask(userId1, getTask(userId1, "user 1 task"));
+        Task user2task = runningListCommandService.createTask(userId2, getTask(userId2, "user 2 task"));
+
+        // act
+        tagService.addTagToTask("tag", user1task.getId());
+        tagService.addTagToTask("tag", user2task.getId());
+
+
+        // assert
+        List<Tag> tags1 = tagService.getTags(userId1);
+        Task fetchedTask1 = taskService.getTask(user1task.getId());
+
+        List<Tag> tags2 = tagService.getTags(userId2);
+        Task fetchedTask2 = taskService.getTask(user2task.getId());
+
+        Assert.assertNotNull(fetchedTask1);
+        Assert.assertFalse(CollectionUtils.isEmpty(fetchedTask1.getTags()));
+        Assert.assertFalse(CollectionUtils.isEmpty(tags1));
+        Assert.assertTrue(fetchedTask1.getTags().containsAll(tags1));
+
+        Assert.assertNotNull(fetchedTask2);
+        Assert.assertFalse(CollectionUtils.isEmpty(fetchedTask2.getTags()));
+        Assert.assertFalse(CollectionUtils.isEmpty(tags2));
+        Assert.assertTrue(fetchedTask2.getTags().containsAll(tags2));
+    }
 }
