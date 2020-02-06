@@ -2,7 +2,6 @@ package com.metalheart.controller;
 
 import com.metalheart.EndPoint;
 import com.metalheart.RestConstants;
-import com.metalheart.exception.NoSuchRunningListArchiveException;
 import com.metalheart.exception.UnableToRedoException;
 import com.metalheart.exception.UnableToUndoException;
 import com.metalheart.model.RunningList;
@@ -12,7 +11,6 @@ import com.metalheart.model.request.ArchiveRequest;
 import com.metalheart.model.request.CRUDTagRequest;
 import com.metalheart.model.request.GetArchiveRequest;
 import com.metalheart.model.response.RunningListViewModel;
-import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
@@ -22,6 +20,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.Optional;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +52,6 @@ public class RunningListController {
 
     @Autowired
     private RunningListArchiveService archiveService;
-
-    @Autowired
-    private DateService dateService;
 
     @Autowired
     @Qualifier(APP_CONVERSION_SERVICE)
@@ -105,13 +101,12 @@ public class RunningListController {
     public ResponseEntity<RunningListViewModel> getNextArchive(@AuthenticationPrincipal User user,
                                                                @Valid GetArchiveRequest request) {
 
-        try {
-            WeekId weekId = conversionService.convert(request, WeekId.class);
-            RunningList runningList = archiveService.getNext(user.getId(), weekId);
-            RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
-            return ResponseEntity.ok(viewModel);
-        } catch (NoSuchRunningListArchiveException e) {
-            log.warn(e.getMessage(), e);
+        WeekId weekId = conversionService.convert(request, WeekId.class);
+        Optional<RunningList> runningList = archiveService.getNext(user.getId(), weekId);
+
+        if (runningList.isPresent()) {
+            return ResponseEntity.ok(conversionService.convert(runningList.get(), RunningListViewModel.class));
+        } else {
             return ResponseEntity.notFound().build();
         }
     }
@@ -123,13 +118,12 @@ public class RunningListController {
     public ResponseEntity<RunningListViewModel> getPrevArchive(@AuthenticationPrincipal User user,
                                                                @Valid GetArchiveRequest request) {
 
-        try {
-            WeekId weekId = conversionService.convert(request, WeekId.class);
-            RunningList runningList = archiveService.getPrev(user.getId(), weekId);
-            RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
-            return ResponseEntity.ok(viewModel);
-        } catch (NoSuchRunningListArchiveException e) {
-            log.warn(e.getMessage(), e);
+        WeekId weekId = conversionService.convert(request, WeekId.class);
+        Optional<RunningList> runningList = archiveService.getPrev(user.getId(), weekId);
+
+        if (runningList.isPresent()) {
+            return ResponseEntity.ok(conversionService.convert(runningList.get(), RunningListViewModel.class));
+        } else {
             return ResponseEntity.notFound().build();
         }
     }

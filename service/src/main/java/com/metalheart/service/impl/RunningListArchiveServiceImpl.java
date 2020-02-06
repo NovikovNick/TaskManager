@@ -1,6 +1,5 @@
 package com.metalheart.service.impl;
 
-import com.metalheart.exception.NoSuchRunningListArchiveException;
 import com.metalheart.model.RunningList;
 import com.metalheart.model.WeekId;
 import com.metalheart.model.jpa.RunningListArchiveJpa;
@@ -9,6 +8,7 @@ import com.metalheart.repository.jpa.RunningListArchiveJpaRepository;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListService;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,7 +37,7 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
 
     @Transactional
     @Override
-    public RunningList getPrev(Integer userId, WeekId weekId) throws NoSuchRunningListArchiveException {
+    public Optional<RunningList> getPrev(Integer userId, WeekId weekId){
 
         WeekId prevWeekId = dateService.getPreviousWeekId(weekId);
 
@@ -45,12 +45,12 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
     }
 
     @Override
-    public RunningList getNext(Integer userId, WeekId weekId) throws NoSuchRunningListArchiveException {
+    public Optional<RunningList> getNext(Integer userId, WeekId weekId) {
 
         WeekId nextWeekId = dateService.getNextWeekId(weekId);
 
         if (dateService.getCurrentWeekId().equals(nextWeekId)) {
-            return runningListService.getRunningList(userId);
+            return Optional.of(runningListService.getRunningList(userId));
         }
 
         return getArchive(userId, nextWeekId);
@@ -72,17 +72,19 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
         return isArchiveExist(userId, nextWeekId);
     }
 
-    private RunningList getArchive(Integer userId, WeekId weekId) throws NoSuchRunningListArchiveException {
+    @Transactional
+    @Override
+    public Optional<RunningList> getArchive(Integer userId, WeekId weekId) {
 
         if (!isArchiveExist(userId, weekId)) {
-            throw new NoSuchRunningListArchiveException(userId, weekId);
+            return Optional.empty();
         }
 
         RunningList runningList = getRunningList(userId, weekId);
         runningList.setEditable(false);
         runningList.setHasPrevious(hasPreviousArchive(userId, weekId));
         runningList.setHasNext(hasNextArchive(userId, weekId));
-        return runningList;
+        return Optional.of(runningList);
     }
 
     @Override

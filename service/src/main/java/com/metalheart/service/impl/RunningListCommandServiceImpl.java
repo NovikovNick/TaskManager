@@ -184,27 +184,38 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     @Override
     public void archive(Integer userId, WeekId weekId) {
 
-        RunningList runningList = runningListService.getRunningList(userId);
-        runningList.setWeekId(weekId);
+        RunningList newRunningList = runningListService.getRunningList(userId);
+        newRunningList.setWeekId(weekId);
+
+        Optional<RunningList> oldRunningList = runningListArchiveService.getArchive(userId, weekId);
 
         runningListCommandManager.execute(userId, new RunningListAction<Void>() {
 
             @Override
             public Void execute() {
-                runningListArchiveService.save(userId, runningList);
+                runningListArchiveService.save(userId, newRunningList);
                 log.info("Archive has been saved");
                 return null;
             }
 
             @Override
             public void redo() {
-                runningListArchiveService.save(userId, runningList);
+                runningListArchiveService.save(userId, newRunningList);
                 log.info("Undone operation of archive saving was redone");
             }
 
             @Override
             public void undo() {
-                runningListArchiveService.delete(userId, runningList.getWeekId());
+
+                if (oldRunningList.isPresent()) {
+
+                    runningListArchiveService.save(userId, oldRunningList.get());
+
+                } else {
+
+                    runningListArchiveService.delete(userId, newRunningList.getWeekId());
+                }
+
                 log.info("Operation of archive saving was undone");
             }
         });

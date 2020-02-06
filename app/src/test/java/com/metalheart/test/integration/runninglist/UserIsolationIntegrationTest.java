@@ -93,8 +93,8 @@ public class UserIsolationIntegrationTest extends BaseIntegrationTest {
         Assert.assertTrue(archiveService.hasPreviousArchive(user1Id, weekId));
         Assert.assertTrue(archiveService.hasPreviousArchive(user2Id, weekId));
 
-        RunningList archive1 = archiveService.getPrev(user1Id, weekId);
-        RunningList archive2 = archiveService.getPrev(user2Id, weekId);
+        RunningList archive1 = archiveService.getPrev(user1Id, weekId).get();
+        RunningList archive2 = archiveService.getPrev(user2Id, weekId).get();
 
         Assert.assertNotNull(archive1);
         Assert.assertNotNull(archive2);
