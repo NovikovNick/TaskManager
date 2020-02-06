@@ -84,6 +84,35 @@ class RunningList extends Component {
         this.loadTaskList();
     }
 
+    ctrlQ = (e) => {
+        // CTRL + Q
+        if(e.keyCode===81 && e.ctrlKey) this.toggleCreateTaskForm();
+    }
+
+    ctrlZ = (e) => {
+        const {runningList} = this.state;
+        // CTRL + Z
+        if(e.keyCode===90 && (e.ctrlKey && !e.shiftKey) &&  runningList.canUndo) this.onUndo();
+    }
+
+    ctrlShiftZ = (e) => {
+        const {runningList} = this.state;
+        // CTRL + SHIFT + Z
+        if(e.keyCode===90 && (e.ctrlKey && e.shiftKey)  && runningList.canRedo) this.onRedo();
+    }
+
+    componentDidMount(){
+        document.addEventListener('keydown', this.ctrlQ);
+        document.addEventListener('keydown', this.ctrlZ);
+        document.addEventListener('keydown', this.ctrlShiftZ);
+    }
+
+    componentWillUnmount(){
+        document.removeEventListener('keydown', this.ctrlQ);
+        document.removeEventListener('keydown', this.ctrlZ);
+        document.removeEventListener('keydown', this.ctrlShiftZ);
+    }
+
     onDragEnd = (result) => {
         // dropped outside the list
         if (!result.destination) {

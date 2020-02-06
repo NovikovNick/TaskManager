@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
@@ -30,6 +30,7 @@ export function TaskModalForm({schema}) {
 
     const [errors, setErrors] = useState({});
     const [valid, setValid] = useState({});
+    const titleInput = useRef();
 
     const onSubmit = (values, {resetForm}) => {
 
@@ -42,7 +43,7 @@ export function TaskModalForm({schema}) {
                 setErrors(response)
 
                 // if key doesn't present in errors, then it is valid
-                var valid = Object.keys(values).reduce(function(obj, k) {
+                var valid = Object.keys(values).reduce(function (obj, k) {
                     if (!response.hasOwnProperty(k)) obj[k] = values[k];
                     return obj;
                 }, {});
@@ -65,10 +66,12 @@ export function TaskModalForm({schema}) {
                   resetForm
               }) => (
 
-                <Modal show={schema.uiSchema.active} onHide={() => {
-                    resetForm({})
-                    schema.closeForm();
-                }}>
+                <Modal show={schema.uiSchema.active}
+                       onShow={() => titleInput.current.focus()}
+                       onHide={() => {
+                           resetForm({});
+                           schema.closeForm();
+                       }}>
                     <Form noValidate onSubmit={handleSubmit}>
 
                         <Modal.Header closeButton>
@@ -81,14 +84,15 @@ export function TaskModalForm({schema}) {
                                 <Form.Label column sm="3">{t('title')}</Form.Label>
                                 <Col sm={'9'}>
                                     <Form.Control
+                                        ref={titleInput}
                                         name="title"
                                         onChange={(v) => {
                                             if (errors && errors.title) {
-                                                const { title, ...rest } = errors;
+                                                const {title, ...rest} = errors;
                                                 setErrors(rest);
                                             }
                                             if (valid && valid.title) {
-                                                const { title, ...rest } = valid;
+                                                const {title, ...rest} = valid;
                                                 setValid(rest);
                                             }
                                             handleChange(v);
@@ -109,11 +113,11 @@ export function TaskModalForm({schema}) {
                                         name="description"
                                         onChange={(v) => {
                                             if (errors && errors.description) {
-                                                const { description, ...rest } = errors;
+                                                const {description, ...rest} = errors;
                                                 setErrors(rest);
                                             }
                                             if (valid && valid.description) {
-                                                const { description, ...rest } = valid;
+                                                const {description, ...rest} = valid;
                                                 setValid(rest);
                                             }
                                             handleChange(v);
