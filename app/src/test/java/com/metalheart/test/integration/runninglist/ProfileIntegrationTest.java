@@ -65,7 +65,7 @@ public class ProfileIntegrationTest extends BaseIntegrationTest {
 
 
         // act
-        runningListCommandService.updateProfile(userId1, tagsToUpdate);
+        runningListCommandService.updateProfile(userId1, null, null, tagsToUpdate);
 
         { // assert
             List<Tag> allTagsUser1 = tagService.getTags(userId1);
@@ -126,7 +126,7 @@ public class ProfileIntegrationTest extends BaseIntegrationTest {
 
 
         // act
-        runningListCommandService.updateProfile(userId1, tagsToUpdate);
+        runningListCommandService.updateProfile(userId1, null, null, tagsToUpdate);
         runningListService.getRunningList(userId1);
 
         { // assert

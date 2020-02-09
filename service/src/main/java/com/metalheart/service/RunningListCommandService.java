@@ -20,5 +20,5 @@ public interface RunningListCommandService {
 
     void reorderTask(Integer userId, Integer startIndex, Integer endIndex);
 
-    void updateProfile(Integer userId, List<Tag> tags);
+    void updateProfile(Integer userId, String username, String email, List<Tag> tags);
 }

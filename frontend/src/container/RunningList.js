@@ -178,6 +178,7 @@ class RunningList extends Component {
             .then(runningList => {
                 that.setState({runningList: runningList});
                 that.state.actions.setRunningList(runningList);
+                REST.getUserProfile().then(that.state.actions.setUser);
             });
     }
 
@@ -187,6 +188,7 @@ class RunningList extends Component {
             .then(runningList => {
                 that.setState({runningList: runningList});
                 that.state.actions.setRunningList(runningList);
+                REST.getUserProfile().then(that.state.actions.setUser);
             });
     }
 

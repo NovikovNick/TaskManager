@@ -317,7 +317,7 @@ export function signUp({username, email, password, confirmPassword}) {
     });
 }
 
-export function saveProfile(tags) {
+export function saveProfile({tags, username, email}) {
     const settings = {
         method: 'POST',
         credentials: 'include',
@@ -326,6 +326,8 @@ export function saveProfile(tags) {
             'Accept': 'application/json',
         },
         body: JSON.stringify({
+            username: username,
+            email: email,
             tags: tags
         })
     };

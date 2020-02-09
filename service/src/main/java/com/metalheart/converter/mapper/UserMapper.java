@@ -13,6 +13,8 @@ public interface UserMapper {
 
     User map(UserJpa src);
 
+    UserJpa mapToJpa(User src);
+
     UserRegistrationDelayedTask map(User src);
 
     User map(UserRegistrationDelayedTask src);

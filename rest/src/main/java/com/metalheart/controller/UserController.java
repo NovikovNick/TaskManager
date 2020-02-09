@@ -50,7 +50,7 @@ public class UserController {
 
     @GetMapping(USER_REGISTRATION)
     public UserViewModel getUser(@AuthenticationPrincipal User user) {
-        return conversionService.convert(user, UserViewModel.class);
+        return conversionService.convert(userService.get(user.getId()), UserViewModel.class);
     }
 
     @PostMapping(USER_REGISTRATION)
@@ -70,7 +70,7 @@ public class UserController {
             .map(tag -> conversionService.convert(tag, Tag.class))
             .collect(Collectors.toList());
 
-        commandService.updateProfile(user.getId(), tags);
+        commandService.updateProfile(user.getId(), request.getUsername(), request.getEmail(), tags);
         return ResponseEntity.status(HttpStatus.OK).body(new HashMap<>());
     }
 

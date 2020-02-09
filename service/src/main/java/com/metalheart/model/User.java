@@ -16,8 +16,8 @@ import static java.util.Arrays.asList;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class User implements UserDetails {
+@Builder(toBuilder = true)
+public class User implements UserDetails, Cloneable {
 
     @LogContextField(LogContextField.Field.USER_ID)
     private Integer id;
@@ -58,5 +58,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public User clone() {
+        return toBuilder().build();
     }
 }

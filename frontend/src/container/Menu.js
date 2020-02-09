@@ -30,6 +30,9 @@ class Menu extends Component {
     onProfileSuccessUpdate = () => {
 
         const that = this;
+
+        REST.getUserProfile().then(that.state.actions.setUser);
+
         REST.getTaskList()
             .then(runningList => {
                 that.setState({runningList: runningList});
@@ -50,6 +53,8 @@ class Menu extends Component {
         const {user, runningList} = this.props;
 
         profileForm.formData.tags = runningList.allTags;
+        profileForm.formData.username = user.username;
+        profileForm.formData.email = user.email;
 
         return (
             <Dropdown className={"taskmanager-profile w-100"}>

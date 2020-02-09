@@ -65,12 +65,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return conversionService.convert(res, User.class);
     }
 
-
     @Override
     public boolean isUserExistByEmail(String email) {
         return repository.existsByEmail(email);
     }
 
+    @Transactional
     @Override
     public User get(Integer id) {
         return conversionService.convert(repository.getOne(id), User.class);
@@ -80,5 +80,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void update(Integer userId, String newPassword) {
         repository.updatePassword(userId, encoder.encode(newPassword));
+    }
+
+    @Override
+    public User update(User user) {
+        UserJpa userJpa = conversionService.convert(user, UserJpa.class);
+        userJpa = repository.save(userJpa);
+        return conversionService.convert(userJpa, User.class);
     }
 }

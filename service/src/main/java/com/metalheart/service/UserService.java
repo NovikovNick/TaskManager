@@ -14,4 +14,6 @@ public interface UserService {
     User get(Integer id);
 
     void update(Integer userId, String newPassword);
+
+    User update(User user);
 }

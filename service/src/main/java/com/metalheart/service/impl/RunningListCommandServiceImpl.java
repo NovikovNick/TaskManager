@@ -5,6 +5,7 @@ import com.metalheart.model.RunningListAction;
 import com.metalheart.model.Tag;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
+import com.metalheart.model.User;
 import com.metalheart.model.WeekId;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
 import com.metalheart.model.request.WeekWorkLogUpdateRequest;
@@ -15,11 +16,13 @@ import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
 import com.metalheart.service.TaskService;
+import com.metalheart.service.UserService;
 import com.metalheart.service.WorkLogService;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,6 +52,9 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
     @Autowired
     private TagService tagService;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public Task createTask(Integer userId, Task request) {
@@ -271,7 +277,19 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     }
 
     @Override
-    public void updateProfile(Integer userId, List<Tag> tags) {
+    public void updateProfile(Integer userId, String username, String email, List<Tag> tags) {
+
+        User oldUser = userService.get(userId);
+
+        User user = oldUser.clone();
+
+        if (StringUtils.isNotBlank(username)) {
+            user.setUsername(username);
+        }
+
+        if (StringUtils.isNotBlank(email)) {
+            user.setEmail(email);
+        }
 
         List<Tag> oldTags = tagService.getTags(userId);
 
@@ -279,6 +297,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
             @Override
             public Void execute() {
+                userService.update(user);
                 tagService.updateTags(userId, tags);
                 log.info("Profile has been updated");
                 return null;
@@ -286,12 +305,14 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
             @Override
             public void redo() {
+                userService.update(user);
                 tagService.updateTags(userId, tags);
                 log.info("Undone operation of profile updating was redone");
             }
 
             @Override
             public void undo() {
+                userService.update(oldUser);
                 tagService.updateTags(userId, oldTags);
                 log.info("Operation of profile updating was undone");
             }
