@@ -16,4 +16,8 @@ public interface TagService {
     void selectTag(Integer userId, String tag);
 
     void removeSelectedTag(Integer userId, String tag);
+
+    void updateTags(Integer userId, List<Tag> tags);
+
+    void remove(Integer tagId);
 }

@@ -1,8 +1,10 @@
 package com.metalheart.service;
 
+import com.metalheart.model.Tag;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.WeekId;
+import java.util.List;
 
 public interface RunningListCommandService {
 
@@ -17,4 +19,6 @@ public interface RunningListCommandService {
     void archive(Integer userId, WeekId weekId);
 
     void reorderTask(Integer userId, Integer startIndex, Integer endIndex);
+
+    void updateProfile(Integer userId, List<Tag> tags);
 }

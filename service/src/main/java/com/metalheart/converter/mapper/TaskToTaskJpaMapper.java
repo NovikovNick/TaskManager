@@ -14,13 +14,13 @@ public interface TaskToTaskJpaMapper {
 
     TaskToTaskJpaMapper INSTANCE = Mappers.getMapper(TaskToTaskJpaMapper.class);
 
-    Task map(TaskJpa task);
+    Task map(TaskJpa src);
 
-    TaskJpa map(Task task);
+    TaskJpa map(Task src);
 
-    Tag map(TagJpa task);
+    Tag map(TagJpa src);
 
-    TagJpa map(Tag task);
+    TagJpa map(Tag src);
 
     default Integer map(String src) {
         return StringUtils.isNumeric(src) ? Integer.valueOf(src) : 0;

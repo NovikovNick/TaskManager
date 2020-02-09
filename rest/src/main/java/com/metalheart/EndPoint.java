@@ -27,6 +27,7 @@ public class EndPoint {
     public static final String AUTH_SIGN_OUT = "/auth/signout";
 
     public static final String USER_REGISTRATION = "/user";
+    public static final String SAVE_PROFILE = "/profile";
 
     private EndPoint() {
         throw new UnsupportedOperationException();

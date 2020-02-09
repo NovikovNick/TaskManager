@@ -276,7 +276,8 @@ class RunningList extends Component {
 
     render() {
 
-        const {runningList, createTaskForm, updateTaskForm, archiveForm} = this.state;
+        const {createTaskForm, updateTaskForm, archiveForm} = this.state;
+        const {runningList} = this.props;
 
         return (
             <div className="metalheart-running-list">

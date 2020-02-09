@@ -4,23 +4,16 @@ import {bindActionCreators} from 'redux';
 import * as Store from "../store/ReduxActions";
 
 import RunningList from "../container/RunningList";
-
-import * as REST from "../rest/rest";
-import {Col, Container, Nav, Row} from "react-bootstrap";
-import Profile from "../container/Profile";
+import {Container} from "react-bootstrap";
+import Menu from "../container/Menu";
 
 class Page extends Component {
     render() {
-
-        const signout = function () {
-            REST.signOut().then(() => window.location = "/signin");
-        }
-
         return (
             <Container fluid>
 
                 <div className={"metalheart-sidebar"} >
-                    <Profile/>
+                    <Menu/>
                 </div>
                 <div className={"metalheart-content"} >
                     <div className="metalheart-wrapper">
@@ -28,7 +21,6 @@ class Page extends Component {
                     </div>
                 </div>
             </Container>
-
         );
     }
 }

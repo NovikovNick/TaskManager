@@ -137,9 +137,12 @@ public class TaskServiceImpl implements TaskService {
 
             List<TagJpa> tags = task.getTags().stream()
                 .map(tag -> {
-                    TagJpa tagJpa = tagJpaRepository.findTagByUserIdAndTitle(task.getUserId(), tag.getTitle());
+                    Integer userId = task.getUserId();
+                    TagJpa tagJpa = tagJpaRepository.findTagByUserIdAndTitle(userId, tag.getTitle());
                     if (Objects.isNull(tagJpa)) {
-                        tagJpa = tagJpaRepository.save(conversionService.convert(tag, TagJpa.class));
+                        tagJpa = conversionService.convert(tag, TagJpa.class);
+                        tagJpa.setUserId(userId);
+                        tagJpa = tagJpaRepository.save(tagJpa);
                     }
                     return tagJpa;
                 })
@@ -154,7 +157,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @LogOperationContext
     @Override
-    public void delete(Integer taskId) {
+    public void remove(Integer taskId) {
         taskJpaRepository.setDeleted(taskId, true);
     }
 

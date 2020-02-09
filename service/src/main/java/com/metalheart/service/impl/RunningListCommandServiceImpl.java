@@ -2,6 +2,7 @@ package com.metalheart.service.impl;
 
 import com.metalheart.model.RunningList;
 import com.metalheart.model.RunningListAction;
+import com.metalheart.model.Tag;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
 import com.metalheart.model.WeekId;
@@ -12,6 +13,7 @@ import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
+import com.metalheart.service.TagService;
 import com.metalheart.service.TaskService;
 import com.metalheart.service.WorkLogService;
 import java.time.ZonedDateTime;
@@ -45,6 +47,9 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     @Autowired
     private RunningListService runningListService;
 
+    @Autowired
+    private TagService tagService;
+
     @Override
     public Task createTask(Integer userId, Task request) {
 
@@ -68,7 +73,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
             @Override
             public void undo() {
-                taskService.delete(task.getId());
+                taskService.remove(task.getId());
                 log.info("Operation of task creating was undone");
             }
         });
@@ -128,14 +133,14 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
             @Override
             public Void execute() {
-                taskService.delete(taskId);
+                taskService.remove(taskId);
                 log.info("Task has been removed ");
                 return null;
             }
 
             @Override
             public void redo() {
-                taskService.delete(taskId);
+                taskService.remove(taskId);
                 log.info("Undone operation of task removing was redone");
             }
 
@@ -261,6 +266,34 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
             public void undo() {
                 taskService.save(previousTaskOrder);
                 log.info("Operation of tasks reordering was undone");
+            }
+        });
+    }
+
+    @Override
+    public void updateProfile(Integer userId, List<Tag> tags) {
+
+        List<Tag> oldTags = tagService.getTags(userId);
+
+        runningListCommandManager.execute(userId, new RunningListAction<Void>() {
+
+            @Override
+            public Void execute() {
+                tagService.updateTags(userId, tags);
+                log.info("Profile has been updated");
+                return null;
+            }
+
+            @Override
+            public void redo() {
+                tagService.updateTags(userId, tags);
+                log.info("Undone operation of profile updating was redone");
+            }
+
+            @Override
+            public void undo() {
+                tagService.updateTags(userId, oldTags);
+                log.info("Operation of profile updating was undone");
             }
         });
     }

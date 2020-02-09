@@ -71,13 +71,15 @@ public abstract class BaseIntegrationTest {
 
     @Before
     public void cleanUp() {
+        selectedTagRepository.deleteAll();
+
+        userJpaRepository.findAll().forEach(user -> commandManager.clear(user.getId()));
+        userJpaRepository.deleteAll();
+
         archiveJpaRepository.deleteAll();
         workLogJpaRepository.deleteAll();
         taskJpaRepository.deleteAll();
         tagJpaRepository.deleteAll();
-        userJpaRepository.findAll().forEach(user -> commandManager.clear(user.getId()));
-        selectedTagRepository.deleteAll();
-        userJpaRepository.deleteAll();
     }
 
     protected Task generateRandomTask(Integer userId) {

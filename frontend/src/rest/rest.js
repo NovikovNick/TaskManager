@@ -316,3 +316,18 @@ export function signUp({username, email, password, confirmPassword}) {
         ;
     });
 }
+
+export function saveProfile(tags) {
+    const settings = {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            tags: tags
+        })
+    };
+    return rest(setting.API_URL + '/profile', settings);
+}

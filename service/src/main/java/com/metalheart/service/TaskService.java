@@ -19,7 +19,7 @@ public interface TaskService {
 
     Task save(Task task);
 
-    void delete(Integer taskId);
+    void remove(Integer taskId);
 
     void undoRemoving(Integer taskId);
 

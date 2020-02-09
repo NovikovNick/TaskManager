@@ -52,7 +52,7 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testOrderFromTopToMiddleWithotTag() {
+    public void testOrderFromTopToMiddleWithoutTag() {
 
         // arrange
         Integer userId = generateUser();

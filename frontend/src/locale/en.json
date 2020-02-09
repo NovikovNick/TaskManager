@@ -24,7 +24,7 @@
 
   "Looks good!":"Correct",
 
-  "tags": "tags",
+  "tags": "Tags",
 
   "Login": "Login",
   "Username": "Username",
@@ -52,6 +52,7 @@
 
   "Archive form": "Choose archive week",
   "Save": "Save",
+  "Profile": "Profile",
 
   "signout": "signout"
 }

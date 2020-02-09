@@ -26,35 +26,35 @@ public interface TaskViewModelToTaskMapper {
 
     TaskViewModelToTaskMapper INSTANCE = Mappers.getMapper(TaskViewModelToTaskMapper.class);
 
-    TaskViewModel map(Task task);
+    TaskViewModel map(Task src);
 
-    Task map(UpdateTaskRequest request);
+    Task map(UpdateTaskRequest src);
 
     @Mapping(source = "taskId", target = "id")
-    Task map(CreateTaskRequest task);
+    Task map(CreateTaskRequest src);
 
     @Mapping(source = "title", target = "text")
-    TagViewModel map(Tag task);
+    TagViewModel map(Tag src);
 
     @Mapping(source = "text", target = "title")
-    Tag map(TagViewModel task);
+    Tag map(TagViewModel src);
 
     @Mapping(source = "weekId.year", target = "year")
     @Mapping(source = "weekId.week", target = "week")
-    RunningListViewModel map(RunningList source);
+    RunningListViewModel map(RunningList src);
 
-    CalendarViewModel map(Calendar source);
+    CalendarViewModel map(Calendar src);
 
-    default String map(WeekWorkLog workLog) {
-        if (Objects.nonNull(workLog)) {
-            return ObjectUtils.defaultIfNull(workLog.getStatus(), TaskStatus.NONE).toString();
+    default String map(WeekWorkLog src) {
+        if (Objects.nonNull(src)) {
+            return ObjectUtils.defaultIfNull(src.getStatus(), TaskStatus.NONE).toString();
         }
         return null;
     }
 
-    default List<String> map(List<WeekWorkLog> workLog) {
-        if (Objects.nonNull(workLog)) {
-            return workLog.stream().map(this::map).collect(Collectors.toList());
+    default List<String> map(List<WeekWorkLog> src) {
+        if (Objects.nonNull(src)) {
+            return src.stream().map(this::map).collect(Collectors.toList());
         }
         return null;
     }
