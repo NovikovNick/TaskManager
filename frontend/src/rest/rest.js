@@ -331,3 +331,19 @@ export function saveProfile(tags) {
     };
     return rest(setting.API_URL + '/profile', settings);
 }
+
+export function changePassword(request) {
+    const settings = {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            password: request.password,
+            confirmPassword: request.confirmPassword
+        })
+    };
+    return rest(setting.API_URL + '/user/password', settings);
+}

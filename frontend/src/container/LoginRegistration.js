@@ -283,11 +283,6 @@ export default function LoginRegistration() {
     return (
         <div className="login-reg-panel_wrapper">
 
-            <video style={{float: "right"}} loop autoPlay>
-                <source src="/video/office.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-            </video>
-
             <div className="login-reg-panel">
 
                 <Fade in={onRegistration}>

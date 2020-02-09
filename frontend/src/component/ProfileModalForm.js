@@ -63,6 +63,9 @@ export default function ProfileModalForm({schema}) {
 
                         </Modal.Body>
                         <Modal.Footer>
+                            <Button onClick={() => window.location = "/changepassword"}>
+                                {t("Send email to change password")}
+                            </Button>
                             <Button type="submit">{t("Save")}</Button>
                         </Modal.Footer>
                     </Form>

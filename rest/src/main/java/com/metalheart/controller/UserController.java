@@ -2,11 +2,13 @@ package com.metalheart.controller;
 
 import com.metalheart.model.Tag;
 import com.metalheart.model.User;
+import com.metalheart.model.request.UpdatePasswordRequest;
 import com.metalheart.model.request.UpdateProfileRequest;
 import com.metalheart.model.request.UserRegistrationRequest;
 import com.metalheart.model.response.UserViewModel;
 import com.metalheart.service.RegistrationService;
 import com.metalheart.service.RunningListCommandService;
+import com.metalheart.service.UserService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.metalheart.EndPoint.CHANGE_PASSWORD;
 import static com.metalheart.EndPoint.SAVE_PROFILE;
 import static com.metalheart.EndPoint.USER_REGISTRATION;
 import static com.metalheart.config.ServiceConfiguration.APP_CONVERSION_SERVICE;
@@ -41,6 +44,9 @@ public class UserController {
 
     @Autowired
     private RunningListCommandService commandService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping(USER_REGISTRATION)
     public UserViewModel getUser(@AuthenticationPrincipal User user) {
@@ -65,7 +71,14 @@ public class UserController {
             .collect(Collectors.toList());
 
         commandService.updateProfile(user.getId(), tags);
+        return ResponseEntity.status(HttpStatus.OK).body(new HashMap<>());
+    }
 
+    @PostMapping(CHANGE_PASSWORD)
+    public ResponseEntity changePassword(@AuthenticationPrincipal User user,
+                                        @RequestBody @Valid UpdatePasswordRequest request) {
+
+        userService.update(user.getId(), request.getPassword());
         return ResponseEntity.status(HttpStatus.OK).body(new HashMap<>());
     }
 }

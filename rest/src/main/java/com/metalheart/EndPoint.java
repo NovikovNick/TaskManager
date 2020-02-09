@@ -29,6 +29,8 @@ public class EndPoint {
     public static final String USER_REGISTRATION = "/user";
     public static final String SAVE_PROFILE = "/profile";
 
+    public static final String CHANGE_PASSWORD = "/user/password";
+
     private EndPoint() {
         throw new UnsupportedOperationException();
     }

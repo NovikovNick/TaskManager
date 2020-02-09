@@ -12,4 +12,6 @@ public interface UserService {
     boolean isUserExistByEmail(String email);
 
     User get(Integer id);
+
+    void update(Integer userId, String newPassword);
 }

@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.metalheart.config.ServiceConfiguration.APP_CONVERSION_SERVICE;
 
@@ -73,5 +74,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User get(Integer id) {
         return conversionService.convert(repository.getOne(id), User.class);
+    }
+
+    @Transactional
+    @Override
+    public void update(Integer userId, String newPassword) {
+        repository.updatePassword(userId, encoder.encode(newPassword));
     }
 }

@@ -54,5 +54,9 @@
   "Save": "Сохранить",
   "Profile": "Профиль",
 
+  "Send email to change password": "Сброс пароля",
+  "changePasswordHeader": "Введите новый пароль",
+  "changePasswordButton": "Изменить пароль",
+
   "signout": "Выйти"
 }

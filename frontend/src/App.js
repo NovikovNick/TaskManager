@@ -11,7 +11,8 @@ import * as REST from "./rest/rest";
 import * as Store from "./store/ReduxActions";
 
 import Page from "./page/Page";
-import PageLogin from "./page/PageLogin";
+import LoginPage from "./page/LoginPage";
+import ChangePasswordPage from "./page/ChangePasswordPage";
 
 const store = createStore(combineReducers(reducers),
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
@@ -41,7 +42,8 @@ export default function App() {
             <Suspense fallback={<div>loading...</div>}>
 
                 <Router>
-                    <Route path="/signin" component={PageLogin}/>
+                    <Route path="/signin" component={LoginPage}/>
+                    <Route path="/changepassword" component={ChangePasswordPage}/>
                     <Route exact path="/" component={Page}/>
                 </Router>
 

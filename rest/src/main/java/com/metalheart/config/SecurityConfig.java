@@ -59,9 +59,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/css/**",
                 "/images/**",
                 "/webjars/**").permitAll()
-            .antMatchers("/taskmanager/**").authenticated()
             .antMatchers("/auth/signin/**").permitAll()
             .antMatchers(HttpMethod.POST, "/user").permitAll()
+            .antMatchers("/taskmanager/**").authenticated()
+            .antMatchers("/changepassword").authenticated()
             .anyRequest().authenticated()
             .and()
         .oauth2Login()
