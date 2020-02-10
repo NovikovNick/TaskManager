@@ -57,7 +57,7 @@ class Menu extends Component {
         profileForm.formData.email = user.email;
 
         return (
-            <Dropdown className={"taskmanager-profile w-100"}>
+            <Dropdown className={"metalheart-menu w-100"}>
 
                 <Dropdown.Toggle split id="dropdown-split-basic">{user.username}</Dropdown.Toggle>
 

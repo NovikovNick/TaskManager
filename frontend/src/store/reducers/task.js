@@ -1,5 +1,4 @@
 import * as types from '../ActionTypes';
-import React from "react";
 
 const initialState = {
     user: {

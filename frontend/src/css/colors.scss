@@ -1,7 +1,7 @@
 $borderColor: #eee;
 $headerColor: #435d7d;
 $throwLine: black;
-$headerBackground: linear-gradient(bottom, $headerColor, lighten($headerColor, 10%));
+$headerBackground: linear-gradient(to top, $headerColor, lighten($headerColor, 10%));
 
 @mixin linear-gradient($direction, $fromColor, $toColor) {
 

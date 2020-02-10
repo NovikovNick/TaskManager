@@ -1,7 +1,7 @@
 @import "../colors";
 
-$headerBackground: linear-gradient(bottom, $headerColor, lighten($headerColor, 10%));
-$loginRegistrationBackground: linear-gradient(bottom, #7d437b, #000000);
+$headerBackground: linear-gradient(to top, $headerColor, lighten($headerColor, 10%));
+$loginRegistrationBackground: linear-gradient(to top, #7d437b, #000000);
 
 .weeker_picker_wrapper {
   display: block;

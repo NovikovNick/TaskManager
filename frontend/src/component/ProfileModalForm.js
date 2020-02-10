@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
-import {WithContext as ReactTags} from "react-tag-input";
+import {FormTags} from "./Tags";
+
 
 
 export default function ProfileModalForm({schema}) {
@@ -23,7 +24,7 @@ export default function ProfileModalForm({schema}) {
                 setErrors(response)
 
                 // if key doesn't present in errors, then it is valid
-                var valid = Object.keys(values).reduce(function(obj, k) {
+                var valid = Object.keys(values).reduce(function (obj, k) {
                     if (!response.hasOwnProperty(k)) obj[k] = values[k];
                     return obj;
                 }, {});
@@ -56,8 +57,7 @@ export default function ProfileModalForm({schema}) {
                             <Modal.Title>{t("Profile")}</Modal.Title>
                         </Modal.Header>
 
-                        <Modal.Body>
-
+                        <Modal.Body className={"taskmanager-profile"}>
                             <Form.Group as={Row} controlId="validationFormik11">
                                 <Form.Label column sm="3">{t('Username')}</Form.Label>
                                 <Col sm={'9'}>
@@ -111,12 +111,11 @@ export default function ProfileModalForm({schema}) {
                             <Form.Group as={Row} controlId="validationFormik00">
                                 <Form.Label column sm="3">{t('tags')}</Form.Label>
                                 <Col sm={'9'}>
-                                    <ReactTags tags={values.tags || []}
-                                               placeholder={t("tags")}
-                                               suggestions={values.tagsSuggestion || []}
-                                               handleDelete={(i) => setFieldValue('tags', values.tags.filter((tag, index) => index !== i))}
-                                               handleAddition={(tag) => setFieldValue('tags', [...values.tags, tag])}/>
-
+                                    <FormTags tags={values.tags || []}
+                                          placeholder={t("tags")}
+                                          suggestions={values.tagsSuggestion || []}
+                                          handleDelete={(i) => setFieldValue('tags', values.tags.filter((tag, index) => index !== i))}
+                                          handleAddition={(tag) => setFieldValue('tags', [...values.tags, tag])}/>
                                     <div className={"invalid-feedback"}>{errors.tags}</div>
                                 </Col>
                             </Form.Group>

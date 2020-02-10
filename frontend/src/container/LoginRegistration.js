@@ -86,17 +86,6 @@ function Login() {
         </Formik>
     );
 }
-function Social() {
-    const {t} = useTranslation();
-
-    return (
-        <Row>
-            <Button className={"login-google"} href={"https://runninglist.ru:8443/oauth2/authorization/google"}>
-                <FontAwesomeIcon icon={faGoogle}/> Google
-            </Button>
-        </Row>
-    );
-}
 
 function Registration() {
     const {t} = useTranslation();
@@ -273,6 +262,16 @@ function Registration() {
         default:
             return form;
     }
+}
+
+function Social() {
+    return (
+        <Row>
+            <Button className={"login-google"} href={"https://runninglist.ru:8443/oauth2/authorization/google"}>
+                <FontAwesomeIcon icon={faGoogle}/> Google
+            </Button>
+        </Row>
+    );
 }
 
 export default function LoginRegistration() {

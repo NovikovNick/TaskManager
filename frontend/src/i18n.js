@@ -19,7 +19,7 @@ const options = {
 
     fallbackLng: "en",
 
-    debug: true,
+    //debug: true,
 
     keySeparator: false,
 
@@ -57,9 +57,8 @@ i18n
     .use(initReactI18next)
     .use(LanguageDetector)
     .init(options)
-    .then(function(t) {
+    .then(function (t) {
         // initialized and ready to go!
-        console.log(" --> ", i18n.t('IN_PROGRESS'))
-    });;
+    });
 
 export default i18n;

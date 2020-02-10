@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
-import {WithContext as ReactTags} from "react-tag-input";
+import {FormTags} from "./Tags";
 
 
 export function UpdateTaskModalForm({schema}) {
@@ -133,12 +133,12 @@ export function TaskModalForm({schema}) {
                             <Form.Group as={Row} controlId="validationFormik03">
                                 <Form.Label column sm="3">{t('tags')}</Form.Label>
                                 <Col sm={'9'}>
-
-                                    <ReactTags tags={values.tags || []}
+                                    <FormTags tags={values.tags || []}
                                                placeholder={t("Add tags")}
                                                suggestions={values.tagsSuggestion || []}
                                                handleDelete={(i) => setFieldValue('tags', values.tags.filter((tag, index) => index !== i))}
                                                handleAddition={(tag) => setFieldValue('tags', [...values.tags, tag])}/>
+                                    <div className={"invalid-feedback"}>{errors.tags}</div>
                                 </Col>
                             </Form.Group>
 
