@@ -52,6 +52,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public Optional<User> findByEmail(String email) {
+
+        Optional<UserJpa> user = repository.findByEmail(email);
+        if (user.isPresent()) {
+            return Optional.of(conversionService.convert(user.get(), User.class));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public User createUser(User user) {
 
         UserJpa res = repository.save(UserJpa.builder()

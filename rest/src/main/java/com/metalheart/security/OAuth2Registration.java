@@ -56,7 +56,7 @@ public class OAuth2Registration extends SimpleUrlAuthenticationSuccessHandler {
 
     private User getUser(String username, String email) {
 
-        Optional<User> user = userService.findByUsername(username);
+        Optional<User> user = userService.findByEmail(email);
 
         if (user.isPresent()) {
 
