@@ -2,7 +2,7 @@ package com.metalheart.validation.validator;
 
 import com.metalheart.model.User;
 import com.metalheart.service.UserService;
-import com.metalheart.validation.constraint.UniqueEmail;
+import com.metalheart.validation.constraint.UniqueLogin;
 import java.util.Objects;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -12,32 +12,32 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String> {
+public class UniqueLoginValidator implements ConstraintValidator<UniqueLogin, String> {
 
     @Autowired
     private UserService userService;
 
     @Override
-    public void initialize(UniqueEmail constraintAnnotation) {
+    public void initialize(UniqueLogin constraintAnnotation) {
 
     }
 
     @Override
-    public boolean isValid(String email, ConstraintValidatorContext context) {
+    public boolean isValid(String login, ConstraintValidatorContext context) {
 
-        if (StringUtils.isBlank(email)) {
+        if (StringUtils.isBlank(login)) {
             return true;
         }
 
-        // check if we try to update email for owner
+        // check if we try to update login for owner
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (Objects.nonNull(auth) && !(auth instanceof AnonymousAuthenticationToken)) {
             User user = (User) auth.getPrincipal();
-            if (user.getEmail().equals(email)) {
+            if (user.getUsername().equals(login)) {
                 return true;
             }
         }
 
-        return !userService.isUserExistByEmail(email);
+        return !userService.findByUsername(login).isPresent();
     }
 }

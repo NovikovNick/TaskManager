@@ -2,6 +2,7 @@ package com.metalheart.model.request;
 
 import com.metalheart.model.response.TagViewModel;
 import com.metalheart.validation.constraint.UniqueEmail;
+import com.metalheart.validation.constraint.UniqueLogin;
 import java.util.List;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -19,6 +20,7 @@ public class UpdateProfileRequest {
 
     @NotNull
     @NotEmpty
+    @UniqueLogin
     private String username;
 
     @NotNull
