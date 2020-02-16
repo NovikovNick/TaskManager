@@ -9,7 +9,7 @@ spring:
       auth: true
       starttls.enable: true
 
-taskmanager:
+runninglist:
   security:
     defaultUsername: test
     defaultEmail: test@email.com
