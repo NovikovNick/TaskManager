@@ -30,6 +30,7 @@ public class EndPoint {
     public static final String SAVE_PROFILE = "/profile";
 
     public static final String CHANGE_PASSWORD = "/user/password";
+    public static final String SEND_CHANGE_PASSWORD_EMAIL = "/password";
 
     private EndPoint() {
         throw new UnsupportedOperationException();

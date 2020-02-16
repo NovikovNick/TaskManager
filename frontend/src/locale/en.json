@@ -58,5 +58,16 @@
   "changePasswordHeader": "Enter a new password",
   "changePasswordButton": "Change password",
 
+  "Forgot your password": "Forgot your password?",
+  "Reset": "Reset",
+  "Change password": "Change password",
+  "Back": "Back",
+  "Send email": "Send email",
+  "We sent an email link to change password": "We sent an email link to change password",
+
+  "Token expired": "Token expired!",
+  "Sorry, your token expired": "Sorry, your token expired",
+  "Return to login page": "Return to login page",
+
   "signout": "signout"
 }

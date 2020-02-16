@@ -2,10 +2,12 @@ package com.metalheart.controller;
 
 import com.metalheart.model.Tag;
 import com.metalheart.model.User;
+import com.metalheart.model.request.StartChangePasswordPasswordRequest;
 import com.metalheart.model.request.UpdatePasswordRequest;
 import com.metalheart.model.request.UpdateProfileRequest;
 import com.metalheart.model.request.UserRegistrationRequest;
 import com.metalheart.model.response.UserViewModel;
+import com.metalheart.service.ChangePasswordService;
 import com.metalheart.service.RegistrationService;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.UserService;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.metalheart.EndPoint.CHANGE_PASSWORD;
 import static com.metalheart.EndPoint.SAVE_PROFILE;
+import static com.metalheart.EndPoint.SEND_CHANGE_PASSWORD_EMAIL;
 import static com.metalheart.EndPoint.USER_REGISTRATION;
 import static com.metalheart.config.ServiceConfiguration.APP_CONVERSION_SERVICE;
 
@@ -41,6 +44,9 @@ public class UserController {
 
     @Autowired
     private RegistrationService registrationService;
+
+    @Autowired
+    private ChangePasswordService changePasswordService;
 
     @Autowired
     private RunningListCommandService commandService;
@@ -72,6 +78,16 @@ public class UserController {
 
         commandService.updateProfile(user.getId(), request.getUsername(), request.getEmail(), tags);
         return ResponseEntity.status(HttpStatus.OK).body(new HashMap<>());
+    }
+
+    @PostMapping(SEND_CHANGE_PASSWORD_EMAIL)
+    public ResponseEntity startResetPassword(@RequestBody @Valid StartChangePasswordPasswordRequest request) {
+
+        boolean started = changePasswordService.startChangePasswordProcessing(request.getEmail());
+
+        return ResponseEntity
+            .status(started ? HttpStatus.OK : HttpStatus.BAD_GATEWAY)
+            .body(new HashMap<>());
     }
 
     @PostMapping(CHANGE_PASSWORD)

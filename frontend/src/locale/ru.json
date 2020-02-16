@@ -58,5 +58,17 @@
   "changePasswordHeader": "Введите новый пароль",
   "changePasswordButton": "Изменить пароль",
 
+  "Forgot your password": "Забыли пароль?",
+  "Reset": "Восстановить",
+  "Change password": "Сменить пароль",
+  "Back": "Назад",
+  "Send email": "Отправить письмо",
+  "We sent an email link to change password": "Пройдите по ссылке в письме, что бы сменить пароль",
+
+
+  "Token expired": "Токен истек!",
+  "Sorry, your token expired": "Извините, ссылка по которой вы прошли уже истекла. Повторите запрос.",
+  "Return to login page": "Вернуться на страницу логина",
+
   "signout": "Выйти"
 }

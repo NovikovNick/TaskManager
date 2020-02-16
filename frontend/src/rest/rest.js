@@ -349,3 +349,41 @@ export function changePassword(request) {
     };
     return rest(setting.API_URL + '/user/password', settings);
 }
+
+export function sendChangePasswordEmail({email}) {
+    const settings = {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            email: email
+        })
+    };
+
+    const url = setting.API_URL + '/password';
+
+    return new Promise((resolve, reject) => {
+        fetch(url, settings)
+            .then(response => {
+                switch (response.status) {
+                    case 200:
+                        resolve(true);
+                        return response;
+                    case 400:
+                        return response;
+                    case 502:
+                        resolve(false);
+                        return response;
+
+                    default:
+                        console.error("Illegal http response status: " + response.status);
+                        reject(response.json)
+                }
+            })
+            .then(parseJSON)
+            .then((response) => reject(response.json));
+    });
+}

@@ -1,5 +1,6 @@
 package com.metalheart.config;
 
+import java.time.Duration;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "taskmanager")
+@ConfigurationProperties(prefix = "runninglist")
 @AllArgsConstructor
 @NoArgsConstructor
 @Validated
@@ -24,6 +25,9 @@ public class AppProperties {
 
     @Valid
     private Rest rest = new Rest();
+
+    @NotNull
+    private Duration taskTimeout;
 
     @Getter
     @Setter

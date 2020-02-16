@@ -6,7 +6,109 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGoogle} from "@fortawesome/free-brands-svg-icons";
 import {Formik} from "formik";
 
-function Login() {
+function ForgetForm() {
+    const {t} = useTranslation();
+    const [errors, setErrors] = useState({});
+    const [valid, setValid] = useState({});
+
+    const STATE = {
+        FORGET_FORM: "FORGET_FORM",
+        EMAIL_SENT: "EMAIL_SENT",
+        SERVER_ERROR: "SERVER_ERROR"
+    }
+
+    const [state, setState] = useState(STATE.FORGET_FORM );
+
+
+    const onSubmit = (values, {resetForm}) => {
+
+        REST.sendChangePasswordEmail(values)
+            .then(res => {
+                resetForm({})
+                if(res) {
+                    setState(STATE.EMAIL_SENT)
+                } else {
+                    setState(STATE.SERVER_ERROR)
+                }
+
+            })
+            .catch(response => {
+                setErrors(response)
+
+                // if key doesn't present in errors, then it is valid
+                var valid = Object.keys(values).reduce(function(obj, k) {
+                    if (!response.hasOwnProperty(k)) obj[k] = values[k];
+                    return obj;
+                }, {});
+                setValid(valid);
+            });
+    };
+
+    const success = (<div className={"text-center result-panel"}>
+        <h2>{t("Check your email inbox")}</h2>
+        <p>{t("We sent an email link to change password")}</p>
+    </div>);
+
+    const fail = (<div className={"text-center result-panel"}>
+        <h2>{t("Server error")}</h2>
+        <p>{t("Email server is not available at the moment")}</p>
+    </div>);
+
+    const forgetForm = <Formik
+        enableReinitialize
+        initialValues={{email: ''}}
+        onSubmit={onSubmit}>
+        {({
+              handleChange,
+              handleSubmit,
+              values,
+              touched
+          }) => (
+
+            <Form noValidate onSubmit={handleSubmit}>
+
+                <h2>{t("Change password")}</h2>
+
+                <Form.Group as={Row} controlId="validationFormik01">
+                    <Form.Control
+                        name="email"
+                        onChange={(v) => {
+                            if (errors && errors.email) {
+                                const {email, ...rest} = errors;
+                                setErrors(rest);
+                            }
+                            if (valid && valid.email) {
+                                const {email, ...rest} = valid;
+                                setValid(rest);
+                            }
+                            handleChange(v);
+                        }}
+                        defaultValue={values.email}
+                        isValid={touched.email && !errors.email}
+                        isInvalid={!!errors.email}
+                        placeholder={t("Email")}
+                    />
+                    <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+                </Form.Group>
+
+                <Row><Button type="submit">{t('Send email')}</Button></Row>
+            </Form>
+        )}
+    </Formik>;
+
+    switch (state) {
+        case STATE.FORGET_FORM:
+            return forgetForm;
+        case STATE.EMAIL_SENT:
+            return success;
+        case STATE.SERVER_ERROR:
+            return fail;
+        default:
+            return forgetForm;
+    }
+}
+
+function Login({onForgetPasswordForm}) {
     const {t} = useTranslation();
     const [errors, setErrors] = useState({});
 
@@ -278,23 +380,40 @@ export default function LoginRegistration() {
 
     const {t} = useTranslation();
     const [onRegistration, switchForm] = useState(false);
+    const [onForgetPasswordForm, setOnForgetPasswordForm] = useState(false);
+
+    const switchForgetPasswordForm = (state) => {
+        switchForm(state);
+        setOnForgetPasswordForm(state);
+    }
 
     return (
         <div className="login-reg-panel_wrapper">
 
             <div className="login-reg-panel">
 
-                <Fade in={onRegistration}>
+                <Fade in={onRegistration && !onForgetPasswordForm}>
                     <div className={"login-info-box"}>
                         <h2>{t("Have an account?")}</h2>
                         <Button bsPrefix="switch-btn" onClick={() => switchForm(false)}>{t("Login")}</Button>
                     </div>
                 </Fade>
 
+                <Fade in={onRegistration && onForgetPasswordForm}>
+                    <div className={"login-info-box"}>
+                        <Button bsPrefix="switch-btn" onClick={() => switchForgetPasswordForm(false)}>{t("Back")}</Button>
+                    </div>
+                </Fade>
+
                 <Fade in={!onRegistration}>
-                    <div className={"register-info-box"}>
-                        <h2>{t("Don't have an account?")}</h2>
-                        <Button bsPrefix="switch-btn" onClick={() => switchForm(true)}>{t("Register")}</Button>
+                    <div>
+                        <div className={"register-info-box"}>
+                            <h2>{t("Don't have an account?")}</h2>
+                            <Button bsPrefix="switch-btn" onClick={() => switchForm(true)}>{t("Register")}</Button>
+                            <hr/>
+                            <h2>{t("Forgot your password")}</h2>
+                            <Button bsPrefix="switch-btn" onClick={() => switchForgetPasswordForm(true)}>{t("Reset")}</Button>
+                        </div>
                     </div>
                 </Fade>
 
@@ -305,7 +424,7 @@ export default function LoginRegistration() {
                     </div>
 
                     <div className={onRegistration ? "register-show show-log-panel" : "register-show"}>
-                        <Registration/>
+                        {onForgetPasswordForm ? <ForgetForm /> : <Registration/> }
                     </div>
 
                 </div>

@@ -22,7 +22,9 @@ spring:
     properties.mail.smtp:
       auth: true
       starttls.enable: true
-taskmanager:
+runninglist:
+  taskTimeout: 1h
+  removeExpiredTaskJobDelayInMs: 3600000 # 1h
   security:
     defaultUsername: ${DEFAULT_ADMIN_USERNAME}
     defaultEmail: admin@email.com

@@ -1,6 +1,6 @@
 package com.metalheart.test.integration.rest;
 
-import com.metalheart.security.AuthenticationAfterRegistrationFilter;
+import com.metalheart.security.DelayedTaskFilter;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import java.util.List;
 import javax.servlet.Filter;
@@ -51,7 +51,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest {
         assertTrue(filters.get(i++) instanceof BasicAuthenticationFilter);
         assertTrue(filters.get(i++) instanceof RequestCacheAwareFilter);
         assertTrue(filters.get(i++) instanceof SecurityContextHolderAwareRequestFilter);
-        assertTrue(filters.get(i++) instanceof AuthenticationAfterRegistrationFilter);
+        assertTrue(filters.get(i++) instanceof DelayedTaskFilter);
         assertTrue(filters.get(i++) instanceof AnonymousAuthenticationFilter);
         assertTrue(filters.get(i++) instanceof SessionManagementFilter);
         assertTrue(filters.get(i++) instanceof ExceptionTranslationFilter);

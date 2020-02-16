@@ -1,7 +1,7 @@
 package com.metalheart.config;
 
 import com.google.common.collect.ImmutableList;
-import com.metalheart.security.AuthenticationAfterRegistrationFilter;
+import com.metalheart.security.DelayedTaskFilter;
 import com.metalheart.security.LogoutHandler;
 import com.metalheart.security.OAuth2Registration;
 import javax.sql.DataSource;
@@ -28,6 +28,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static com.metalheart.EndPoint.AUTH_SIGN_OUT;
+import static com.metalheart.EndPoint.SEND_CHANGE_PASSWORD_EMAIL;
 
 @Slf4j
 @Configuration
@@ -37,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private OAuth2Registration oAuth2Registration;
 
     @Autowired
-    private AuthenticationAfterRegistrationFilter registrationFilter;
+    private DelayedTaskFilter delayedTaskFilter;
 
     @Autowired
     private AppProperties appProperties;
@@ -51,8 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http
-            .addFilterBefore(registrationFilter, AnonymousAuthenticationFilter.class)
+        http.addFilterBefore(delayedTaskFilter, AnonymousAuthenticationFilter.class)
             .authorizeRequests()
             .antMatchers(
                 "/js/**",
@@ -61,8 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/webjars/**").permitAll()
             .antMatchers("/auth/signin/**").permitAll()
             .antMatchers(HttpMethod.POST, "/user").permitAll()
+            .antMatchers(HttpMethod.POST, SEND_CHANGE_PASSWORD_EMAIL).permitAll()
             .antMatchers("/taskmanager/**").authenticated()
-            .antMatchers("/changepassword").authenticated()
             .anyRequest().authenticated()
             .and()
         .oauth2Login()

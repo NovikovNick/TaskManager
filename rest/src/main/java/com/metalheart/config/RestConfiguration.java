@@ -16,7 +16,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @Import(SwaggerConfiguration.class)
 @EnableWebMvc
-@ComponentScan("com.metalheart.controller")
+@ComponentScan( {
+    "com.metalheart.controller",
+    "com.metalheart.filter"
+})
 public class RestConfiguration implements WebMvcConfigurer {
 
     @Autowired

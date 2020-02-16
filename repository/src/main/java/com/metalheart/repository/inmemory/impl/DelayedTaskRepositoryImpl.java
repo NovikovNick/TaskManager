@@ -2,6 +2,7 @@ package com.metalheart.repository.inmemory.impl;
 
 import com.metalheart.model.DelayedTask;
 import com.metalheart.repository.inmemory.DelayedTaskRepository;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,11 @@ public class DelayedTaskRepositoryImpl implements DelayedTaskRepository {
     @Override
     public <T extends DelayedTask> T get(UUID taskId) {
         return (T) tokens.get(taskId);
+    }
+
+    @Override
+    public Collection<DelayedTask> getAll() {
+        return tokens.values();
     }
 
     @Override

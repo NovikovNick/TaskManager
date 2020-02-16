@@ -67,6 +67,8 @@ public class EmailServiceImpl implements EmailService {
             .submitUrl(link)
             .build();
         sendBaseEmail(data);
+
+        log.info("Confirm change password has been sent");
     }
 
     @Override
