@@ -41,10 +41,10 @@ public class RunningListServiceImpl implements RunningListService {
     private WorkLogService workLogService;
 
     @Override
-    public RunningList getRunningList(Integer userId) {
+    public RunningList getRunningList(Integer userId, Integer timezoneOffset) {
 
-        WeekId weekId = dateService.getCurrentWeekId();
-        Calendar calendar = dateService.getCalendar();
+        WeekId weekId = dateService.getCurrentWeekId(timezoneOffset);
+        Calendar calendar = dateService.getCalendar(timezoneOffset);
         List<Task> tasks = getTaskWithStatuses(userId, calendar);
         boolean hasPrevious = archiveService.hasPreviousArchive(userId, weekId);
         boolean canUndo = runningListCommandManager.canUndo(userId);

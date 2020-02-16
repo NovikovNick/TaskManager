@@ -37,23 +37,23 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
 
     @Transactional
     @Override
-    public Optional<RunningList> getPrev(Integer userId, WeekId weekId){
+    public Optional<RunningList> getPrev(Integer userId, WeekId weekId, Integer timezoneOffset){
 
         WeekId prevWeekId = dateService.getPreviousWeekId(weekId);
 
-        return getArchive(userId, prevWeekId);
+        return getArchive(userId, prevWeekId, timezoneOffset);
     }
 
     @Override
-    public Optional<RunningList> getNext(Integer userId, WeekId weekId) {
+    public Optional<RunningList> getNext(Integer userId, WeekId weekId, Integer timezoneOffset) {
 
         WeekId nextWeekId = dateService.getNextWeekId(weekId);
 
-        if (dateService.getCurrentWeekId().equals(nextWeekId)) {
-            return Optional.of(runningListService.getRunningList(userId));
+        if (dateService.getCurrentWeekId(timezoneOffset).equals(nextWeekId)) {
+            return Optional.of(runningListService.getRunningList(userId, timezoneOffset));
         }
 
-        return getArchive(userId, nextWeekId);
+        return getArchive(userId, nextWeekId, timezoneOffset);
     }
 
 
@@ -63,9 +63,9 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
     }
 
 
-    private boolean hasNextArchive(Integer userId, WeekId weekId) {
+    private boolean hasNextArchive(Integer userId, WeekId weekId, Integer timezoneOffset) {
         WeekId nextWeekId = dateService.getNextWeekId(weekId);
-        if (dateService.getCurrentWeekId().equals(nextWeekId)) {
+        if (dateService.getCurrentWeekId(timezoneOffset).equals(nextWeekId)) {
             return true;
         }
 
@@ -74,7 +74,7 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
 
     @Transactional
     @Override
-    public Optional<RunningList> getArchive(Integer userId, WeekId weekId) {
+    public Optional<RunningList> getArchive(Integer userId, WeekId weekId, Integer timezoneOffset) {
 
         if (!isArchiveExist(userId, weekId)) {
             return Optional.empty();
@@ -83,7 +83,7 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
         RunningList runningList = getRunningList(userId, weekId);
         runningList.setEditable(false);
         runningList.setHasPrevious(hasPreviousArchive(userId, weekId));
-        runningList.setHasNext(hasNextArchive(userId, weekId));
+        runningList.setHasNext(hasNextArchive(userId, weekId, timezoneOffset));
         return Optional.of(runningList);
     }
 

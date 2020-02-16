@@ -16,9 +16,11 @@ public interface DateService {
     ZonedDateTime now();
 
     /**
-     * @return {@link WeekId} for current week
+     *
+     * @param timezoneOffset timezone difference between UTC and Local Time from user
+     * @return
      */
-    WeekId getCurrentWeekId();
+    WeekId getCurrentWeekId(Integer timezoneOffset);
 
     /**
      * @return {@link WeekId} for next week
@@ -31,7 +33,8 @@ public interface DateService {
     WeekId getPreviousWeekId(WeekId weekId);
 
     /**
+     * @param timezoneOffset timezone difference between UTC and Local Time from user
      * @return {@link Calendar} for current week
      */
-    Calendar getCalendar();
+    Calendar getCalendar(Integer timezoneOffset);
 }

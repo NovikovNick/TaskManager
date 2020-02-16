@@ -96,7 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(ImmutableList.of(appProperties.getRest().getFrontUrl()));
         configuration.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type", "TIMEZONE_OFFSET"));
         configuration.setExposedHeaders(ImmutableList.of("Set-Cookie"));
 
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

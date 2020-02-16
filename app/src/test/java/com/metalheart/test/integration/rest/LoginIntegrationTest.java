@@ -52,6 +52,7 @@ public class LoginIntegrationTest extends BaseIntegrationTest {
 
         given()
             .cookie("JSESSIONID", sessionId)
+            .header("TIMEZONE_OFFSET", 0)
             .port(port)
         .when()
             .get(EndPoint.RUNNING_LIST)
@@ -66,6 +67,7 @@ public class LoginIntegrationTest extends BaseIntegrationTest {
 
         given()
             .port(port)
+            .header("TIMEZONE_OFFSET", 0)
         .when()
             .get(EndPoint.RUNNING_LIST)
         .then()

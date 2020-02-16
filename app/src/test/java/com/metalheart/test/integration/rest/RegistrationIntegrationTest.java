@@ -99,6 +99,7 @@ public class RegistrationIntegrationTest extends BaseIntegrationTest {
 
         given()
             .cookie("JSESSIONID", sessionId)
+            .header("TIMEZONE_OFFSET", 0)
             .port(port)
         .when()
             .get(EndPoint.RUNNING_LIST)

@@ -36,7 +36,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
 
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(userId).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId, null).getTasks();
         Assert.assertFalse(CollectionUtils.isEmpty(tasks));
 
         List<Tag> tags = tasks.get(0).getTags();
@@ -56,7 +56,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
         commandManager.undo(userId);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(userId).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId, null).getTasks();
         Assert.assertTrue(CollectionUtils.isEmpty(tasks));
     }
 
@@ -74,7 +74,7 @@ public class CreatingTaskWithTagIntegrationTest extends BaseIntegrationTest {
         commandManager.redo(userId);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(userId).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId, null).getTasks();
         Assert.assertFalse(CollectionUtils.isEmpty(tasks));
 
         List<Tag> tags = tasks.get(0).getTags();

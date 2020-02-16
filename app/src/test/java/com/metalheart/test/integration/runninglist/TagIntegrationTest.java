@@ -82,7 +82,7 @@ public class TagIntegrationTest extends BaseIntegrationTest {
 
         // assert
 
-        RunningList runningList = runningListService.getRunningList(userId);
+        RunningList runningList = runningListService.getRunningList(userId, null);
         Assert.assertEquals(2, runningList.getTasks().size());
     }
 
@@ -107,7 +107,7 @@ public class TagIntegrationTest extends BaseIntegrationTest {
         // assert
         Assert.assertEquals(1, tagService.getSelectedTags(userId).size());
 
-        RunningList runningList = runningListService.getRunningList(userId);
+        RunningList runningList = runningListService.getRunningList(userId, null);
 
         List<Task> tasks = runningList.getTasks();
         Assert.assertEquals(2, tasks.size());
@@ -132,9 +132,9 @@ public class TagIntegrationTest extends BaseIntegrationTest {
 
         // act
         tagService.selectTag(userId, "tag1");
-        RunningList runningList = runningListService.getRunningList(userId);
+        RunningList runningList = runningListService.getRunningList(userId, null);
         tagService.selectTag(userId, "tag2");
-        runningList = runningListService.getRunningList(userId);
+        runningList = runningListService.getRunningList(userId, null);
 
         // assert
         Assert.assertEquals(2, tagService.getSelectedTags(userId).size());
@@ -171,7 +171,7 @@ public class TagIntegrationTest extends BaseIntegrationTest {
         // assert
         Assert.assertEquals(2, tagService.getSelectedTags(userId).size());
 
-        RunningList runningList = runningListService.getRunningList(userId);
+        RunningList runningList = runningListService.getRunningList(userId, null);
         List<Task> tasks = runningList.getTasks();
         Assert.assertEquals(2, tasks.size());
         Assert.assertEquals(2, tasks.get(0).getTags().size());

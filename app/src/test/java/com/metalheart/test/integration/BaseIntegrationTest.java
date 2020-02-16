@@ -111,9 +111,9 @@ public abstract class BaseIntegrationTest {
             .currentDay(day)
             .weekDates(Collections.emptyList())
             .build();
-        when(dateServiceMock.getCalendar()).thenReturn(calendar);
+        when(dateServiceMock.getCalendar(null)).thenReturn(calendar);
         when(dateServiceMock.getPreviousWeekId(any())).thenReturn(WeekId.builder().year(year).week(week - 1).build());
-        when(dateServiceMock.getCurrentWeekId()).thenReturn(WeekId.builder().year(year).week(week).build());
+        when(dateServiceMock.getCurrentWeekId(null)).thenReturn(WeekId.builder().year(year).week(week).build());
         when(dateServiceMock.getNextWeekId(any())).thenReturn(WeekId.builder().year(year).week(week + 1).build());
     }
 

@@ -7,11 +7,13 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.stereotype.Component;
@@ -27,8 +29,8 @@ public class DateServiceImpl implements DateService {
     }
 
     @Override
-    public WeekId getCurrentWeekId() {
-        return getWeekId(ZonedDateTime.now());
+    public WeekId getCurrentWeekId(Integer timezoneOffset) {
+        return getWeekId(getNow(timezoneOffset));
     }
 
     @Override
@@ -42,11 +44,11 @@ public class DateServiceImpl implements DateService {
     }
 
     @Override
-    public Calendar getCalendar() {
+    public Calendar getCalendar(Integer timezoneOffset) {
 
         var builder = Calendar.builder();
 
-        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime now = getNow(timezoneOffset);
         ZonedDateTime monday = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
         List<String> weekDates = IntStream.range(0, 7)
@@ -74,5 +76,14 @@ public class DateServiceImpl implements DateService {
         return ZonedDateTime.of(LocalDate.ofYearDay(year, 1), LocalTime.now(), ZoneId.systemDefault())
             .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
             .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+    }
+
+    private ZonedDateTime getNow(Integer timezoneOffset) {
+        ZonedDateTime now = ZonedDateTime.now();
+
+        if (Objects.nonNull(timezoneOffset)) {
+            now = ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.ofHours( -timezoneOffset / 60)));
+        }
+        return now;
     }
 }

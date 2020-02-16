@@ -77,7 +77,7 @@ public class UserIsolationIntegrationTest extends BaseIntegrationTest {
         Integer user1Id = generateUser();
         Integer user2Id = generateUser();
 
-        WeekId weekId = dateService.getCurrentWeekId();
+        WeekId weekId = dateService.getCurrentWeekId(null);
         WeekId previousWeekId = dateService.getPreviousWeekId(weekId);
 
         runningListCommandService.createTask(user1Id, getTask(user1Id, "User 1 task"));
@@ -93,8 +93,8 @@ public class UserIsolationIntegrationTest extends BaseIntegrationTest {
         Assert.assertTrue(archiveService.hasPreviousArchive(user1Id, weekId));
         Assert.assertTrue(archiveService.hasPreviousArchive(user2Id, weekId));
 
-        RunningList archive1 = archiveService.getPrev(user1Id, weekId).get();
-        RunningList archive2 = archiveService.getPrev(user2Id, weekId).get();
+        RunningList archive1 = archiveService.getPrev(user1Id, weekId, null).get();
+        RunningList archive2 = archiveService.getPrev(user2Id, weekId, null).get();
 
         Assert.assertNotNull(archive1);
         Assert.assertNotNull(archive2);

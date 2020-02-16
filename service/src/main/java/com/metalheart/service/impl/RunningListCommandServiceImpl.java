@@ -195,10 +195,10 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     @Override
     public void archive(Integer userId, WeekId weekId) {
 
-        RunningList newRunningList = runningListService.getRunningList(userId);
+        RunningList newRunningList = runningListService.getRunningList(userId, null);
         newRunningList.setWeekId(weekId);
 
-        Optional<RunningList> oldRunningList = runningListArchiveService.getArchive(userId, weekId);
+        Optional<RunningList> oldRunningList = runningListArchiveService.getArchive(userId, weekId, null);
 
         runningListCommandManager.execute(userId, new RunningListAction<Void>() {
 

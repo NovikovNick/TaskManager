@@ -34,7 +34,7 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         Integer userId = generateUser();
-        WeekId weekId = dateService.getCurrentWeekId();
+        WeekId weekId = dateService.getCurrentWeekId(null);
 
         // act
         boolean hasPreviousArchive = archiveService.hasPreviousArchive(userId, weekId);
@@ -48,7 +48,7 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
         // arrange
         Integer userId = generateUser();
-        WeekId weekId = dateService.getCurrentWeekId();
+        WeekId weekId = dateService.getCurrentWeekId(null);
         WeekId previousWeekId = dateService.getPreviousWeekId(weekId);
 
         String taskTitle = RandomStringUtils.random(30);
@@ -67,7 +67,7 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
         Assert.assertTrue(archiveService.hasPreviousArchive(userId, weekId));
 
-        Optional<RunningList> archive = archiveService.getPrev(userId, weekId);
+        Optional<RunningList> archive = archiveService.getPrev(userId, weekId, null);
         Assert.assertTrue(archive.isPresent());
 
         List<Task> tasks = archive.get().getTasks();
@@ -84,7 +84,7 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
         // arrange
 
         Integer userId = generateUser();
-        WeekId weekId = dateService.getCurrentWeekId();
+        WeekId weekId = dateService.getCurrentWeekId(null);
         WeekId previousWeekId = dateService.getPreviousWeekId(weekId);
 
         String taskTitle = RandomStringUtils.random(30);
@@ -113,7 +113,7 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
         Integer userId = generateUser();
 
-        WeekId weekId = dateService.getCurrentWeekId();
+        WeekId weekId = dateService.getCurrentWeekId(null);
         WeekId previousWeekId = dateService.getPreviousWeekId(weekId);
 
         String taskTitle = RandomStringUtils.random(30);
@@ -134,7 +134,7 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
 
         Assert.assertTrue(archiveService.hasPreviousArchive(userId, weekId));
 
-        Optional<RunningList> archive = archiveService.getPrev(userId, weekId);
+        Optional<RunningList> archive = archiveService.getPrev(userId, weekId, null);
         Assert.assertTrue(archive.isPresent());
 
         List<Task> tasks = archive.get().getTasks();
@@ -151,33 +151,33 @@ public class RunningListArchiveIntegrationTest extends BaseIntegrationTest {
         // arrange
 
         Integer userId = generateUser();
-        WeekId weekId = dateService.getCurrentWeekId();
+        WeekId weekId = dateService.getCurrentWeekId(null);
         WeekId previousWeekId = dateService.getPreviousWeekId(weekId);
 
 
         runningListCommandService.createTask(userId, getTask(userId, "task 1"));
 
         runningListCommandService.archive(userId, previousWeekId);
-        RunningList runningList1 = archiveService.getPrev(userId, weekId).get();
+        RunningList runningList1 = archiveService.getPrev(userId, weekId, null).get();
 
         runningListCommandService.createTask(userId, getTask(userId, "task 2"));
 
         runningListCommandService.archive(userId, previousWeekId);
-        RunningList runningList2 = archiveService.getPrev(userId, weekId).get();
+        RunningList runningList2 = archiveService.getPrev(userId, weekId, null).get();
 
         runningListCommandService.createTask(userId, getTask(userId, "task 3"));
 
         runningListCommandService.archive(userId, previousWeekId);
-        RunningList runningList3 = archiveService.getPrev(userId, weekId).get();
+        RunningList runningList3 = archiveService.getPrev(userId, weekId, null).get();
 
 
         // act
         commandManager.undo(userId);
-        RunningList runningList4 = archiveService.getPrev(userId, weekId).get();
+        RunningList runningList4 = archiveService.getPrev(userId, weekId, null).get();
 
         commandManager.undo(userId);
         commandManager.undo(userId);
-        RunningList runningList5 = archiveService.getPrev(userId, weekId).get();
+        RunningList runningList5 = archiveService.getPrev(userId, weekId, null).get();
 
 
         // assert

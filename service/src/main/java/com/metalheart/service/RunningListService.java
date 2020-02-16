@@ -4,5 +4,5 @@ import com.metalheart.model.RunningList;
 
 public interface RunningListService {
 
-    RunningList getRunningList(Integer userId);
+    RunningList getRunningList(Integer userId, Integer timezoneOffset);
 }

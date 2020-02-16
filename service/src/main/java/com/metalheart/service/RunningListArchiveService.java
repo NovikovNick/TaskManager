@@ -6,13 +6,13 @@ import java.util.Optional;
 
 public interface RunningListArchiveService {
 
-    Optional<RunningList> getPrev(Integer userId, WeekId weekId);
+    Optional<RunningList> getPrev(Integer userId, WeekId weekId, Integer timezoneOffset);
 
-    Optional<RunningList> getNext(Integer userId, WeekId weekId);
+    Optional<RunningList> getNext(Integer userId, WeekId weekId, Integer timezoneOffset);
 
     boolean hasPreviousArchive(Integer userId, WeekId weekId);
 
-    Optional<RunningList> getArchive(Integer userId, WeekId weekId);
+    Optional<RunningList> getArchive(Integer userId, WeekId weekId, Integer timezoneOffset);
 
     boolean isArchiveExist(Integer userId, WeekId weekId);
 

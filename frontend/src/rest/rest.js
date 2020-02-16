@@ -26,6 +26,9 @@ function parseJSON(response) {
  */
 function rest(url, options) {
 
+    options.headers = options.headers || {};
+    options.headers['TIMEZONE_OFFSET'] = new Date().getTimezoneOffset();
+
     return new Promise((resolve, reject) => {
         fetch(url, options)
             .then(response => {

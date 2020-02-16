@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.metalheart.config.ServiceConfiguration.APP_CONVERSION_SERVICE;
@@ -65,9 +66,11 @@ public class RunningListController {
 
     @GetMapping(path = EndPoint.RUNNING_LIST, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get running list for current week", response = RunningListViewModel.class)
-    public RunningListViewModel getTaskList(@AuthenticationPrincipal User user) {
+    public RunningListViewModel getTaskList(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+                                            @AuthenticationPrincipal User user) {
 
-        return conversionService.convert(runningListService.getRunningList(user.getId()), RunningListViewModel.class);
+        return conversionService.convert(runningListService.getRunningList(user.getId(), timezoneOffset),
+            RunningListViewModel.class);
     }
 
     @PostMapping(
@@ -80,12 +83,13 @@ public class RunningListController {
             code = RestConstants.HTTP_UNPROCESSABLE_ENTITY,
             message = "If running list archive has already exist")
     })
-    public ResponseEntity<RunningListViewModel> archive(@AuthenticationPrincipal User user,
+    public ResponseEntity<RunningListViewModel> archive(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+                                                        @AuthenticationPrincipal User user,
                                                         @Valid @RequestBody ArchiveRequest request) {
         try {
 
             runningListCommandService.archive(user.getId(), conversionService.convert(request, WeekId.class));
-            RunningList runningList = runningListService.getRunningList(user.getId());
+            RunningList runningList = runningListService.getRunningList(user.getId(), timezoneOffset);
             RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
             return ResponseEntity.ok(viewModel);
         } catch (Exception e) {
@@ -98,11 +102,12 @@ public class RunningListController {
         path = EndPoint.RUNNING_LIST_ARCHIVE_NEXT,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get archive for next week", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> getNextArchive(@AuthenticationPrincipal User user,
+    public ResponseEntity<RunningListViewModel> getNextArchive(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+                                                               @AuthenticationPrincipal User user,
                                                                @Valid GetArchiveRequest request) {
 
         WeekId weekId = conversionService.convert(request, WeekId.class);
-        Optional<RunningList> runningList = archiveService.getNext(user.getId(), weekId);
+        Optional<RunningList> runningList = archiveService.getNext(user.getId(), weekId, timezoneOffset);
 
         if (runningList.isPresent()) {
             return ResponseEntity.ok(conversionService.convert(runningList.get(), RunningListViewModel.class));
@@ -115,11 +120,12 @@ public class RunningListController {
         path = EndPoint.RUNNING_LIST_ARCHIVE_PREV,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get archive for previous week", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> getPrevArchive(@AuthenticationPrincipal User user,
+    public ResponseEntity<RunningListViewModel> getPrevArchive(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+                                                               @AuthenticationPrincipal User user,
                                                                @Valid GetArchiveRequest request) {
 
         WeekId weekId = conversionService.convert(request, WeekId.class);
-        Optional<RunningList> runningList = archiveService.getPrev(user.getId(), weekId);
+        Optional<RunningList> runningList = archiveService.getPrev(user.getId(), weekId, timezoneOffset);
 
         if (runningList.isPresent()) {
             return ResponseEntity.ok(conversionService.convert(runningList.get(), RunningListViewModel.class));
@@ -137,11 +143,12 @@ public class RunningListController {
             code = RestConstants.HTTP_NOT_ACCEPTABLE,
             message = "If there are no previous operations to undo")
     })
-    public ResponseEntity<RunningListViewModel> undo(@AuthenticationPrincipal User user) {
+    public ResponseEntity<RunningListViewModel> undo(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+                                                     @AuthenticationPrincipal User user) {
 
         try {
             commandManager.undo(user.getId());
-            RunningList runningList = runningListService.getRunningList(user.getId());
+            RunningList runningList = runningListService.getRunningList(user.getId(), timezoneOffset);
             RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
             return ResponseEntity.ok(viewModel);
         } catch (UnableToUndoException e) {
@@ -159,11 +166,12 @@ public class RunningListController {
             code = RestConstants.HTTP_NOT_ACCEPTABLE,
             message = "If there are no undone operations to redo")
     })
-    public ResponseEntity<RunningListViewModel> redo(@AuthenticationPrincipal User user) {
+    public ResponseEntity<RunningListViewModel> redo(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+                                                     @AuthenticationPrincipal User user) {
 
         try {
             commandManager.redo(user.getId());
-            RunningList runningList = runningListService.getRunningList(user.getId());
+            RunningList runningList = runningListService.getRunningList(user.getId(), timezoneOffset);
             RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
             return ResponseEntity.ok(viewModel);
         } catch (UnableToRedoException e) {
@@ -177,11 +185,12 @@ public class RunningListController {
         consumes = APPLICATION_JSON_VALUE,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Add tag", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> addTaskTag(@AuthenticationPrincipal User user,
+    public ResponseEntity<RunningListViewModel> addTaskTag(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+                                                           @AuthenticationPrincipal User user,
                                                            @Valid @RequestBody CRUDTagRequest tag) {
 
         tagService.selectTag(user.getId(), tag.getTag());
-        RunningList runningList = runningListService.getRunningList(user.getId());
+        RunningList runningList = runningListService.getRunningList(user.getId(), timezoneOffset);
         RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
         return ResponseEntity.ok(viewModel);
     }
@@ -190,11 +199,12 @@ public class RunningListController {
         path = EndPoint.REMOVE_TASK_TAG,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Remove tag", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> removeTaskTag(@AuthenticationPrincipal User user,
+    public ResponseEntity<RunningListViewModel> removeTaskTag(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+                                                              @AuthenticationPrincipal User user,
                                                               @Valid @RequestBody CRUDTagRequest tag) {
 
         tagService.removeSelectedTag(user.getId(), tag.getTag());
-        RunningList runningList = runningListService.getRunningList(user.getId());
+        RunningList runningList = runningListService.getRunningList(user.getId(), timezoneOffset);
         RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
         return ResponseEntity.ok(viewModel);
     }

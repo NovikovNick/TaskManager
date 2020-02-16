@@ -50,7 +50,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.changeTaskStatus(userId, createdTask.getId(), 0, IN_PROGRESS);
 
         // assert
-        RunningList runningList = runningListService.getRunningList(userId);
+        RunningList runningList = runningListService.getRunningList(userId, null);
         List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
             .stream().map(WeekWorkLog::getStatus)
             .collect(toList());
@@ -72,7 +72,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         commandManager.undo(userId);
 
         // assert
-        RunningList runningList = runningListService.getRunningList(userId);
+        RunningList runningList = runningListService.getRunningList(userId, null);
         List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
             .stream().map(WeekWorkLog::getStatus)
             .collect(toList());
@@ -95,7 +95,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         commandManager.undo(userId);
 
         // assert
-        RunningList runningList = runningListService.getRunningList(userId);
+        RunningList runningList = runningListService.getRunningList(userId, null);
         List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
             .stream().map(WeekWorkLog::getStatus)
             .collect(toList());
@@ -118,7 +118,7 @@ public class UpdateTaskStatusIntegrationTest extends BaseIntegrationTest {
         commandManager.redo(userId);
 
         // assert
-        RunningList runningList = runningListService.getRunningList(userId);
+        RunningList runningList = runningListService.getRunningList(userId, null);
         List<TaskStatus> statuses = runningList.getTasks().get(0).getStatus()
             .stream().map(WeekWorkLog::getStatus)
             .collect(toList());
