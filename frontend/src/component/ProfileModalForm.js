@@ -3,8 +3,16 @@ import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
 import {FormTags} from "./Tags";
+import {useHistory} from "react-router-dom";
 
+function LinkToChangePasswordPage() {
+    const {t} = useTranslation();
+    const history = useHistory();
 
+    return <Button onClick={() => history.push("/changepassword")}>
+        {t("Send email to change password")}
+    </Button>
+}
 
 export default function ProfileModalForm({schema}) {
 
@@ -122,9 +130,7 @@ export default function ProfileModalForm({schema}) {
 
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button onClick={() => window.location = "/changepassword"}>
-                                {t("Send email to change password")}
-                            </Button>
+                            <LinkToChangePasswordPage />
                             <Button type="submit">{t("Save")}</Button>
                         </Modal.Footer>
                     </Form>

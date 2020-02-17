@@ -5,6 +5,7 @@ import * as REST from "../rest/rest";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGoogle} from "@fortawesome/free-brands-svg-icons";
 import {Formik} from "formik";
+import {useHistory} from "react-router-dom";
 
 function ForgetForm() {
     const {t} = useTranslation();
@@ -110,6 +111,7 @@ function ForgetForm() {
 
 function Login({onForgetPasswordForm}) {
     const {t} = useTranslation();
+    const history = useHistory();
     const [errors, setErrors] = useState({});
 
     const onSubmit = (values, {resetForm}) => {
@@ -117,7 +119,7 @@ function Login({onForgetPasswordForm}) {
         REST.signIn(values)
             .then(res => {
                 resetForm({})
-                window.location = "/";
+                history.push("/");
 
             })
             .catch(() => setErrors({

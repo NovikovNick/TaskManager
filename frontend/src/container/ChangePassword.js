@@ -3,9 +3,11 @@ import {useTranslation} from "react-i18next";
 import {Button, Container, Form, Row} from 'react-bootstrap';
 import * as REST from "../rest/rest";
 import {Formik} from "formik";
+import {useHistory} from "react-router-dom";
 
 export default function ChangePassword() {
     const {t} = useTranslation();
+    const history = useHistory();
     const [errors, setErrors] = useState({});
     const [valid, setValid] = useState({});
 
@@ -14,7 +16,7 @@ export default function ChangePassword() {
         REST.changePassword(values)
             .then(res => {
                 resetForm({})
-                window.location = "/";
+                history.push("/");
 
             })
             .catch(response => {

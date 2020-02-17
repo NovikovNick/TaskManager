@@ -7,32 +7,38 @@ import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import * as reducers from './store/reducers';
-import * as REST from "./rest/rest";
-import * as Store from "./store/ReduxActions";
 
-import Page from "./page/Page";
-import LoginPage from "./page/LoginPage";
-import ChangePasswordPage from "./page/ChangePasswordPage";
-import ExpiredTokenPage from "./page/ExpiredTokenPage";
+import Loadable from 'react-loadable';
+import Authenticator from "./component/Authenticator";
+import Loading from "./component/Loading";
 
 const store = createStore(combineReducers(reducers),
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 toast.configure();
 
-export function getTaskList() {
-    REST.getTaskList()
-        .then(taskList => {
-            store.dispatch(Store.setRunningList(taskList));
-        });
-}
+const Page = Loadable({
+    loader: () => import("./page/Page"),
+    loading: Loading,
+});
 
-export function setTaskList(taskList) {
-    store.dispatch(Store.setRunningList(taskList));
-}
+const LoginPage = Loadable({
+    loader: () => import("./page/LoginPage"),
+    loading: Loading,
+});
 
+const ChangePasswordPage = Loadable({
+    loader: () => import("./page/ChangePasswordPage"),
+    loading: Loading,
+});
+
+const ExpiredTokenPage = Loadable({
+    loader: () => import("./page/ExpiredTokenPage"),
+    loading: Loading,
+});
 
 export default function App() {
+
 
     return (
         <Provider store={store}>
@@ -43,14 +49,16 @@ export default function App() {
             <Suspense fallback={<div>loading...</div>}>
 
                 <Router>
+
+                    <Authenticator/>
+
                     <Route path="/expired/token" component={ExpiredTokenPage}/>
                     <Route path="/signin" component={LoginPage}/>
                     <Route path="/changepassword" component={ChangePasswordPage}/>
                     <Route exact path="/" component={Page}/>
+
                 </Router>
-
             </Suspense>
-
         </Provider>
     );
 }

@@ -8,7 +8,7 @@ import {Dropdown} from "react-bootstrap";
 import {useTranslation} from "react-i18next";
 
 import ProfileModalForm from "../component/ProfileModalForm";
-
+import {useHistory} from "react-router-dom";
 
 class Menu extends Component {
 
@@ -73,7 +73,8 @@ class Menu extends Component {
 
 function Signout() {
     const {t} = useTranslation();
-    const signout = () => REST.signOut().then(() => window.location = "/signin")
+    const history = useHistory();
+    const signout = () => REST.signOut().then(() => history.push("/signin"))
 
     return (<Dropdown.Item onClick={signout}>{t("signout")}</Dropdown.Item>);
 }

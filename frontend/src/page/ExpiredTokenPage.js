@@ -6,14 +6,16 @@ import {Container} from "react-bootstrap";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import Button from "react-bootstrap/Button";
 import {useTranslation} from "react-i18next";
+import {useHistory} from "react-router-dom";
 
 
 function TokenExpiredPanel() {
 
     const {t} = useTranslation();
+    const history = useHistory();
 
     const routeToLoginPage = <Button
-        onClick={() => window.location = "/signin"}
+        onClick={() => history.push("/signin")}
         variant="primary">{t("Return to login page")}</Button>
 
     return (
