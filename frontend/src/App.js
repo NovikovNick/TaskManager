@@ -9,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import * as reducers from './store/reducers';
 
 import Loadable from 'react-loadable';
-import Authenticator from "./component/Authenticator";
 import Loading from "./component/Loading";
 
 const store = createStore(combineReducers(reducers),
@@ -43,7 +42,6 @@ const ServerUnavailablePage = Loadable({
 });
 
 
-
 export default function App() {
 
 
@@ -57,14 +55,11 @@ export default function App() {
 
                 <Router>
 
-                    <Authenticator/>
-
+                    <Route exact path="/" component={Page}/>
                     <Route path="/error" component={ServerUnavailablePage}/>
                     <Route path="/expired/token" component={ExpiredTokenPage}/>
                     <Route path="/signin" component={LoginPage}/>
                     <Route path="/changepassword" component={ChangePasswordPage}/>
-                    <Route exact path="/" component={Page}/>
-
                 </Router>
             </Suspense>
         </Provider>

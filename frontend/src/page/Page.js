@@ -6,21 +6,23 @@ import * as Store from "../store/ReduxActions";
 import RunningList from "../container/RunningList";
 import {Container} from "react-bootstrap";
 import Menu from "../container/Menu";
+import Authenticator from "../container/Authenticator";
 
 class Page extends Component {
     render() {
         return (
-            <Container fluid>
-
-                <div className={"metalheart-sidebar"} >
-                    <Menu/>
-                </div>
-                <div className={"metalheart-content"} >
-                    <div className="metalheart-wrapper">
-                        <RunningList/>
+            <Authenticator path={"/"}>
+                <Container fluid>
+                    <div className={"metalheart-sidebar"}>
+                        <Menu/>
                     </div>
-                </div>
-            </Container>
+                    <div className={"metalheart-content"}>
+                        <div className="metalheart-wrapper">
+                            <RunningList/>
+                        </div>
+                    </div>
+                </Container>
+            </Authenticator>
         );
     }
 }
