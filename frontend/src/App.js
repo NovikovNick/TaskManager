@@ -37,6 +37,13 @@ const ExpiredTokenPage = Loadable({
     loading: Loading,
 });
 
+const ServerUnavailablePage = Loadable({
+    loader: () => import("./page/ServerUnavailablePage"),
+    loading: Loading,
+});
+
+
+
 export default function App() {
 
 
@@ -52,6 +59,7 @@ export default function App() {
 
                     <Authenticator/>
 
+                    <Route path="/error" component={ServerUnavailablePage}/>
                     <Route path="/expired/token" component={ExpiredTokenPage}/>
                     <Route path="/signin" component={LoginPage}/>
                     <Route path="/changepassword" component={ChangePasswordPage}/>

@@ -69,5 +69,8 @@
   "Sorry, your token expired": "Sorry, your token expired",
   "Return to login page": "Return to login page",
 
+  "Unavailable server": "Unavailable server",
+  "Sorry, server is not available": "Sorry, server is not available",
+
   "signout": "signout"
 }

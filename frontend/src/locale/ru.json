@@ -70,5 +70,8 @@
   "Sorry, your token expired": "Извините, ссылка по которой вы прошли уже истекла. Повторите запрос.",
   "Return to login page": "Вернуться на страницу логина",
 
+  "Unavailable server": "Сервер временно не доступен!",
+  "Sorry, server is not available": "Приносим свои извинения",
+
   "signout": "Выйти"
 }
