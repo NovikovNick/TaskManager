@@ -62,19 +62,26 @@ export default function RunningListItem({index, task, handleRemove, changeStatus
 
             <div className="running-list-task">
 
-                {
-                    task.tags && task.tags.map((tag, i) => <div className={"running-list-tag"} key={i}>{tag.text}</div>)
-                }
+                <div className="running-list-task-input">
+                    <input type={"text"} onChange={changeText} value={task.title}></input>
+                </div>
 
-                <input type={"text"} onChange={changeText} value={task.title}></input>
-                <span>
+                <div className={"running-list-tags"}>
+                    {
+                        task.tags && task.tags.map((tag, i) => <div className={"running-list-tag"} key={i}>{tag.text}</div>)
+                    }
+                </div>
+
+                <div className={"running-list-controls"}>
                      <span className="pl-1">
                          <FontAwesomeIcon onClick={handleEditFunction} icon={faPen}/>
                      </span>
-                     <span className="pl-1">
+                    <span className="pl-1">
                          <FontAwesomeIcon onClick={e => handleRemove(task)} icon={faTrash}/>
                      </span>
-                </span>
+                </div>
+
+
             </div>
         </div>
     );

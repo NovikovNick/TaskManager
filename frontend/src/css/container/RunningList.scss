@@ -1,17 +1,18 @@
 @import "../colors";
 
 
+$taskCellWidth: 20px;
 
-$length: 20px;
-$running-list-min-width: 450px;
-$controlWidth: 45px;
-$taskTitleWidth: calc(#{$running-list-min-width} - 140px);
-$taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
+$taskTagsWidth: 230px;
+$taskControlsWidth: 45px;
+$taskTagsAndControlsWidth: calc(#{$taskTagsWidth} + #{$taskControlsWidth});
+$taskInputWidth: calc(100% - #{$taskTagsAndControlsWidth} - 10px);
+
 
 .metalheart-running-list {
-
   width: 100%;
-  min-width: 450px;
+  max-width: 1000px;
+  min-width: 800px;
   position: relative;
 
   .metalheart-running-list-header {
@@ -23,17 +24,15 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
     top: -40px;
     width: 100%;
 
-
     .running-list-header-cell {
-      width: $length;
-      height: $length;
-      line-height: $length;
+      width: $taskCellWidth;
+      height: $taskCellWidth;
+      line-height: $taskCellWidth;
       display: inline-block;
       vertical-align: middle;
       font-size: 12px;
       background-image: url("/grid.png");
       background-position: left bottom;
-
       color: $headerColor;
     }
 
@@ -48,7 +47,6 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
       margin-right: -280px;
       padding-left: 150px;
       vertical-align: top;
-
       padding-top: 9px;
 
       h2 {
@@ -75,29 +73,22 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
           opacity: 0.2;
         }
       }
-
     }
-
-
   }
 
-  .running-list-row {
 
-    height: $length;
-    line-height: $length;
+  .running-list-row {
+    height: $taskCellWidth;
+    line-height: $taskCellWidth;
 
     .running-list-cell {
-
-      width: $length;
-      height: $length;
-      line-height: $length;
+      width: $taskCellWidth;
+      height: $taskCellWidth;
+      line-height: $taskCellWidth;
       display: inline-block;
-      vertical-align: middle;
       text-align: center;
-      font-size: $length;
-
+      font-size: $taskCellWidth;
       position: relative;
-
       background-image: url("/grid.png");
       background-position: left bottom;
 
@@ -121,7 +112,6 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
       }
 
       &.DONE {
-
         background: $throwLine;
 
         & + .DONE {
@@ -149,8 +139,8 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
       }
 
       &.DONE + .DONE .line-through, &.CANCELED + .CANCELED .line-through {
-        border-bottom: solid 1px $throwLine;
-        height: 50%;
+        border-bottom: solid 1.4px $throwLine;
+        height: calc(50% + 2px);
         width: 100%;
       }
 
@@ -163,26 +153,71 @@ $taskInputWidth: calc(#{$taskTitleWidth} - #{$controlWidth});
       width: 100%;
       margin-left: -140px;
       padding-left: 140px;
-      height: $length;
-      line-height: $length;
+      height: $taskCellWidth;
+      line-height: calc(#{$taskCellWidth} - 1px);
       display: inline-block;
-      border-left: 1px solid $borderColor;
+      vertical-align: top;
 
-      span {
-        display: none;
-        cursor: pointer;
-      }
-
-      input {
-        width: 500px;
-        margin-right: -40px;
-        font-size: 15px;
-        padding-left: 5px;
-        border: 0px;
-      }
-
-      &:hover span {
+      .running-list-task-input {
         display: inline-block;
+        height: $taskCellWidth;
+        width: 100%;
+        margin-right: calc(#{$taskTagsAndControlsWidth} * -1);;
+        background: transparent;
+
+        input {
+
+          height: $taskCellWidth;
+          width: $taskInputWidth;
+          font-size: 15px;
+          border: 0px;
+          vertical-align: super;
+          background: transparent;
+        }
+      }
+
+      .running-list-tags {
+        height: $taskCellWidth;
+        width: $taskTagsWidth;
+        overflow: hidden;
+        display: inline-block;
+
+        .running-list-tag {
+          -webkit-font-smoothing: auto;
+          font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
+          font-size: 12px;
+          letter-spacing: .3px;
+          box-sizing: border-box;
+          color: black;
+          font-weight: 500;
+          margin: 0;
+          height: 18px;
+          line-height: 15px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          direction: ltr;
+          cursor: move;
+          display: inline-block;
+          border: 1px solid black;
+          border-radius: 10px;
+          padding: 0px 10px 0px 5px;
+          margin-right: 2px;
+        }
+      }
+
+      .running-list-controls {
+        display: none;
+        width: $taskControlsWidth;
+        cursor: pointer;
+        vertical-align: super;
+      }
+
+      &:hover {
+        background: #4e6c9130;
+
+        .running-list-controls {
+          display: inline-block;
+        }
       }
     }
   }
