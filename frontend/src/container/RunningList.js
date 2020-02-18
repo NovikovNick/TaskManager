@@ -10,6 +10,7 @@ import RunningListItem from "../component/RunningListItem";
 import {CreateTaskModalForm, UpdateTaskModalForm} from "../component/TaskModalForm";
 import ArchiveModalForm from "../component/ArchiveModalForm"
 import {HeaderTags} from "../component/Tags"
+import KeyCodes from "../KeyCodes";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
@@ -24,10 +25,6 @@ import {
 import Button from "react-bootstrap/Button";
 import RunningListDaysHeader from "../component/RunningListDaysHeader";
 
-const KeyCodes = {
-    comma: 188,
-    enter: 13,
-};
 
 const getItemStyle = (isDragging, draggableStyle) => ({
     userSelect: "none",
@@ -68,20 +65,17 @@ class RunningList extends Component {
     }
 
     ctrlQ = (e) => {
-        // CTRL + Q
-        if(e.keyCode===81 && e.ctrlKey) this.toggleCreateTaskForm();
+        if(e.keyCode===KeyCodes.Q && e.ctrlKey) this.toggleCreateTaskForm();
     }
 
     ctrlZ = (e) => {
         const {runningList} = this.state;
-        // CTRL + Z
-        if(e.keyCode===90 && (e.ctrlKey && !e.shiftKey) &&  runningList.canUndo) this.onUndo();
+        if(e.keyCode===KeyCodes.Z && (e.ctrlKey && !e.shiftKey) &&  runningList.canUndo) this.onUndo();
     }
 
     ctrlShiftZ = (e) => {
         const {runningList} = this.state;
-        // CTRL + SHIFT + Z
-        if(e.keyCode===90 && (e.ctrlKey && e.shiftKey)  && runningList.canRedo) this.onRedo();
+        if(e.keyCode===KeyCodes.Z && (e.ctrlKey && e.shiftKey)  && runningList.canRedo) this.onRedo();
     }
 
     componentDidMount(){
@@ -327,8 +321,7 @@ class RunningList extends Component {
                             <HeaderTags tags={runningList.selectedTags || []}
                                         suggestions={runningList.allTags || []}
                                         handleDelete={this.handleDelete}
-                                        handleAddition={this.handleAddition}
-                                        delimiters={[KeyCodes.comma, KeyCodes.enter]}/>
+                                        handleAddition={this.handleAddition}/>
                         </div>
                     </div>
                     <div className={'running-list-controls'}>
