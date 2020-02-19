@@ -12,7 +12,6 @@ web-app/WEB-INF/classes
 .factorypath
 .springBeans
 .gradle
-gradle
 
 *.log
 

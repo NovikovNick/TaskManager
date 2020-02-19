@@ -1,4 +1,4 @@
-rootProject.name = 'taskmanager'
+rootProject.name = 'runninglist'
 include 'db'
 include 'log'
 include 'repository'
