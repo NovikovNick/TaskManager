@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
 import * as Store from "../store/ReduxActions";
-import * as REST from "../rest/rest";
+import * as Service from "../service/service";
 
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import RunningListItem from "../component/RunningListItem";
@@ -40,21 +40,21 @@ class RunningList extends Component {
             createTaskForm: {
                 uiSchema: {active: false},
                 formData: {title: '', description: ''},
-                onSubmit: REST.createTask,
+                onSubmit: Service.createTask,
                 onSuccess: this.onCreateTask,
                 closeForm: this.toggleCreateTaskForm
             },
             updateTaskForm: {
                 uiSchema: {active: false},
                 formData: {title: '', description: ''},
-                onSubmit: REST.updateTask,
+                onSubmit: Service.updateTask,
                 onSuccess: this.onUpdateTask,
                 closeForm: this.toggleUpdateTaskForm
             },
             archiveForm: {
                 uiSchema: {active: false},
                 formData: {weekId: {}},
-                onSubmit: REST.archive,
+                onSubmit: Service.archive,
                 onSuccess: this.onArchiveTask,
                 closeForm: this.toggleArchiveForm
             },
@@ -113,14 +113,14 @@ class RunningList extends Component {
 
         // send request and update tasks to check state
         const that = this;
-        REST.changePriority(startIndex, endIndex).then(that.loadTaskList)
+        Service.changePriority(startIndex, endIndex).then(that.loadTaskList)
     }
 
     loadTaskList = () => {
 
         const that = this;
 
-        REST.getTaskList()
+        Service.getTaskList()
             .then(runningList => {
                 that.setState({runningList: runningList});
                 that.state.actions.setRunningList(runningList);
@@ -131,7 +131,7 @@ class RunningList extends Component {
         const {year, week} = this.state.runningList;
         const that = this;
 
-        REST.getNextTaskList(year, week)
+        Service.getNextTaskList(year, week)
             .then(runningList => {
                 that.setState({runningList: runningList});
                 that.state.actions.setRunningList(runningList);
@@ -142,7 +142,7 @@ class RunningList extends Component {
         const {year, week} = this.state.runningList;
         const that = this;
 
-        REST.getPrevTaskList(year, week)
+        Service.getPrevTaskList(year, week)
             .then(runningList => {
                 that.setState({runningList: runningList});
                 that.state.actions.setRunningList(runningList);
@@ -151,21 +151,21 @@ class RunningList extends Component {
 
     onUndo = () => {
         const that = this;
-        REST.undo()
+        Service.undo()
             .then(runningList => {
                 that.setState({runningList: runningList});
                 that.state.actions.setRunningList(runningList);
-                REST.getUserProfile().then(that.state.actions.setUser);
+                Service.getUserProfile().then(that.state.actions.setUser);
             });
     }
 
     onRedo = () => {
         const that = this;
-        REST.redo()
+        Service.redo()
             .then(runningList => {
                 that.setState({runningList: runningList});
                 that.state.actions.setRunningList(runningList);
-                REST.getUserProfile().then(that.state.actions.setUser);
+                Service.getUserProfile().then(that.state.actions.setUser);
             });
     }
 
@@ -221,19 +221,19 @@ class RunningList extends Component {
 
     handleChangeTaskTitle = (task) => {
         const that = this;
-        REST.updateTask(task)
+        Service.updateTask(task)
             .then(() => that.loadTaskList())
     }
 
     handleRemove = (task) => {
         const that = this;
-        REST.deleteTask(task.id)
+        Service.deleteTask(task.id)
             .then(() => that.loadTaskList())
     }
 
     changeStatus = (task, status, dayIndex) => {
         const that = this;
-        REST.changeTaskStatus(task.id, status, dayIndex)
+        Service.changeTaskStatus(task.id, status, dayIndex)
             .then(() => that.loadTaskList())
     }
 
@@ -242,13 +242,13 @@ class RunningList extends Component {
 
         const that = this;
         const selectedTag = this.state.runningList.selectedTags[i];
-        selectedTag && REST.removeTag(selectedTag.text)
+        selectedTag && Service.removeTag(selectedTag.text)
             .then(() => that.loadTaskList());
     }
 
     handleAddition = (tag) => {
         const that = this;
-        REST.addTag(tag.text)
+        Service.addTag(tag.text)
             .then(() => that.loadTaskList());
     }
 

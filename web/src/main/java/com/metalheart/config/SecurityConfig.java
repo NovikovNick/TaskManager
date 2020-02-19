@@ -1,6 +1,7 @@
 package com.metalheart.config;
 
 import com.google.common.collect.ImmutableList;
+import com.metalheart.EndPoint;
 import com.metalheart.security.DelayedTaskFilter;
 import com.metalheart.security.LogoutHandler;
 import com.metalheart.security.OAuth2Registration;
@@ -28,7 +29,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static com.metalheart.EndPoint.AUTH_SIGN_OUT;
-import static com.metalheart.EndPoint.SEND_CHANGE_PASSWORD_EMAIL;
 
 @Slf4j
 @Configuration
@@ -59,10 +59,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/css/**",
                 "/images/**",
                 "/webjars/**").permitAll()
-            .antMatchers("/auth/signin/**").permitAll()
+            .antMatchers(EndPoint.AUTH_SIGN_IN + "/**").permitAll()
             .antMatchers(HttpMethod.POST, "/user").permitAll()
-            .antMatchers(HttpMethod.POST, SEND_CHANGE_PASSWORD_EMAIL).permitAll()
-            .antMatchers("/taskmanager/**").authenticated()
+            .antMatchers(HttpMethod.POST, EndPoint.SEND_CHANGE_PASSWORD_EMAIL).permitAll()
             .anyRequest().authenticated()
             .and()
         .oauth2Login()

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {Button, Container, Form, Row} from 'react-bootstrap';
-import * as REST from "../rest/rest";
+import * as Service from "../service/service";
 import {Formik} from "formik";
 import {useHistory} from "react-router-dom";
 
@@ -13,7 +13,7 @@ export default function ChangePassword() {
 
     const onSubmit = (values, {resetForm}) => {
 
-        REST.changePassword(values)
+        Service.changePassword(values)
             .then(res => {
                 resetForm({})
                 history.push("/");

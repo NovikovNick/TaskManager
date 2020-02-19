@@ -1,65 +1,12 @@
 import setting from "../config"
 
-/**
- * Parses the JSON returned by a network request
- *
- * @param  {object} response A response from a network request
- *
- * @return {object}          The parsed JSON, status from the response
- */
-function parseJSON(response) {
-    return new Promise((resolve) => response.json()
-        .then((json) => resolve({
-            status: response.status,
-            ok: response.ok,
-            json,
-        })));
-}
-
-/**
- * Requests a URL, returning a promise
- *
- * @param  {string} url       The URL we want to request
- * @param  {object} [options] The options we want to pass to "fetch"
- *
- * @return {Promise}           The request promise
- */
-function rest(url, options) {
-
-    options.headers = options.headers || {};
-    options.headers['TIMEZONE_OFFSET'] = new Date().getTimezoneOffset();
-
-    return new Promise((resolve, reject) => {
-        fetch(url, options)
-            .then(response => {
-
-                if (response.status === 403) {
-                    window.location = "/signin";
-                    console.log("Unauthorised ", response)
-                }
-
-                return response;
-            })
-            .then(parseJSON)
-            .then((response) => {
-
-                if (response.ok) {
-                    return resolve(response.json);
-                }
-                // extract the error from the server's json
-                return reject(response.json);
-            })
-            .catch((error) => reject(error));
-    });
-}
-
 export function getTaskList() {
     const settings = {
         method: 'GET',
         credentials: 'include',
         cache: 'no-cache'
     };
-    return rest(setting.API_URL + '/taskmanager/runninglist', settings)
+    return service(setting.API_URL + '/runninglist', settings);
 }
 
 export function createTask(formData) {
@@ -73,7 +20,7 @@ export function createTask(formData) {
         credentials: 'include',
         body: JSON.stringify(formData)
     };
-    return rest(setting.API_URL + '/taskmanager/task', settings)
+    return service(setting.API_URL + '/task', settings)
 }
 
 export function updateTask(formData) {
@@ -87,7 +34,7 @@ export function updateTask(formData) {
         credentials: 'include',
         body: JSON.stringify(formData)
     };
-    return rest(setting.API_URL + '/taskmanager/task', settings)
+    return service(setting.API_URL + '/task', settings)
 }
 
 export function changeTaskStatus(taskId, status, dayIndex) {
@@ -105,7 +52,7 @@ export function changeTaskStatus(taskId, status, dayIndex) {
             dayIndex: dayIndex
         })
     };
-    return rest(setting.API_URL + "/taskmanager/task/status", settings)
+    return service(setting.API_URL + "/task/status", settings)
 }
 
 export function changePriority(startIndex, endIndex) {
@@ -122,7 +69,7 @@ export function changePriority(startIndex, endIndex) {
             endIndex: endIndex,
         })
     };
-    return rest(setting.API_URL + "/taskmanager/task/priority", settings)
+    return service(setting.API_URL + "/task/priority", settings)
 }
 
 export function deleteTask(taskId) {
@@ -135,7 +82,7 @@ export function deleteTask(taskId) {
         },
         credentials: 'include'
     };
-    return rest(setting.API_URL + "/taskmanager/task/" + taskId, settings)
+    return service(setting.API_URL + "/task/" + taskId, settings)
 }
 
 export function getNextTaskList(year, week) {
@@ -144,7 +91,7 @@ export function getNextTaskList(year, week) {
         credentials: 'include',
         cache: 'no-cache'
     };
-    return rest(setting.API_URL + '/taskmanager/runninglist/archive/next?year=' + year + '&week=' + week, settings);
+    return service(setting.API_URL + '/archive/next?year=' + year + '&week=' + week, settings);
 }
 
 export function getPrevTaskList(year, week) {
@@ -153,7 +100,7 @@ export function getPrevTaskList(year, week) {
         credentials: 'include',
         cache: 'no-cache'
     };
-    return rest(setting.API_URL + '/taskmanager/runninglist/archive/prev?year=' + year + '&week=' + week, settings);
+    return service(setting.API_URL + '/archive/prev?year=' + year + '&week=' + week, settings);
 }
 
 export function archive(weekId) {
@@ -170,7 +117,7 @@ export function archive(weekId) {
         }),
         credentials: 'include',
     };
-    return rest(setting.API_URL + '/taskmanager/runninglist/archive', settings);
+    return service(setting.API_URL + '/archive', settings);
 }
 
 export function undo() {
@@ -183,7 +130,7 @@ export function undo() {
         },
         credentials: 'include',
     };
-    return rest(setting.API_URL + '/taskmanager/runninglist', settings);
+    return service(setting.API_URL + '/undo', settings);
 }
 
 export function redo() {
@@ -196,7 +143,7 @@ export function redo() {
         },
         credentials: 'include',
     };
-    return rest(setting.API_URL + '/taskmanager/runninglist', settings);
+    return service(setting.API_URL + '/redo', settings);
 }
 
 export function removeTag(tag) {
@@ -212,7 +159,7 @@ export function removeTag(tag) {
             tag: tag
         })
     };
-    return rest(setting.API_URL + '/taskmanager/tag', settings);
+    return service(setting.API_URL + '/tag', settings);
 }
 
 export function addTag(tag) {
@@ -228,7 +175,7 @@ export function addTag(tag) {
             tag: tag
         })
     };
-    return rest(setting.API_URL + '/taskmanager/tag', settings);
+    return service(setting.API_URL + '/tag', settings);
 }
 
 export function signOut() {
@@ -236,7 +183,7 @@ export function signOut() {
         method: 'GET',
         credentials: 'include',
     };
-    return rest(setting.API_URL + '/auth/signout', settings)
+    return service(setting.API_URL + '/logout', settings)
 }
 
 export function signIn({username, password}) {
@@ -254,7 +201,7 @@ export function signIn({username, password}) {
         })
     };
 
-    const url = setting.API_URL + '/auth/signin';
+    const url = setting.API_URL + '/login';
 
     return new Promise((resolve, reject) => {
         fetch(url, settings)
@@ -274,7 +221,7 @@ export function getUserProfile() {
         credentials: 'include',
         cache: 'no-cache'
     };
-    return rest(setting.API_URL + '/user', settings);
+    return service(setting.API_URL + '/user', settings);
 }
 
 export function signUp({username, email, password, confirmPassword}) {
@@ -334,7 +281,7 @@ export function saveProfile({tags, username, email}) {
             tags: tags
         })
     };
-    return rest(setting.API_URL + '/profile', settings);
+    return service(setting.API_URL + '/profile', settings);
 }
 
 export function changePassword(request) {
@@ -350,7 +297,7 @@ export function changePassword(request) {
             confirmPassword: request.confirmPassword
         })
     };
-    return rest(setting.API_URL + '/user/password', settings);
+    return service(setting.API_URL + '/user/password', settings);
 }
 
 export function sendChangePasswordEmail({email}) {
@@ -388,5 +335,61 @@ export function sendChangePasswordEmail({email}) {
             })
             .then(parseJSON)
             .then((response) => reject(response.json));
+    });
+}
+
+
+/* CONVENIENCE */
+
+/**
+ * Parses the JSON returned by a network request
+ *
+ * @param  {object} response A response from a network request
+ *
+ * @return {object}          The parsed JSON, status from the response
+ */
+function parseJSON(response) {
+    return new Promise((resolve) => response.json()
+        .then((json) => resolve({
+            status: response.status,
+            ok: response.ok,
+            json,
+        })));
+}
+
+/**
+ * Requests a URL, returning a promise
+ *
+ * @param  {string} url       The URL we want to request
+ * @param  {object} [options] The options we want to pass to "fetch"
+ *
+ * @return {Promise}           The request promise
+ */
+function service(url, options) {
+
+    options.headers = options.headers || {};
+    options.headers['TIMEZONE_OFFSET'] = new Date().getTimezoneOffset();
+
+    return new Promise((resolve, reject) => {
+        fetch(url, options)
+            .then(response => {
+
+                if (response.status === 403) {
+                    window.location = "/signin";
+                    console.log("Unauthorised ", response)
+                }
+
+                return response;
+            })
+            .then(parseJSON)
+            .then((response) => {
+
+                if (response.ok) {
+                    return resolve(response.json);
+                }
+                // extract the error from the server's json
+                return reject(response.json);
+            })
+            .catch((error) => reject(error));
     });
 }

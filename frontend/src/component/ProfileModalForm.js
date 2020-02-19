@@ -65,7 +65,7 @@ export default function ProfileModalForm({schema}) {
                             <Modal.Title>{t("Profile")}</Modal.Title>
                         </Modal.Header>
 
-                        <Modal.Body className={"taskmanager-profile"}>
+                        <Modal.Body className={"runninglist-profile"}>
                             <Form.Group as={Row} controlId="validationFormik11">
                                 <Form.Label column sm="3">{t('Username')}</Form.Label>
                                 <Col sm={'9'}>

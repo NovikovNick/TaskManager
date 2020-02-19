@@ -20,7 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
     "com.metalheart.controller",
     "com.metalheart.filter"
 })
-public class RestConfiguration implements WebMvcConfigurer {
+public class WebConfiguration implements WebMvcConfigurer {
 
     @Autowired
     private MessageSource messageSource;

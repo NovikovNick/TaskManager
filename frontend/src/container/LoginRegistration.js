@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {Button, Fade, Form, Row} from 'react-bootstrap';
-import * as REST from "../rest/rest";
+import * as Service from "../service/service";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGoogle} from "@fortawesome/free-brands-svg-icons";
 import {Formik} from "formik";
@@ -23,7 +23,7 @@ function ForgetForm() {
 
     const onSubmit = (values, {resetForm}) => {
 
-        REST.sendChangePasswordEmail(values)
+        Service.sendChangePasswordEmail(values)
             .then(res => {
                 resetForm({})
                 if(res) {
@@ -116,7 +116,7 @@ function Login({onForgetPasswordForm}) {
 
     const onSubmit = (values, {resetForm}) => {
 
-        REST.signIn(values)
+        Service.signIn(values)
             .then(res => {
                 resetForm({})
                 history.push("/");
@@ -207,7 +207,7 @@ function Registration() {
 
     const onSubmit = (values, {resetForm}) => {
 
-        REST.signUp(values)
+        Service.signUp(values)
             .then(res => {
 
                 resetForm({})

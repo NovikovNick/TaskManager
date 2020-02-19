@@ -2,7 +2,7 @@ package com.metalheart;
 
 import com.metalheart.config.AppProperties;
 import com.metalheart.config.RepositoryConfiguration;
-import com.metalheart.config.RestConfiguration;
+import com.metalheart.config.WebConfiguration;
 import com.metalheart.config.ServiceConfiguration;
 import com.metalheart.model.User;
 import com.metalheart.service.UserService;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({
-    RestConfiguration.class,
+    WebConfiguration.class,
     ServiceConfiguration.class,
     RepositoryConfiguration.class
 })

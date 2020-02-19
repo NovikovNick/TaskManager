@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
 import * as Store from "../store/ReduxActions";
-import * as REST from "../rest/rest";
+import * as Service from "../service/service";
 import {Dropdown} from "react-bootstrap";
 import {useTranslation} from "react-i18next";
 
@@ -18,22 +18,22 @@ class Menu extends Component {
             profileForm: {
                 uiSchema: {active: false},
                 formData: {tags: []},
-                onSubmit: (REST.saveProfile),
+                onSubmit: (Service.saveProfile),
                 onSuccess: this.onProfileSuccessUpdate,
                 closeForm: this.toggleProfileForm
             },
             ...props
         };
-        REST.getUserProfile().then(props.actions.setUser);
+        Service.getUserProfile().then(props.actions.setUser);
     }
 
     onProfileSuccessUpdate = () => {
 
         const that = this;
 
-        REST.getUserProfile().then(that.state.actions.setUser);
+        Service.getUserProfile().then(that.state.actions.setUser);
 
-        REST.getTaskList()
+        Service.getTaskList()
             .then(runningList => {
                 that.setState({runningList: runningList});
                 that.state.actions.setRunningList(runningList);
@@ -74,7 +74,7 @@ class Menu extends Component {
 function Signout() {
     const {t} = useTranslation();
     const history = useHistory();
-    const signout = () => REST.signOut().then(() => history.push("/signin"))
+    const signout = () => Service.signOut().then(() => history.push("/signin"))
 
     return (<Dropdown.Item onClick={signout}>{t("signout")}</Dropdown.Item>);
 }
