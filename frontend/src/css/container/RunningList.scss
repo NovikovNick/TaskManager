@@ -81,6 +81,11 @@ $taskInputWidth: calc(100% - #{$taskTagsAndControlsWidth} - 10px);
     height: $taskCellWidth;
     line-height: $taskCellWidth;
 
+    &:hover {
+      box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.28);
+    }
+
+
     .running-list-cell {
       width: $taskCellWidth;
       height: $taskCellWidth;
@@ -213,7 +218,7 @@ $taskInputWidth: calc(100% - #{$taskTagsAndControlsWidth} - 10px);
       }
 
       &:hover {
-        background: #4e6c9130;
+        //background: #4e6c9130;
 
         .running-list-controls {
           display: inline-block;

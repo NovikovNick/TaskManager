@@ -1,21 +1,20 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import * as Store from "../store/ReduxActions";
-import ChangePassword from "../container/ChangePassword";
+import React from 'react';
+import {Container} from "react-bootstrap";
+import ChangePasswordForm from "../component/form/ChangePasswordForm";
 
-class ChangePasswordPage extends Component {
-    render() {
-        return (<ChangePassword/>);
-    }
+
+export default function ChangePasswordPage() {
+    return (
+        <Container fluid>
+            <div className="change_password_panel_wrapper">
+                <div className="login-reg-panel">
+                    <div className={"white-panel"}>
+
+                        <ChangePasswordForm/>
+
+                    </div>
+                </div>
+            </div>
+        </Container>
+    );
 }
-
-const mapStateToProps = state => ({
-    taskList: state.task.taskList
-});
-
-const mapDispatchToProps = (dispatch) => ({
-    actions: bindActionCreators(Store, dispatch)
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(ChangePasswordPage);

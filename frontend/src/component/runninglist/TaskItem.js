@@ -3,7 +3,7 @@ import {faPen, faTrash} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import {useTranslation} from "react-i18next";
 
-export default function RunningListItem({index, task, handleRemove, changeStatus, changeTaskTitle, handleEdit}) {
+export default function TaskItem({index, task, handleRemove, changeStatus, changeTaskTitle, handleEdit}) {
 
     const {t} = useTranslation()
 

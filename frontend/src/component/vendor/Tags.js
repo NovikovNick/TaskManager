@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 import {WithContext as ReactTags} from "react-tag-input";
 import {useTranslation} from "react-i18next";
-import KeyCodes from "../KeyCodes";
+import KeyCodes from "../../KeyCodes";
 
 export function HeaderTags(props) {
     const {t} = useTranslation();

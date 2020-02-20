@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
-import {FormTags} from "./Tags";
+import {FormTags} from "../vendor/Tags";
 
 
 export function UpdateTaskModalForm({schema}) {

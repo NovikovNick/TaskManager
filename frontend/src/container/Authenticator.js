@@ -1,15 +1,14 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import setting from "../config";
 import {useHistory} from "react-router-dom";
 import LoadingOverlay from "react-loading-overlay";
 
 export default function Authenticator({path, children}) {
 
-    const [requestSent, setRequestSent] = useState(false);
     const [responseReceived, setResponseReceived] = useState(false);
     const history = useHistory();
 
-    if (!requestSent) {
+    useEffect(() => {
         const settings = {
             method: 'GET',
             credentials: 'include',
@@ -34,8 +33,9 @@ export default function Authenticator({path, children}) {
                 setResponseReceived(true);
                 history.push("/error")
             });
-        setRequestSent(true);
-    }
+    }, [])
+
+
 
     return (<LoadingOverlay active={!responseReceived} spinner>
 

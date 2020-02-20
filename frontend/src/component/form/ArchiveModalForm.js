@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Form, Modal, Row} from 'react-bootstrap';
-import WeekerPicker from './WeekerPicker'
+import WeekerPicker from '../vendor/WeekerPicker'
 
 
 export default function ArchiveModalForm({schema}) {

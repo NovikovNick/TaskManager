@@ -7,7 +7,7 @@ import * as Service from "../service/service";
 import {Dropdown} from "react-bootstrap";
 import {useTranslation} from "react-i18next";
 
-import ProfileModalForm from "../component/ProfileModalForm";
+import ProfileModalForm from "../component/form/ProfileModalForm";
 import {useHistory} from "react-router-dom";
 
 class Menu extends Component {

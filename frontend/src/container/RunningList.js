@@ -6,10 +6,10 @@ import * as Store from "../store/ReduxActions";
 import * as Service from "../service/service";
 
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
-import RunningListItem from "../component/RunningListItem";
-import {CreateTaskModalForm, UpdateTaskModalForm} from "../component/TaskModalForm";
-import ArchiveModalForm from "../component/ArchiveModalForm"
-import {HeaderTags} from "../component/Tags"
+import TaskItem from "../component/runninglist/TaskItem";
+import {CreateTaskModalForm, UpdateTaskModalForm} from "../component/form/TaskModalForm";
+import ArchiveModalForm from "../component/form/ArchiveModalForm"
+import {HeaderTags} from "../component/vendor/Tags"
 import KeyCodes from "../KeyCodes";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -23,7 +23,7 @@ import {
     faUndo
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "react-bootstrap/Button";
-import RunningListDaysHeader from "../component/RunningListDaysHeader";
+import Days from "../component/runninglist/Days";
 
 
 const getItemStyle = (isDragging, draggableStyle) => ({
@@ -288,7 +288,7 @@ class RunningList extends Component {
                                                         provided.draggableProps.style
                                                     )}
                                                 >
-                                                    <RunningListItem
+                                                    <TaskItem
                                                         key={task.id}
                                                         index={index}
                                                         task={task}
@@ -313,7 +313,7 @@ class RunningList extends Component {
 
                 <div className="metalheart-running-list-header">
 
-                    <RunningListDaysHeader calendar={runningList.calendar}/>
+                    <Days calendar={runningList.calendar}/>
 
                     <div className={'running-list-title'}>
 
