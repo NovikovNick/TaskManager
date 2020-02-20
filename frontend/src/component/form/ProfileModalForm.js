@@ -1,23 +1,39 @@
 import React, {useState} from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
 import {FormTags} from "../vendor/Tags";
 import ChangePasswordPageLink from "../link/ChangePasswordPageLink"
+import * as Service from "../../service/service";
+import * as Store from "../../store/ReduxActions";
 
-export default function ProfileModalForm({schema}) {
+
+function ProfileModalForm({active, actions, onCloseForm, runningList, user}) {
 
     const {t} = useTranslation();
+
+    const values = {
+        tags: runningList.allTags,
+        username: user.username,
+        email: user.email
+    }
 
     const [errors, setErrors] = useState({});
     const [valid, setValid] = useState({});
 
     const onSubmit = (values, {resetForm}) => {
 
-        schema.onSubmit(values)
+        Service.saveProfile(values)
             .then(res => {
-                schema.onSuccess(res);
-                resetForm({})
+
+                Service.getUserProfile().then(actions.setUser);
+                Service.getTaskList().then(actions.setRunningList);
+
+                resetForm({});
+                onCloseForm();
+
             })
             .catch(response => {
                 setErrors(response)
@@ -34,7 +50,7 @@ export default function ProfileModalForm({schema}) {
     return (
         <Formik
             enableReinitialize
-            initialValues={schema.formData}
+            initialValues={values}
             onSubmit={onSubmit}>
 
             {({
@@ -46,9 +62,9 @@ export default function ProfileModalForm({schema}) {
                   resetForm
               }) => (
 
-                <Modal show={schema.uiSchema.active} onHide={() => {
+                <Modal show={active} onHide={() => {
                     resetForm({})
-                    schema.closeForm();
+                    onCloseForm();
                 }}>
                     <Form noValidate onSubmit={handleSubmit}>
 
@@ -133,3 +149,14 @@ export default function ProfileModalForm({schema}) {
         </Formik>
     );
 }
+
+const mapStateToProps = state => ({
+    user: state.task.user,
+    runningList: state.task.runningList
+});
+
+const mapDispatchToProps = dispatch => ({
+    actions: bindActionCreators(Store, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileModalForm);

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
@@ -10,65 +10,29 @@ import {useTranslation} from "react-i18next";
 import ProfileModalForm from "../component/form/ProfileModalForm";
 import {useHistory} from "react-router-dom";
 
-class Menu extends Component {
+function Menu({actions, user}) {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            profileForm: {
-                uiSchema: {active: false},
-                formData: {tags: []},
-                onSubmit: (Service.saveProfile),
-                onSuccess: this.onProfileSuccessUpdate,
-                closeForm: this.toggleProfileForm
-            },
-            ...props
-        };
-        Service.getUserProfile().then(props.actions.setUser);
-    }
+    const [profileModalFormActive, setProfileModalFormActive] = useState(false);
 
-    onProfileSuccessUpdate = () => {
+    useEffect(() => {
+        Service.getUserProfile().then(actions.setUser);
+    }, []);
 
-        const that = this;
+    return (
+        <Dropdown className={"metalheart-menu w-100"}>
 
-        Service.getUserProfile().then(that.state.actions.setUser);
+            <Dropdown.Toggle split id="dropdown-split-basic">{user.username}</Dropdown.Toggle>
 
-        Service.getTaskList()
-            .then(runningList => {
-                that.setState({runningList: runningList});
-                that.state.actions.setRunningList(runningList);
-            });
-
-        this.toggleProfileForm();
-    }
-
-    toggleProfileForm = () => {
-        const {profileForm} = this.state
-        profileForm.uiSchema.active = !profileForm.uiSchema.active;
-        this.setState({profileForm: profileForm})
-    }
-
-    render() {
-        const {profileForm} = this.state;
-        const {user, runningList} = this.props;
-
-        profileForm.formData.tags = runningList.allTags;
-        profileForm.formData.username = user.username;
-        profileForm.formData.email = user.email;
-
-        return (
-            <Dropdown className={"metalheart-menu w-100"}>
-
-                <Dropdown.Toggle split id="dropdown-split-basic">{user.username}</Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                    <Profile onClick={this.toggleProfileForm}/>
-                    <Signout/>
-                </Dropdown.Menu>
-                <ProfileModalForm schema={profileForm}/>
-            </Dropdown>
-        )
-    }
+            <Dropdown.Menu>
+                <Profile onClick={() => setProfileModalFormActive(true)}/>
+                <Signout/>
+            </Dropdown.Menu>
+            <ProfileModalForm
+                active={profileModalFormActive}
+                onCloseForm={() => setProfileModalFormActive(false)}
+            />
+        </Dropdown>
+    )
 }
 
 function Signout() {
@@ -81,13 +45,11 @@ function Signout() {
 
 function Profile({onClick}) {
     const {t} = useTranslation();
-
     return (<Dropdown.Item onClick={onClick}>{t("Profile")}</Dropdown.Item>);
 }
 
 const mapStateToProps = state => ({
-    user: state.task.user,
-    runningList: state.task.runningList
+    user: state.task.user
 });
 
 const mapDispatchToProps = dispatch => ({
