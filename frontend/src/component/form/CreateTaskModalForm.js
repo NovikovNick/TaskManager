@@ -1,39 +1,29 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+
 import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
 import {FormTags} from "../vendor/Tags";
-import ChangePasswordPageLink from "../link/ChangePasswordPageLink"
-import * as Service from "../../service/service";
 import * as Store from "../../store/ReduxActions";
+import * as Service from "../../service/service";
 
 
-function ProfileModalForm({active, actions, onCloseForm, runningList, user}) {
+function CreateTaskModalForm({isActive, toggle, actions, runningList}) {
 
     const {t} = useTranslation();
-
-    const values = {
-        tags: runningList.allTags,
-        username: user.username,
-        email: user.email
-    }
-
     const [errors, setErrors] = useState({});
     const [valid, setValid] = useState({});
+    const titleInput = useRef();
 
     const onSubmit = (values, {resetForm}) => {
 
-        Service.saveProfile(values)
+        Service.createTask(values)
             .then(res => {
-
-                Service.getUserProfile().then(actions.setUser);
                 Service.getTaskList().then(actions.setRunningList);
-
                 resetForm({});
-                onCloseForm();
-
+                toggle();
             })
             .catch(response => {
                 setErrors(response)
@@ -50,7 +40,7 @@ function ProfileModalForm({active, actions, onCloseForm, runningList, user}) {
     return (
         <Formik
             enableReinitialize
-            initialValues={values}
+            initialValues={{tags: []}}
             onSubmit={onSubmit}>
 
             {({
@@ -62,75 +52,78 @@ function ProfileModalForm({active, actions, onCloseForm, runningList, user}) {
                   resetForm
               }) => (
 
-                <Modal show={active} onHide={() => {
-                    resetForm({})
-                    onCloseForm();
-                }}>
+                <Modal show={isActive}
+                       onShow={() => titleInput.current.focus()}
+                       onHide={() => {
+                           resetForm({});
+                           toggle();
+                       }}>
                     <Form noValidate onSubmit={handleSubmit}>
 
                         <Modal.Header closeButton>
-                            <Modal.Title>{t("Profile")}</Modal.Title>
+                            <Modal.Title>{t('create_task_title')}</Modal.Title>
                         </Modal.Header>
 
-                        <Modal.Body className={"runninglist-profile"}>
-                            <Form.Group as={Row} controlId="validationFormik11">
-                                <Form.Label column sm="3">{t('Username')}</Form.Label>
+                        <Modal.Body>
+
+                            <Form.Group as={Row} controlId="validationFormik01">
+                                <Form.Label column sm="3">{t('title')}</Form.Label>
                                 <Col sm={'9'}>
                                     <Form.Control
-                                        name="username"
+                                        ref={titleInput}
+                                        name="title"
                                         onChange={(v) => {
-                                            if (errors && errors.username) {
-                                                const {username, ...rest} = errors;
+                                            if (errors && errors.title) {
+                                                const {title, ...rest} = errors;
                                                 setErrors(rest);
                                             }
-                                            if (valid && valid.username) {
-                                                const {username, ...rest} = valid;
+                                            if (valid && valid.title) {
+                                                const {title, ...rest} = valid;
                                                 setValid(rest);
                                             }
                                             handleChange(v);
                                         }}
-                                        defaultValue={values.username}
-                                        isValid={touched.username && valid.username}
-                                        isInvalid={!!errors.username}
-                                        placeholder={t("Username")}
+                                        defaultValue={values.title}
+                                        isValid={touched.title && valid.title}
+                                        isInvalid={!!errors.title}
                                     />
-                                    <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>
                                 </Col>
                             </Form.Group>
 
-                            <Form.Group as={Row} controlId="validationFormik12">
-                                <Form.Label column sm="3">{t('Email')}</Form.Label>
+                            <Form.Group as={Row} controlId="validationFormik02">
+                                <Form.Label column sm="3">{t('description')}</Form.Label>
                                 <Col sm={'9'}>
                                     <Form.Control
-                                        name="email"
+                                        as="textarea"
+                                        name="description"
                                         onChange={(v) => {
-                                            if (errors && errors.email) {
-                                                const {email, ...rest} = errors;
+                                            if (errors && errors.description) {
+                                                const {description, ...rest} = errors;
                                                 setErrors(rest);
                                             }
-                                            if (valid && valid.email) {
-                                                const {email, ...rest} = valid;
+                                            if (valid && valid.description) {
+                                                const {description, ...rest} = valid;
                                                 setValid(rest);
                                             }
                                             handleChange(v);
                                         }}
-                                        defaultValue={values.email}
-                                        isValid={touched.email && valid.email}
-                                        isInvalid={!!errors.email}
-                                        placeholder={t("Email")}
+                                        defaultValue={values.description}
+                                        isValid={touched.description && valid.description}
+                                        isInvalid={!!errors.description}
                                     />
-                                    <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">{errors.description}</Form.Control.Feedback>
                                 </Col>
                             </Form.Group>
 
-                            <Form.Group as={Row} controlId="validationFormik00">
+                            <Form.Group as={Row} controlId="validationFormik03">
                                 <Form.Label column sm="3">{t('tags')}</Form.Label>
                                 <Col sm={'9'}>
                                     <FormTags tags={values.tags || []}
-                                          placeholder={t("tags")}
-                                          suggestions={values.tagsSuggestion || []}
-                                          handleDelete={(i) => setFieldValue('tags', values.tags.filter((tag, index) => index !== i))}
-                                          handleAddition={(tag) => setFieldValue('tags', [...values.tags, tag])}/>
+                                              placeholder={t("Add tags")}
+                                              suggestions={runningList.allTags || []}
+                                              handleDelete={(i) => setFieldValue('tags', values.tags.filter((tag, index) => index !== i))}
+                                              handleAddition={(tag) => setFieldValue('tags', [...values.tags, tag])}/>
                                     <div className={"invalid-feedback"}>{errors.tags}</div>
                                 </Col>
                             </Form.Group>
@@ -138,11 +131,7 @@ function ProfileModalForm({active, actions, onCloseForm, runningList, user}) {
                         </Modal.Body>
 
                         <Modal.Footer>
-
-                            <ChangePasswordPageLink />
-
-                            <Button type="submit">{t("Save")}</Button>
-
+                            <Button type="submit">{t('create_task_submit_btn')}</Button>
                         </Modal.Footer>
 
                     </Form>
@@ -151,14 +140,10 @@ function ProfileModalForm({active, actions, onCloseForm, runningList, user}) {
         </Formik>
     );
 }
-
 const mapStateToProps = state => ({
-    user: state.task.user,
     runningList: state.task.runningList
 });
-
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(Store, dispatch)
 });
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileModalForm);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateTaskModalForm);

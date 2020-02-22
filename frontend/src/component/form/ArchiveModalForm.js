@@ -1,22 +1,27 @@
 import React, {useState} from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+
 import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Form, Modal, Row} from 'react-bootstrap';
 import WeekerPicker from '../vendor/WeekerPicker'
+import * as Service from "../../service/service";
+import * as Store from "../../store/ReduxActions";
 
 
-export default function ArchiveModalForm({schema}) {
+function ArchiveModalForm({isActive, toggle, actions}) {
 
     const {t} = useTranslation();
-
     const [errors, setErrors] = useState({});
 
     const onSubmit = (values, {resetForm}) => {
 
-        schema.onSubmit(values.weekId)
+        Service.archive(values.weekId)
             .then(res => {
-                schema.onSuccess(res);
-                resetForm({})
+                Service.getTaskList().then(actions.setRunningList);
+                resetForm({});
+                toggle();
             })
             .catch(setErrors);
     };
@@ -24,7 +29,7 @@ export default function ArchiveModalForm({schema}) {
     return (
         <Formik
             enableReinitialize
-            initialValues={schema.formData}
+            initialValues={{}}
             onSubmit={onSubmit}>
 
             {({
@@ -36,9 +41,9 @@ export default function ArchiveModalForm({schema}) {
                   resetForm
               }) => (
 
-                <Modal show={schema.uiSchema.active} onHide={() => {
-                    resetForm({})
-                    schema.closeForm();
+                <Modal show={isActive} onHide={() => {
+                    resetForm({});
+                    toggle();
                 }}>
                     <Form noValidate onSubmit={handleSubmit}>
 
@@ -71,3 +76,8 @@ export default function ArchiveModalForm({schema}) {
         </Formik>
     );
 }
+
+const mapDispatchToProps = dispatch => ({
+    actions: bindActionCreators(Store, dispatch)
+});
+export default connect(null, mapDispatchToProps)(ArchiveModalForm);

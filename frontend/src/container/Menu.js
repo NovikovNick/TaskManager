@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
@@ -9,10 +9,9 @@ import {useTranslation} from "react-i18next";
 
 import ProfileModalForm from "../component/form/ProfileModalForm";
 import {useHistory} from "react-router-dom";
+import useModal from "../hook/useModal";
 
 function Menu({actions, user}) {
-
-    const [profileModalFormActive, setProfileModalFormActive] = useState(false);
 
     useEffect(() => {
         Service.getUserProfile().then(actions.setUser);
@@ -24,13 +23,10 @@ function Menu({actions, user}) {
             <Dropdown.Toggle split id="dropdown-split-basic">{user.username}</Dropdown.Toggle>
 
             <Dropdown.Menu>
-                <Profile onClick={() => setProfileModalFormActive(true)}/>
-                <Signout/>
+                <Profile />
+                <Signout />
             </Dropdown.Menu>
-            <ProfileModalForm
-                active={profileModalFormActive}
-                onCloseForm={() => setProfileModalFormActive(false)}
-            />
+
         </Dropdown>
     )
 }
@@ -43,9 +39,20 @@ function Signout() {
     return (<Dropdown.Item onClick={signout}>{t("signout")}</Dropdown.Item>);
 }
 
-function Profile({onClick}) {
+function Profile() {
+
+    const {isActive, toggle} = useModal();
     const {t} = useTranslation();
-    return (<Dropdown.Item onClick={onClick}>{t("Profile")}</Dropdown.Item>);
+
+    return (
+        <span>
+            <Dropdown.Item onClick={toggle}>{t("Profile")}</Dropdown.Item>
+            <ProfileModalForm
+                active={isActive}
+                onCloseForm={toggle}
+            />
+        </span>
+    );
 }
 
 const mapStateToProps = state => ({

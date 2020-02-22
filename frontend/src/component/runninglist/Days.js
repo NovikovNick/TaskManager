@@ -2,9 +2,10 @@ import React from "react";
 
 import {useTranslation} from "react-i18next";
 import HeaderCell from "./HeaderCell";
+import {connect} from "react-redux";
 
 
-export default function Days({calendar}) {
+function Days({calendar}) {
 
     const {t} = useTranslation()
 
@@ -20,3 +21,8 @@ export default function Days({calendar}) {
         </div>
     );
 }
+
+const mapStateToProps = state => ({
+    calendar: state.task.runningList.calendar
+});
+export default connect(mapStateToProps)(Days);

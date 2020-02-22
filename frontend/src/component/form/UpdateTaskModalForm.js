@@ -1,30 +1,16 @@
 import React, {useRef, useState} from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+
 import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
 import {FormTags} from "../vendor/Tags";
+import * as Store from "../../store/ReduxActions";
+import * as Service from "../../service/service";
 
 
-export function UpdateTaskModalForm({schema}) {
-
-    schema.uiSchema.lang = {
-        title: 'update_task_title',
-        submit: 'update_task_submit_btn',
-    }
-
-    return (<TaskModalForm schema={schema}/>);
-}
-
-export function CreateTaskModalForm({schema}) {
-    schema.uiSchema.lang = {
-        title: 'create_task_title',
-        submit: 'create_task_submit_btn',
-    }
-
-    return (<TaskModalForm schema={schema}/>);
-}
-
-export function TaskModalForm({schema}) {
+function UpdateTaskModalForm({isActive, toggle, task, actions, runningList}) {
 
     const {t} = useTranslation();
 
@@ -34,10 +20,11 @@ export function TaskModalForm({schema}) {
 
     const onSubmit = (values, {resetForm}) => {
 
-        schema.onSubmit(values)
+        Service.updateTask(values)
             .then(res => {
-                schema.onSuccess(res);
+                Service.getTaskList().then(actions.setRunningList);
                 resetForm({})
+                toggle();
             })
             .catch(response => {
                 setErrors(response)
@@ -54,7 +41,7 @@ export function TaskModalForm({schema}) {
     return (
         <Formik
             enableReinitialize
-            initialValues={schema.formData}
+            initialValues={task}
             onSubmit={onSubmit}>
 
             {({
@@ -66,16 +53,16 @@ export function TaskModalForm({schema}) {
                   resetForm
               }) => (
 
-                <Modal show={schema.uiSchema.active}
+                <Modal show={isActive}
                        onShow={() => titleInput.current.focus()}
                        onHide={() => {
                            resetForm({});
-                           schema.closeForm();
+                           toggle();
                        }}>
                     <Form noValidate onSubmit={handleSubmit}>
 
                         <Modal.Header closeButton>
-                            <Modal.Title>{t(schema.uiSchema.lang.title)}</Modal.Title>
+                            <Modal.Title>{t('update_task_title')}</Modal.Title>
                         </Modal.Header>
 
                         <Modal.Body>
@@ -134,17 +121,17 @@ export function TaskModalForm({schema}) {
                                 <Form.Label column sm="3">{t('tags')}</Form.Label>
                                 <Col sm={'9'}>
                                     <FormTags tags={values.tags || []}
-                                               placeholder={t("Add tags")}
-                                               suggestions={values.tagsSuggestion || []}
-                                               handleDelete={(i) => setFieldValue('tags', values.tags.filter((tag, index) => index !== i))}
-                                               handleAddition={(tag) => setFieldValue('tags', [...values.tags, tag])}/>
+                                              placeholder={t("Add tags")}
+                                              suggestions={runningList.allTags || []}
+                                              handleDelete={(i) => setFieldValue('tags', values.tags.filter((tag, index) => index !== i))}
+                                              handleAddition={(tag) => setFieldValue('tags', [...values.tags, tag])}/>
                                     <div className={"invalid-feedback"}>{errors.tags}</div>
                                 </Col>
                             </Form.Group>
 
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button type="submit">{t(schema.uiSchema.lang.submit)}</Button>
+                            <Button type="submit">{t('update_task_submit_btn')}</Button>
                         </Modal.Footer>
                     </Form>
                 </Modal>
@@ -152,3 +139,11 @@ export function TaskModalForm({schema}) {
         </Formik>
     );
 }
+
+const mapStateToProps = state => ({
+    runningList: state.task.runningList
+});
+const mapDispatchToProps = dispatch => ({
+    actions: bindActionCreators(Store, dispatch)
+});
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateTaskModalForm);
