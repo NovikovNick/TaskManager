@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux';
 import * as Store from "../../store/ReduxActions";
 import {useTranslation} from "react-i18next";
 import {Tags} from "../vendor/Tags";
+import PropTypes from "prop-types";
 
 
 function TagsHeader({actions, runningList}) {
@@ -34,6 +35,16 @@ function TagsHeader({actions, runningList}) {
         </div>
     );
 }
+
+TagsHeader.propTypes = {
+    actions: PropTypes.object.isRequired,
+    runningList: PropTypes.shape({
+        calendar: PropTypes.object.isRequired,
+        tasks: PropTypes.array.isRequired,
+        selectedTags: PropTypes.array.isRequired,
+        allTags: PropTypes.array.isRequired
+    })
+};
 
 const mapStateToProps = state => ({
     runningList: state.task.runningList

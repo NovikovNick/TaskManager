@@ -6,6 +6,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons";
 import Button from "react-bootstrap/Button";
 import * as Store from "../../store/ReduxActions";
+import PropTypes from "prop-types";
 
 
 function PrevArchiveHeaderControl({actions, runningList}) {
@@ -21,6 +22,16 @@ function PrevArchiveHeaderControl({actions, runningList}) {
         </Button>
     );
 }
+
+PrevArchiveHeaderControl.propTypes = {
+    actions: PropTypes.object.isRequired,
+    runningList: PropTypes.shape({
+        calendar: PropTypes.object.isRequired,
+        tasks: PropTypes.array.isRequired,
+        selectedTags: PropTypes.array.isRequired,
+        allTags: PropTypes.array.isRequired
+    })
+};
 
 const mapStateToProps = state => ({
     runningList: state.task.runningList

@@ -6,6 +6,7 @@ import {useTranslation} from "react-i18next";
 import {Button, Form, Row} from 'react-bootstrap';
 import {Formik} from "formik";
 import * as Store from "../../store/ReduxActions";
+import PropTypes from "prop-types";
 
 function ForgetPasswordForm({actions}) {
     const {t} = useTranslation();
@@ -107,6 +108,10 @@ function ForgetPasswordForm({actions}) {
             return forgetForm;
     }
 }
+
+ForgetPasswordForm.propTypes = {
+    actions: PropTypes.object.isRequired
+};
 
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(Store, dispatch)

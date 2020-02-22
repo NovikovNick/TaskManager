@@ -19,6 +19,7 @@ import RedoHeaderControl from "../component/runninglist/RedoHeaderControl";
 import NextArchiveHeaderControl from "../component/runninglist/NextArchiveHeaderControl";
 import PrevArchiveHeaderControl from "../component/runninglist/PrevArchiveHeaderControl";
 import TagsHeader from "../component/runninglist/TagsHeader";
+import PropTypes from "prop-types";
 
 
 const getItemStyle = (isDragging, draggableStyle) => ({
@@ -141,6 +142,16 @@ function RunningList({runningList, actions}) {
         </div>
     )
 }
+
+RunningList.propTypes = {
+    actions: PropTypes.object.isRequired,
+    runningList: PropTypes.shape({
+        calendar: PropTypes.object.isRequired,
+        tasks: PropTypes.array.isRequired,
+        selectedTags: PropTypes.array.isRequired,
+        allTags: PropTypes.array.isRequired
+    })
+};
 
 const mapStateToProps = state => ({
     runningList: state.task.runningList

@@ -7,6 +7,7 @@ import {faRedo} from "@fortawesome/free-solid-svg-icons";
 import Button from "react-bootstrap/Button";
 import KeyCodes from "../../KeyCodes";
 import * as Store from "../../store/ReduxActions";
+import PropTypes from "prop-types";
 
 
 function RedoHeaderControl({actions, runningList}) {
@@ -38,6 +39,16 @@ function RedoHeaderControl({actions, runningList}) {
         </Button>
     );
 }
+
+RedoHeaderControl.propTypes = {
+    actions: PropTypes.object.isRequired,
+    runningList: PropTypes.shape({
+        calendar: PropTypes.object.isRequired,
+        tasks: PropTypes.array.isRequired,
+        selectedTags: PropTypes.array.isRequired,
+        allTags: PropTypes.array.isRequired
+    })
+};
 
 const mapStateToProps = state => ({
     runningList: state.task.runningList

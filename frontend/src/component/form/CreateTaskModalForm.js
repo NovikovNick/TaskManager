@@ -7,6 +7,7 @@ import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
 import {FormTags} from "../vendor/Tags";
 import * as Store from "../../store/ReduxActions";
+import PropTypes from "prop-types";
 
 
 function CreateTaskModalForm({isActive, toggle, actions, runningList}) {
@@ -140,6 +141,19 @@ function CreateTaskModalForm({isActive, toggle, actions, runningList}) {
         </Formik>
     );
 }
+
+CreateTaskModalForm.propTypes = {
+    isActive: PropTypes.bool.isRequired,
+    toggle: PropTypes.func.isRequired,
+    actions: PropTypes.object.isRequired,
+    runningList: PropTypes.shape({
+        calendar: PropTypes.object.isRequired,
+        tasks: PropTypes.array.isRequired,
+        selectedTags: PropTypes.array.isRequired,
+        allTags: PropTypes.array.isRequired
+    })
+};
+
 const mapStateToProps = state => ({
     runningList: state.task.runningList
 });

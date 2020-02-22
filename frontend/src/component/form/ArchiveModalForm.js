@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import PropTypes from 'prop-types';
 
 import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
@@ -74,6 +75,12 @@ function ArchiveModalForm({isActive, toggle, actions}) {
         </Formik>
     );
 }
+
+ArchiveModalForm.propTypes = {
+    isActive: PropTypes.bool.isRequired,
+    toggle: PropTypes.func.isRequired,
+    actions: PropTypes.object.isRequired
+};
 
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(Store, dispatch)

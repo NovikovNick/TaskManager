@@ -7,6 +7,7 @@ import {Button, Form, Row} from 'react-bootstrap';
 import {Formik} from "formik";
 import GoogleOAuth2Link from "../link/GoogleOAuth2Link";
 import * as Store from "../../store/ReduxActions";
+import PropTypes from "prop-types";
 
 
 function RegistrationForm({actions}) {
@@ -189,6 +190,10 @@ function RegistrationForm({actions}) {
             return form;
     }
 }
+
+RegistrationForm.propTypes = {
+    actions: PropTypes.object.isRequired
+};
 
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(Store, dispatch)

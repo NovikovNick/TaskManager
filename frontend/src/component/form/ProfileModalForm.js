@@ -7,9 +7,10 @@ import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
 import {FormTags} from "../vendor/Tags";
 import ChangePasswordPageLink from "../link/ChangePasswordPageLink"
 import * as Store from "../../store/ReduxActions";
+import PropTypes from "prop-types";
 
 
-function ProfileModalForm({active, actions, onCloseForm, runningList, user}) {
+function ProfileModalForm({isActive, toggle, actions, runningList, user}) {
 
     const {t} = useTranslation();
 
@@ -28,7 +29,7 @@ function ProfileModalForm({active, actions, onCloseForm, runningList, user}) {
             .then(res => {
 
                 resetForm({});
-                onCloseForm();
+                toggle();
 
             })
             .catch(response => {
@@ -58,9 +59,9 @@ function ProfileModalForm({active, actions, onCloseForm, runningList, user}) {
                   resetForm
               }) => (
 
-                <Modal show={active} onHide={() => {
+                <Modal show={isActive} onHide={() => {
                     resetForm({})
-                    onCloseForm();
+                    toggle();
                 }}>
                     <Form noValidate onSubmit={handleSubmit}>
 
@@ -147,6 +148,22 @@ function ProfileModalForm({active, actions, onCloseForm, runningList, user}) {
         </Formik>
     );
 }
+
+ProfileModalForm.propTypes = {
+    isActive: PropTypes.bool.isRequired,
+    toggle: PropTypes.func.isRequired,
+    actions: PropTypes.object.isRequired,
+    user: PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        username: PropTypes.string.isRequired,
+    }),
+    runningList: PropTypes.shape({
+        calendar: PropTypes.object.isRequired,
+        tasks: PropTypes.array.isRequired,
+        selectedTags: PropTypes.array.isRequired,
+        allTags: PropTypes.array.isRequired
+    })
+};
 
 const mapStateToProps = state => ({
     user: state.task.user,

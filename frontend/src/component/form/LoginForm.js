@@ -8,6 +8,7 @@ import {Button, Form, Row} from 'react-bootstrap';
 import {Formik} from "formik";
 import GoogleOAuth2Link from "../link/GoogleOAuth2Link";
 import * as Store from "../../store/ReduxActions";
+import PropTypes from "prop-types";
 
 
 function LoginForm({actions}) {
@@ -93,6 +94,10 @@ function LoginForm({actions}) {
         </Formik>
     );
 }
+
+LoginForm.propTypes = {
+    actions: PropTypes.object.isRequired
+};
 
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(Store, dispatch)

@@ -3,6 +3,7 @@ import React from "react";
 import {useTranslation} from "react-i18next";
 import HeaderCell from "./HeaderCell";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 
 function Days({calendar}) {
@@ -21,6 +22,10 @@ function Days({calendar}) {
         </div>
     );
 }
+
+Days.propTypes = {
+    calendar: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = state => ({
     calendar: state.task.runningList.calendar

@@ -9,6 +9,7 @@ import {useTranslation} from "react-i18next";
 import ProfileModalForm from "../component/form/ProfileModalForm";
 import {useHistory} from "react-router-dom";
 import useModal from "../hook/useModal";
+import PropTypes from "prop-types";
 
 function Menu({actions, user}) {
 
@@ -30,6 +31,13 @@ function Menu({actions, user}) {
     )
 }
 
+Menu.propTypes = {
+    actions: PropTypes.object.isRequired,
+    user: PropTypes.shape({
+        id: PropTypes.number,
+        username: PropTypes.string,
+    })
+};
 
 function Profile() {
 
@@ -40,8 +48,8 @@ function Profile() {
         <span>
             <Dropdown.Item onClick={toggle}>{t("Profile")}</Dropdown.Item>
             <ProfileModalForm
-                active={isActive}
-                onCloseForm={toggle}
+                isActive={isActive}
+                toggle={toggle}
             />
         </span>
     );

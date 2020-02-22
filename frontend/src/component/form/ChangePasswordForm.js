@@ -7,6 +7,7 @@ import {Button, Form, Row} from 'react-bootstrap';
 import {Formik} from "formik";
 import {useHistory} from "react-router-dom";
 import * as Store from "../../store/ReduxActions";
+import PropTypes from "prop-types";
 
 function ChangePasswordForm({actions}) {
 
@@ -103,6 +104,10 @@ function ChangePasswordForm({actions}) {
         </Formik>
     );
 }
+
+ChangePasswordForm.propTypes = {
+    actions: PropTypes.object.isRequired
+};
 
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(Store, dispatch)

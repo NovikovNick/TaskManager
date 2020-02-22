@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import useModal from "../../hook/useModal";
 import ArchiveModalForm from "../form/ArchiveModalForm";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 
 function ArchiveHeaderControl({runningList}) {
@@ -21,6 +22,15 @@ function ArchiveHeaderControl({runningList}) {
 
     );
 }
+
+ArchiveHeaderControl.propTypes = {
+    runningList: PropTypes.shape({
+        calendar: PropTypes.object.isRequired,
+        tasks: PropTypes.array.isRequired,
+        selectedTags: PropTypes.array.isRequired,
+        allTags: PropTypes.array.isRequired
+    })
+};
 
 const mapStateToProps = state => ({
     runningList: state.task.runningList

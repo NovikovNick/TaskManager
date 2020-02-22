@@ -6,6 +6,7 @@ import {useTranslation} from "react-i18next";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPen, faTrash} from "@fortawesome/free-solid-svg-icons";
 import * as Store from "../../store/ReduxActions";
+import PropTypes from "prop-types";
 
 function TaskItem({task, actions, handleEdit}) {
 
@@ -93,6 +94,16 @@ function TaskItem({task, actions, handleEdit}) {
         </div>
     );
 }
+
+TaskItem.propTypes = {
+    handleEdit: PropTypes.func.isRequired,
+    actions: PropTypes.object.isRequired,
+    task: PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        description: PropTypes.string,
+        tags: PropTypes.array
+    })
+};
 
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(Store, dispatch)
