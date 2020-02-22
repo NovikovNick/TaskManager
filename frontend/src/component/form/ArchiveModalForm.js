@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Form, Modal, Row} from 'react-bootstrap';
-import WeekerPicker from '../vendor/WeekerPicker'
+import WeekerPicker from '../vendor/WeekerPicker/index'
 import * as Store from "../../store/ReduxActions";
 
 

@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
-import setting from "../config";
+import setting from "../../config";
 import {useHistory} from "react-router-dom";
 import LoadingOverlay from "react-loading-overlay";
+import "./styles.scss";
 
 export default function Authenticator({path, children}) {
 

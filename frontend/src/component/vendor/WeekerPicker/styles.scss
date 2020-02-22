@@ -1,4 +1,4 @@
-@import "../colors";
+@import "../../../css/colors";
 
 $headerBackground: linear-gradient(to top, $headerColor, lighten($headerColor, 10%));
 $loginRegistrationBackground: linear-gradient(to top, #7d437b, #000000);

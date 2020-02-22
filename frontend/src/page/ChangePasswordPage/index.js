@@ -1,7 +1,7 @@
 import React from 'react';
 import {Container} from "react-bootstrap";
-import ChangePasswordForm from "../component/form/ChangePasswordForm";
-
+import ChangePasswordForm from "../../component/form/ChangePasswordForm";
+import "./styles.scss";
 
 export default function ChangePasswordPage() {
     return (

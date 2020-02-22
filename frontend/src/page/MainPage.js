@@ -1,9 +1,9 @@
 import React from 'react';
 
-import RunningList from "../container/RunningList";
+import RunningList from "../container/RunningList/index";
 import {Container} from "react-bootstrap";
-import Menu from "../container/Menu";
-import Authenticator from "../container/Authenticator";
+import Menu from "../container/Menu/index";
+import Authenticator from "../container/Authenticator/index";
 
 export default function MainPage() {
     return (

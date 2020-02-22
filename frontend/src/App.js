@@ -42,7 +42,7 @@ export default function App() {
                     })}/>
 
                     <Route path="/changepassword" component={Loadable({
-                        loader: () => import("./page/ChangePasswordPage"), loading: LoadingPanel,
+                        loader: () => import("./page/ChangePasswordPage/index"), loading: LoadingPanel,
                     })}/>
 
                 </Router>

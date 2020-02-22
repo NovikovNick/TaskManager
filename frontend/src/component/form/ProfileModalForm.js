@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
-import {FormTags} from "../vendor/Tags";
+import {FormTags} from "../vendor/Tags/index";
 import ChangePasswordPageLink from "../link/ChangePasswordPageLink"
 import * as Store from "../../store/ReduxActions";
 import PropTypes from "prop-types";

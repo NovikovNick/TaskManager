@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Store from "../../store/ReduxActions";
 import {useTranslation} from "react-i18next";
-import {Tags} from "../vendor/Tags";
+import {Tags} from "../vendor/Tags/index";
 import PropTypes from "prop-types";
 
 

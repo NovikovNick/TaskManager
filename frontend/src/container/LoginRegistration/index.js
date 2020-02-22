@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {Button, Fade} from 'react-bootstrap';
-import ForgetPasswordForm from "../component/form/ForgetPasswordForm";
-import LoginForm from "../component/form/LoginForm";
-import RegistrationForm from "../component/form/RegistrationForm";
-
+import ForgetPasswordForm from "../../component/form/ForgetPasswordForm";
+import LoginForm from "../../component/form/LoginForm";
+import RegistrationForm from "../../component/form/RegistrationForm";
+import "./styles.scss";
 
 export default function LoginRegistration() {
 

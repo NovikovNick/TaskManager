@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {Component} from 'react';
 import moment from 'moment';
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
+import './styles.scss';
 
 import MomentLocaleUtils from 'react-day-picker/moment';
 import 'moment/locale/ru';
@@ -30,7 +31,7 @@ function getWeekRange(date) {
     };
 }
 
-export default class WeekPicker extends React.Component {
+export default class WeekPicker extends Component {
 
     constructor(props) {
         super(props);

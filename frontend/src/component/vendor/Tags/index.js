@@ -1,12 +1,12 @@
 import React from 'react';
 
 import {WithContext as ReactTags} from "react-tag-input";
-import KeyCodes from "../../KeyCodes";
-
+import KeyCodes from "../../../KeyCodes";
+import "./styles.scss"
 
 export function FormTags(props) {
     return (<Tags className={"running-list-form-tag"}
-                  {...props} > </Tags>);
+                   {...props} > </Tags>);
 }
 
 export function Tags({tags, suggestions, className, placeholder, handleDelete, handleAddition}) {

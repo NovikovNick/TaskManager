@@ -2,14 +2,15 @@ import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
-import * as Store from "../store/ReduxActions";
+import * as Store from "../../store/ReduxActions";
 import {Dropdown} from "react-bootstrap";
 import {useTranslation} from "react-i18next";
 
-import ProfileModalForm from "../component/form/ProfileModalForm";
+import ProfileModalForm from "../../component/form/ProfileModalForm";
 import {useHistory} from "react-router-dom";
-import useModal from "../hook/useModal";
+import useModal from "../../hook/useModal";
 import PropTypes from "prop-types";
+import "./styles.scss";
 
 function Menu({actions, user}) {
 
@@ -31,14 +32,6 @@ function Menu({actions, user}) {
     )
 }
 
-Menu.propTypes = {
-    actions: PropTypes.object.isRequired,
-    user: PropTypes.shape({
-        id: PropTypes.number,
-        username: PropTypes.string,
-    })
-};
-
 function Profile() {
 
     const {isActive, toggle} = useModal();
@@ -54,6 +47,14 @@ function Profile() {
         </span>
     );
 }
+
+Menu.propTypes = {
+    actions: PropTypes.object.isRequired,
+    user: PropTypes.shape({
+        id: PropTypes.number,
+        username: PropTypes.string,
+    })
+};
 
 const mapStateToProps = state => ({
     user: state.task.user

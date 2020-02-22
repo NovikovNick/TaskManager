@@ -1,6 +1,6 @@
 import React from 'react';
 import {Container} from "react-bootstrap";
-import Authenticator from "../container/Authenticator";
+import Authenticator from "../container/Authenticator/index";
 import ServerUnavailablePanel from "../component/panel/ServerUnavailablePanel";
 
 
