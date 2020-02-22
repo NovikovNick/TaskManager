@@ -1,20 +1,23 @@
 import React, {useState} from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+
 import {useHistory} from "react-router-dom";
 import {useTranslation} from "react-i18next";
-import * as Service from "../../service/service";
 import {Button, Form, Row} from 'react-bootstrap';
 import {Formik} from "formik";
 import GoogleOAuth2Link from "../link/GoogleOAuth2Link";
+import * as Store from "../../store/ReduxActions";
 
 
-export default function LoginForm() {
+function LoginForm({actions}) {
     const {t} = useTranslation();
     const history = useHistory();
     const [errors, setErrors] = useState({});
 
     const onSubmit = (values, {resetForm}) => {
 
-        Service.signIn(values)
+        actions.signIn(values)
             .then(res => {
                 resetForm({})
                 history.push("/");
@@ -90,3 +93,9 @@ export default function LoginForm() {
         </Formik>
     );
 }
+
+const mapDispatchToProps = dispatch => ({
+    actions: bindActionCreators(Store, dispatch)
+});
+
+export default connect(null, mapDispatchToProps)(LoginForm);

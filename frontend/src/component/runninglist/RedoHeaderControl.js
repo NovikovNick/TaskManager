@@ -6,18 +6,13 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faRedo} from "@fortawesome/free-solid-svg-icons";
 import Button from "react-bootstrap/Button";
 import KeyCodes from "../../KeyCodes";
-import * as Service from "../../service/service";
 import * as Store from "../../store/ReduxActions";
 
 
 function RedoHeaderControl({actions, runningList}) {
 
     const redo = () => {
-        Service.redo()
-            .then(runningList => {
-                actions.setRunningList(runningList);
-                Service.getUserProfile().then(actions.setUser);
-            });
+        actions.redo();
     }
 
     useEffect(() => {

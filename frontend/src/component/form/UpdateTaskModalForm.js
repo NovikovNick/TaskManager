@@ -7,7 +7,6 @@ import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
 import {FormTags} from "../vendor/Tags";
 import * as Store from "../../store/ReduxActions";
-import * as Service from "../../service/service";
 
 
 function UpdateTaskModalForm({isActive, toggle, task, actions, runningList}) {
@@ -20,9 +19,8 @@ function UpdateTaskModalForm({isActive, toggle, task, actions, runningList}) {
 
     const onSubmit = (values, {resetForm}) => {
 
-        Service.updateTask(values)
+        actions.updateTask(values)
             .then(res => {
-                Service.getTaskList().then(actions.setRunningList);
                 resetForm({})
                 toggle();
             })

@@ -1,15 +1,15 @@
 import React, {Suspense} from 'react';
-import {combineReducers, createStore} from 'redux';
+import {combineReducers, createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
+import thunk from 'redux-thunk';
+
 import {BrowserRouter as Router, Route} from "react-router-dom";
-
 import * as reducers from './store/reducers';
-
 import Loadable from 'react-loadable';
 import LoadingPanel from "./component/panel/LoadingPanel";
 import PopupMessages from "./component/vendor/PopupMessages";
 
-const store = createStore(combineReducers(reducers)
+const store = createStore(combineReducers(reducers), applyMiddleware(thunk)
 /* , window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() */
 );
 

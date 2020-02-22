@@ -1,10 +1,13 @@
 import React, {useState} from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+
 import {useTranslation} from "react-i18next";
-import * as Service from "../../service/service";
 import {Button, Form, Row} from 'react-bootstrap';
 import {Formik} from "formik";
+import * as Store from "../../store/ReduxActions";
 
-export default function ForgetPasswordForm() {
+function ForgetPasswordForm({actions}) {
     const {t} = useTranslation();
     const [errors, setErrors] = useState({});
     const [valid, setValid] = useState({});
@@ -20,7 +23,7 @@ export default function ForgetPasswordForm() {
 
     const onSubmit = (values, {resetForm}) => {
 
-        Service.sendChangePasswordEmail(values)
+        actions.sendChangePasswordEmail(values)
             .then(res => {
                 resetForm({})
                 if (res) {
@@ -28,7 +31,6 @@ export default function ForgetPasswordForm() {
                 } else {
                     setState(STATE.SERVER_ERROR)
                 }
-
             })
             .catch(response => {
                 setErrors(response)
@@ -105,3 +107,9 @@ export default function ForgetPasswordForm() {
             return forgetForm;
     }
 }
+
+const mapDispatchToProps = dispatch => ({
+    actions: bindActionCreators(Store, dispatch)
+});
+
+export default connect(null, mapDispatchToProps)(ForgetPasswordForm);

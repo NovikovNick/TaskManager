@@ -6,7 +6,7 @@ export function getTaskList() {
         credentials: 'include',
         cache: 'no-cache'
     };
-    return service(setting.API_URL + '/runninglist', settings);
+    return ajax(setting.API_URL + '/runninglist', settings);
 }
 
 export function createTask(formData) {
@@ -20,7 +20,7 @@ export function createTask(formData) {
         credentials: 'include',
         body: JSON.stringify(formData)
     };
-    return service(setting.API_URL + '/task', settings)
+    return ajax(setting.API_URL + '/task', settings)
 }
 
 export function updateTask(formData) {
@@ -34,7 +34,7 @@ export function updateTask(formData) {
         credentials: 'include',
         body: JSON.stringify(formData)
     };
-    return service(setting.API_URL + '/task', settings)
+    return ajax(setting.API_URL + '/task', settings)
 }
 
 export function changeTaskStatus(taskId, status, dayIndex) {
@@ -52,7 +52,7 @@ export function changeTaskStatus(taskId, status, dayIndex) {
             dayIndex: dayIndex
         })
     };
-    return service(setting.API_URL + "/task/status", settings)
+    return ajax(setting.API_URL + "/task/status", settings)
 }
 
 export function changePriority(startIndex, endIndex) {
@@ -69,7 +69,7 @@ export function changePriority(startIndex, endIndex) {
             endIndex: endIndex,
         })
     };
-    return service(setting.API_URL + "/task/priority", settings)
+    return ajax(setting.API_URL + "/task/priority", settings)
 }
 
 export function deleteTask(taskId) {
@@ -82,7 +82,7 @@ export function deleteTask(taskId) {
         },
         credentials: 'include'
     };
-    return service(setting.API_URL + "/task/" + taskId, settings)
+    return ajax(setting.API_URL + "/task/" + taskId, settings)
 }
 
 export function getNextTaskList(year, week) {
@@ -91,7 +91,7 @@ export function getNextTaskList(year, week) {
         credentials: 'include',
         cache: 'no-cache'
     };
-    return service(setting.API_URL + '/archive/next?year=' + year + '&week=' + week, settings);
+    return ajax(setting.API_URL + '/archive/next?year=' + year + '&week=' + week, settings);
 }
 
 export function getPrevTaskList(year, week) {
@@ -100,7 +100,7 @@ export function getPrevTaskList(year, week) {
         credentials: 'include',
         cache: 'no-cache'
     };
-    return service(setting.API_URL + '/archive/prev?year=' + year + '&week=' + week, settings);
+    return ajax(setting.API_URL + '/archive/prev?year=' + year + '&week=' + week, settings);
 }
 
 export function archive(weekId) {
@@ -117,7 +117,7 @@ export function archive(weekId) {
         }),
         credentials: 'include',
     };
-    return service(setting.API_URL + '/archive', settings);
+    return ajax(setting.API_URL + '/archive', settings);
 }
 
 export function undo() {
@@ -130,7 +130,7 @@ export function undo() {
         },
         credentials: 'include',
     };
-    return service(setting.API_URL + '/undo', settings);
+    return ajax(setting.API_URL + '/undo', settings);
 }
 
 export function redo() {
@@ -143,7 +143,7 @@ export function redo() {
         },
         credentials: 'include',
     };
-    return service(setting.API_URL + '/redo', settings);
+    return ajax(setting.API_URL + '/redo', settings);
 }
 
 export function removeTag(tag) {
@@ -159,7 +159,7 @@ export function removeTag(tag) {
             tag: tag
         })
     };
-    return service(setting.API_URL + '/tag', settings);
+    return ajax(setting.API_URL + '/tag', settings);
 }
 
 export function addTag(tag) {
@@ -175,7 +175,7 @@ export function addTag(tag) {
             tag: tag
         })
     };
-    return service(setting.API_URL + '/tag', settings);
+    return ajax(setting.API_URL + '/tag', settings);
 }
 
 export function signOut() {
@@ -183,7 +183,7 @@ export function signOut() {
         method: 'GET',
         credentials: 'include',
     };
-    return service(setting.API_URL + '/logout', settings)
+    return ajax(setting.API_URL + '/logout', settings)
 }
 
 export function signIn({username, password}) {
@@ -221,7 +221,7 @@ export function getUserProfile() {
         credentials: 'include',
         cache: 'no-cache'
     };
-    return service(setting.API_URL + '/user', settings);
+    return ajax(setting.API_URL + '/user', settings);
 }
 
 export function signUp({username, email, password, confirmPassword}) {
@@ -281,7 +281,7 @@ export function saveProfile({tags, username, email}) {
             tags: tags
         })
     };
-    return service(setting.API_URL + '/profile', settings);
+    return ajax(setting.API_URL + '/profile', settings);
 }
 
 export function changePassword(request) {
@@ -297,7 +297,7 @@ export function changePassword(request) {
             confirmPassword: request.confirmPassword
         })
     };
-    return service(setting.API_URL + '/user/password', settings);
+    return ajax(setting.API_URL + '/user/password', settings);
 }
 
 export function sendChangePasswordEmail({email}) {
@@ -365,7 +365,7 @@ function parseJSON(response) {
  *
  * @return {Promise}           The request promise
  */
-function service(url, options) {
+function ajax(url, options) {
 
     options.headers = options.headers || {};
     options.headers['TIMEZONE_OFFSET'] = new Date().getTimezoneOffset();

@@ -7,7 +7,6 @@ import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
 import {FormTags} from "../vendor/Tags";
 import * as Store from "../../store/ReduxActions";
-import * as Service from "../../service/service";
 
 
 function CreateTaskModalForm({isActive, toggle, actions, runningList}) {
@@ -19,13 +18,13 @@ function CreateTaskModalForm({isActive, toggle, actions, runningList}) {
 
     const onSubmit = (values, {resetForm}) => {
 
-        Service.createTask(values)
+        actions.createTask(values)
             .then(res => {
-                Service.getTaskList().then(actions.setRunningList);
                 resetForm({});
                 toggle();
             })
             .catch(response => {
+
                 setErrors(response)
 
                 // if key doesn't present in errors, then it is valid
@@ -55,6 +54,7 @@ function CreateTaskModalForm({isActive, toggle, actions, runningList}) {
                 <Modal show={isActive}
                        onShow={() => titleInput.current.focus()}
                        onHide={() => {
+                           setErrors({})
                            resetForm({});
                            toggle();
                        }}>

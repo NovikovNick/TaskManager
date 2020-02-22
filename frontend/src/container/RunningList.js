@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
 import * as Store from "../store/ReduxActions";
-import * as Service from "../service/service";
 
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import TaskItem from "../component/runninglist/TaskItem";
@@ -35,7 +34,7 @@ function RunningList({runningList, actions}) {
     const [isUpdateTaskModalActive, setUpdateTaskModalActive] = useState(false);
 
     const loadTaskList = () => {
-        Service.getTaskList().then(actions.setRunningList);
+        actions.getTaskList();
     }
 
     useEffect(() => loadTaskList(), []);
@@ -65,19 +64,19 @@ function RunningList({runningList, actions}) {
         actions.setRunningList(runningList);
 
         // send request and update tasks to check state
-        Service.changePriority(startIndex, endIndex).then(loadTaskList)
+        actions.changePriority(startIndex, endIndex);
     }
 
     const handleChangeTaskTitle = (task) => {
-        Service.updateTask(task).then(loadTaskList);
+        actions.updateTask(task);
     }
 
     const handleRemove = (task) => {
-        Service.deleteTask(task.id).then(loadTaskList);
+        actions.deleteTask(task.id);
     }
 
     const changeStatus = (task, status, dayIndex) => {
-        Service.changeTaskStatus(task.id, status, dayIndex).then(loadTaskList);
+        actions.changeTaskStatus(task.id, status, dayIndex);
     }
 
 

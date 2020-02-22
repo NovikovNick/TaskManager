@@ -1,7 +1,6 @@
 import React from "react";
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as Service from "../../service/service";
 import * as Store from "../../store/ReduxActions";
 import {useTranslation} from "react-i18next";
 import {Tags} from "../vendor/Tags";
@@ -14,11 +13,11 @@ function TagsHeader({actions, runningList}) {
     const handleDelete = (i) => {
 
         const selectedTag = runningList.selectedTags[i];
-        selectedTag && Service.removeTag(selectedTag.text).then(actions.setRunningList);
+        selectedTag && actions.unselectTag(selectedTag.text);
     }
 
     const handleAddition = (tag) => {
-        Service.addTag(tag.text).then(actions.setRunningList);
+        actions.selectTag(tag.text);
     }
 
     return (

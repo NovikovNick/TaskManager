@@ -6,7 +6,6 @@ import {useTranslation} from "react-i18next";
 import {Formik} from 'formik';
 import {Button, Form, Modal, Row} from 'react-bootstrap';
 import WeekerPicker from '../vendor/WeekerPicker'
-import * as Service from "../../service/service";
 import * as Store from "../../store/ReduxActions";
 
 
@@ -17,9 +16,8 @@ function ArchiveModalForm({isActive, toggle, actions}) {
 
     const onSubmit = (values, {resetForm}) => {
 
-        Service.archive(values.weekId)
+        actions.archive(values.weekId)
             .then(res => {
-                Service.getTaskList().then(actions.setRunningList);
                 resetForm({});
                 toggle();
             })

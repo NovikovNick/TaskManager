@@ -5,7 +5,6 @@ import {bindActionCreators} from 'redux';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
 import Button from "react-bootstrap/Button";
-import * as Service from "../../service/service";
 import * as Store from "../../store/ReduxActions";
 
 
@@ -13,7 +12,7 @@ function NextArchiveHeaderControl({actions, runningList}) {
 
     const nextArchive = () => {
         const {year, week} = runningList;
-        Service.getNextTaskList(year, week).then(actions.setRunningList);
+        actions.getNextTaskList(year, week);
     }
 
     return (

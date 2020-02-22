@@ -6,10 +6,12 @@ import com.metalheart.model.request.StartChangePasswordPasswordRequest;
 import com.metalheart.model.request.UpdatePasswordRequest;
 import com.metalheart.model.request.UpdateProfileRequest;
 import com.metalheart.model.request.UserRegistrationRequest;
+import com.metalheart.model.response.RunningListViewModel;
 import com.metalheart.model.response.UserViewModel;
 import com.metalheart.service.ChangePasswordService;
 import com.metalheart.service.RegistrationService;
 import com.metalheart.service.RunningListCommandService;
+import com.metalheart.service.RunningListService;
 import com.metalheart.service.UserService;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +27,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,6 +55,9 @@ public class UserController {
     private RunningListCommandService commandService;
 
     @Autowired
+    private RunningListService runningListService;
+
+    @Autowired
     private UserService userService;
 
     @GetMapping(USER_REGISTRATION)
@@ -69,7 +75,8 @@ public class UserController {
     }
 
     @PostMapping(SAVE_PROFILE)
-    public ResponseEntity updateProfile(@AuthenticationPrincipal User user,
+    public RunningListViewModel updateProfile(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+                                        @AuthenticationPrincipal User user,
                                         @RequestBody @Valid UpdateProfileRequest request) {
 
         List<Tag> tags = request.getTags().stream()
@@ -77,7 +84,9 @@ public class UserController {
             .collect(Collectors.toList());
 
         commandService.updateProfile(user.getId(), request.getUsername(), request.getEmail(), tags);
-        return ResponseEntity.status(HttpStatus.OK).body(new HashMap<>());
+
+        return conversionService.convert(runningListService.getRunningList(user.getId(), timezoneOffset),
+            RunningListViewModel.class);
     }
 
     @PostMapping(SEND_CHANGE_PASSWORD_EMAIL)

@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
 import * as Store from "../store/ReduxActions";
-import * as Service from "../service/service";
 import {Dropdown} from "react-bootstrap";
 import {useTranslation} from "react-i18next";
 
@@ -14,7 +13,7 @@ import useModal from "../hook/useModal";
 function Menu({actions, user}) {
 
     useEffect(() => {
-        Service.getUserProfile().then(actions.setUser);
+        actions.getUserProfile();
     }, []);
 
     return (
@@ -31,13 +30,6 @@ function Menu({actions, user}) {
     )
 }
 
-function Signout() {
-    const {t} = useTranslation();
-    const history = useHistory();
-    const signout = () => Service.signOut().then(() => history.push("/signin"))
-
-    return (<Dropdown.Item onClick={signout}>{t("signout")}</Dropdown.Item>);
-}
 
 function Profile() {
 
@@ -62,5 +54,13 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(Store, dispatch)
 });
+
+const Signout = connect(null, mapDispatchToProps)(function Signout({actions}) {
+    const {t} = useTranslation();
+    const history = useHistory();
+    const signout = () => actions.signOut().then(() => history.push("/signin"))
+
+    return (<Dropdown.Item onClick={signout}>{t("signout")}</Dropdown.Item>);
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);

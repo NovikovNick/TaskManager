@@ -6,7 +6,6 @@ import {Formik} from 'formik';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
 import {FormTags} from "../vendor/Tags";
 import ChangePasswordPageLink from "../link/ChangePasswordPageLink"
-import * as Service from "../../service/service";
 import * as Store from "../../store/ReduxActions";
 
 
@@ -25,11 +24,8 @@ function ProfileModalForm({active, actions, onCloseForm, runningList, user}) {
 
     const onSubmit = (values, {resetForm}) => {
 
-        Service.saveProfile(values)
+        actions.saveProfile(values)
             .then(res => {
-
-                Service.getUserProfile().then(actions.setUser);
-                Service.getTaskList().then(actions.setRunningList);
 
                 resetForm({});
                 onCloseForm();

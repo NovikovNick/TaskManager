@@ -1,12 +1,15 @@
 import React, {useState} from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+
 import {useTranslation} from "react-i18next";
-import * as Service from "../../service/service";
 import {Button, Form, Row} from 'react-bootstrap';
 import {Formik} from "formik";
 import GoogleOAuth2Link from "../link/GoogleOAuth2Link";
+import * as Store from "../../store/ReduxActions";
 
 
-export default function RegistrationForm() {
+function RegistrationForm({actions}) {
     const {t} = useTranslation();
 
     const [errors, setErrors] = useState({});
@@ -22,7 +25,7 @@ export default function RegistrationForm() {
 
     const onSubmit = (values, {resetForm}) => {
 
-        Service.signUp(values)
+        actions.signUp(values)
             .then(res => {
 
                 resetForm({})
@@ -186,3 +189,9 @@ export default function RegistrationForm() {
             return form;
     }
 }
+
+const mapDispatchToProps = dispatch => ({
+    actions: bindActionCreators(Store, dispatch)
+});
+
+export default connect(null, mapDispatchToProps)(RegistrationForm);

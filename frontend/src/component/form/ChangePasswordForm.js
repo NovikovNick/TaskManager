@@ -1,11 +1,14 @@
 import React, {useState} from 'react';
+import {connect} from "react-redux";
+import {bindActionCreators} from 'redux';
+
 import {useTranslation} from "react-i18next";
 import {Button, Form, Row} from 'react-bootstrap';
-import * as Service from "../../service/service";
 import {Formik} from "formik";
 import {useHistory} from "react-router-dom";
+import * as Store from "../../store/ReduxActions";
 
-export default function ChangePasswordForm() {
+function ChangePasswordForm({actions}) {
 
     const {t} = useTranslation();
     const history = useHistory();
@@ -14,7 +17,7 @@ export default function ChangePasswordForm() {
 
     const onSubmit = (values, {resetForm}) => {
 
-        Service.changePassword(values)
+        actions.changePassword(values)
             .then(res => {
                 resetForm({})
                 history.push("/");
@@ -100,3 +103,8 @@ export default function ChangePasswordForm() {
         </Formik>
     );
 }
+
+const mapDispatchToProps = dispatch => ({
+    actions: bindActionCreators(Store, dispatch)
+});
+export default connect(null, mapDispatchToProps)(ChangePasswordForm);
