@@ -1,14 +1,16 @@
 import React from 'react';
 
-import RunningList from "../container/RunningList/index";
+import RunningList from "../../container/RunningList";
 import {Container} from "react-bootstrap";
-import Menu from "../container/Menu/index";
-import Authenticator from "../container/Authenticator/index";
+import Menu from "../../container/Menu";
+import Authenticator from "../../container/Authenticator";
+import "./styles.scss";
+
 
 export default function MainPage() {
     return (
         <Authenticator path={"/"}>
-            <Container fluid>
+            <Container fluid className={"h-100 position-absolute"}>
                 <div className={"metalheart-sidebar"}>
                     <Menu/>
                 </div>

@@ -3,17 +3,3 @@ html, body {
   margin: 0;
   padding: 0;
 }
-
-$sidebarWidth: 165px;
-
-.metalheart-sidebar {
-  width: $sidebarWidth;
-  height: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-.metalheart-content {
-  margin-left: $sidebarWidth;
-}

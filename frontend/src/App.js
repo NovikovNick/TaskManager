@@ -26,7 +26,7 @@ export default function App() {
                 <Router>
 
                     <Route exact path="/" component={Loadable({
-                        loader: () => import("./page/MainPage"), loading: LoadingPanel,
+                        loader: () => import("./page/MainPage/index"), loading: LoadingPanel,
                     })}/>
 
                     <Route path="/error" component={Loadable({

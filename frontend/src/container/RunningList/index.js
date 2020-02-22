@@ -68,9 +68,9 @@ function RunningList({runningList, actions}) {
     }
 
     return (
-        <div className="metalheart-running-list">
+        <div className="metalheart-runninglist">
 
-            <div style={{'position': 'relative', 'marginTop': '40px'}}>
+            <div className={'metalheart-runninglist-tasks'}>
 
                 <DragDropContext onDragEnd={onDragEnd}>
                     <Droppable droppableId="droppable">
@@ -110,7 +110,7 @@ function RunningList({runningList, actions}) {
 
             </div>
 
-            <div className="metalheart-running-list-header">
+            <div className="metalheart-runninglist-header">
 
                 <Days/>
 
