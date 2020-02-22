@@ -32,7 +32,6 @@ function RunningList({runningList, actions}) {
 
     const [task, setTask] = useState({});
     const [isUpdateTaskModalActive, setUpdateTaskModalActive] = useState(false);
-
     const loadTaskList = () => {
         actions.getTaskList();
     }
@@ -67,25 +66,8 @@ function RunningList({runningList, actions}) {
         actions.changePriority(startIndex, endIndex);
     }
 
-    const handleChangeTaskTitle = (task) => {
-        actions.updateTask(task);
-    }
-
-    const handleRemove = (task) => {
-        actions.deleteTask(task.id);
-    }
-
-    const changeStatus = (task, status, dayIndex) => {
-        actions.changeTaskStatus(task.id, status, dayIndex);
-    }
-
-
     return (
         <div className="metalheart-running-list">
-
-            <UpdateTaskModalForm isActive={isUpdateTaskModalActive}
-                                 toggle={setUpdateTaskModalActive}
-                                 task={task}/>
 
             <div style={{'position': 'relative', 'marginTop': '40px'}}>
 
@@ -110,11 +92,7 @@ function RunningList({runningList, actions}) {
                                             >
                                                 <TaskItem
                                                     key={task.id}
-                                                    index={index}
                                                     task={task}
-                                                    handleRemove={handleRemove}
-                                                    changeStatus={changeStatus}
-                                                    changeTaskTitle={handleChangeTaskTitle}
                                                     handleEdit={toggleUpdateTaskForm}
                                                 />
                                             </div>
@@ -156,6 +134,10 @@ function RunningList({runningList, actions}) {
                     <CreateTaskHeaderControl/>
                 </div>
             </div>
+
+            <UpdateTaskModalForm isActive={isUpdateTaskModalActive}
+                                 toggle={setUpdateTaskModalActive}
+                                 task={task}/>
         </div>
     )
 }

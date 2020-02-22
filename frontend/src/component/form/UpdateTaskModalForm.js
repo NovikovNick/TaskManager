@@ -22,7 +22,7 @@ function UpdateTaskModalForm({isActive, toggle, task, actions, runningList}) {
         actions.updateTask(values)
             .then(res => {
                 resetForm({})
-                toggle();
+                toggle(false);
             })
             .catch(response => {
                 setErrors(response)
@@ -55,7 +55,7 @@ function UpdateTaskModalForm({isActive, toggle, task, actions, runningList}) {
                        onShow={() => titleInput.current.focus()}
                        onHide={() => {
                            resetForm({});
-                           toggle();
+                           toggle(false);
                        }}>
                     <Form noValidate onSubmit={handleSubmit}>
 
@@ -82,7 +82,7 @@ function UpdateTaskModalForm({isActive, toggle, task, actions, runningList}) {
                                             }
                                             handleChange(v);
                                         }}
-                                        defaultValue={values.title}
+                                        defaultValue={task.title}
                                         isValid={touched.title && valid.title}
                                         isInvalid={!!errors.title}
                                     />
@@ -107,7 +107,7 @@ function UpdateTaskModalForm({isActive, toggle, task, actions, runningList}) {
                                             }
                                             handleChange(v);
                                         }}
-                                        defaultValue={values.description}
+                                        defaultValue={task.description}
                                         isValid={touched.description && valid.description}
                                         isInvalid={!!errors.description}
                                     />

@@ -1,20 +1,28 @@
+import React from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+
+import {useTranslation} from "react-i18next";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPen, faTrash} from "@fortawesome/free-solid-svg-icons";
-import React from "react";
-import {useTranslation} from "react-i18next";
+import * as Store from "../../store/ReduxActions";
 
-export default function TaskItem({index, task, handleRemove, changeStatus, changeTaskTitle, handleEdit}) {
+function TaskItem({task, actions, handleEdit}) {
 
     const {t} = useTranslation()
 
     const changeText = (e) => {
-        task.title = e.target.value;
-        changeTaskTitle(task)
+        const newTask = {...task};
+        newTask.title = e.target.value;
+        actions.updateTask(newTask)
     }
 
-    const handleEditFunction = (e) => {
-        task.content = e.target.value;
-        handleEdit(task)
+    const handleRemove = (task) => {
+        actions.deleteTask(task.id);
+    }
+
+    const changeStatus = (task, status, dayIndex) => {
+        actions.changeTaskStatus(task.id, status, dayIndex);
     }
 
     const key = task.id
@@ -74,15 +82,19 @@ export default function TaskItem({index, task, handleRemove, changeStatus, chang
 
                 <div className={"running-list-controls"}>
                      <span className="pl-1">
-                         <FontAwesomeIcon onClick={handleEditFunction} icon={faPen}/>
+                         <FontAwesomeIcon onClick={e => handleEdit(task)} icon={faPen}/>
                      </span>
                     <span className="pl-1">
                          <FontAwesomeIcon onClick={e => handleRemove(task)} icon={faTrash}/>
                      </span>
                 </div>
 
-
             </div>
         </div>
     );
 }
+
+const mapDispatchToProps = dispatch => ({
+    actions: bindActionCreators(Store, dispatch)
+});
+export default connect(null, mapDispatchToProps)(TaskItem);
