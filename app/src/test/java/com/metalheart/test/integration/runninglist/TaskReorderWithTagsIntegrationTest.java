@@ -41,7 +41,7 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.reorderTask(userId, 0, 3);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(userId, null).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId, 0).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         Assert.assertEquals(PREFIX + 6, tasks.get(0).getTitle());
@@ -66,7 +66,7 @@ public class TaskReorderWithTagsIntegrationTest extends BaseIntegrationTest {
 
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(userId, null).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId, 0).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(10, tasks.size());
 

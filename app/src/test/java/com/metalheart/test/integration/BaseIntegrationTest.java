@@ -34,6 +34,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -111,7 +112,8 @@ public abstract class BaseIntegrationTest {
             .currentDay(day)
             .weekDates(Collections.emptyList())
             .build();
-        when(dateServiceMock.getCalendar(null)).thenReturn(calendar);
+        when(dateServiceMock.getCalendar(anyInt())).thenReturn(calendar);
+        when(dateServiceMock.getCalendar(any(WeekId.class))).thenReturn(calendar);
         when(dateServiceMock.getPreviousWeekId(any())).thenReturn(WeekId.builder().year(year).week(week - 1).build());
         when(dateServiceMock.getCurrentWeekId(null)).thenReturn(WeekId.builder().year(year).week(week).build());
         when(dateServiceMock.getNextWeekId(any())).thenReturn(WeekId.builder().year(year).week(week + 1).build());

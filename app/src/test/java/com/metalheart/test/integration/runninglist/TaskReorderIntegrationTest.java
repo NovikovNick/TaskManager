@@ -39,7 +39,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(userId, null).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId, 0).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         int i = 0;
@@ -61,7 +61,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.reorderTask(userId, 0, 4);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(userId, null).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId, 0).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         int i = 0;
@@ -83,7 +83,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.reorderTask(userId, 4, 0);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(userId, null).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId, 0).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         int i = 0;
@@ -105,7 +105,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.reorderTask(userId, 4, 2);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(userId, null).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId, 0).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         int i = 0;
@@ -127,7 +127,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         runningListCommandService.reorderTask(userId, 0, 2);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(userId, null).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId, 0).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         int i = 0;
@@ -151,7 +151,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(userId, null).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId, 0).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         int i = 0;
@@ -175,7 +175,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         commandManager.redo(userId);
 
         // assert
-        List<Task> tasks = runningListService.getRunningList(userId, null).getTasks();
+        List<Task> tasks = runningListService.getRunningList(userId, 0).getTasks();
         Assert.assertNotNull(tasks);
         Assert.assertEquals(5, tasks.size());
         int i = 0;
@@ -216,7 +216,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
 
         // assert
         {// user  1
-            List<Task> tasks = runningListService.getRunningList(user1, null).getTasks();
+            List<Task> tasks = runningListService.getRunningList(user1, 0).getTasks();
             int i = 0;
             Assert.assertEquals(PREFIX + 4, tasks.get(i++).getTitle());
             Assert.assertEquals(PREFIX + 0, tasks.get(i++).getTitle());
@@ -226,7 +226,7 @@ public class TaskReorderIntegrationTest extends BaseIntegrationTest {
         }
 
         {// user 2
-            List<Task> tasks = runningListService.getRunningList(user2, null).getTasks();
+            List<Task> tasks = runningListService.getRunningList(user2, 0).getTasks();
             int i = 0;
             Assert.assertEquals(PREFIX + 4, tasks.get(i++).getTitle());
             Assert.assertEquals(PREFIX + 0, tasks.get(i++).getTitle());

@@ -10,6 +10,7 @@ import com.metalheart.model.WeekId;
 import com.metalheart.model.jpa.WeekWorkLogJpaPK;
 import com.metalheart.model.request.WeekWorkLogUpdateRequest;
 import com.metalheart.repository.jpa.WeekWorkLogJpaRepository;
+import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
@@ -55,6 +56,10 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private DateService dateService;
+
 
     @Override
     public Task createTask(Integer userId, Task request) {
@@ -195,9 +200,9 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     @Override
     public void archive(Integer userId, WeekId weekId) {
 
-        RunningList newRunningList = runningListService.getRunningList(userId, null);
+        RunningList newRunningList = runningListService.getRunningList(userId, 0);
         newRunningList.setWeekId(weekId);
-
+        newRunningList.setCalendar(dateService.getCalendar(weekId));
         Optional<RunningList> oldRunningList = runningListArchiveService.getArchive(userId, weekId, null);
 
         runningListCommandManager.execute(userId, new RunningListAction<Void>() {

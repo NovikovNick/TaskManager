@@ -37,4 +37,9 @@ public interface DateService {
      * @return {@link Calendar} for current week
      */
     Calendar getCalendar(Integer timezoneOffset);
+
+    /**
+     * @return {@link Calendar} for specific week
+     */
+    Calendar getCalendar(WeekId weekId);
 }

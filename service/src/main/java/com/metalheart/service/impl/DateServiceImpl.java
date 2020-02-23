@@ -45,20 +45,12 @@ public class DateServiceImpl implements DateService {
 
     @Override
     public Calendar getCalendar(Integer timezoneOffset) {
+        return toCalendar(getNow(timezoneOffset));
+    }
 
-        var builder = Calendar.builder();
-
-        ZonedDateTime now = getNow(timezoneOffset);
-        ZonedDateTime monday = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-
-        List<String> weekDates = IntStream.range(0, 7)
-            .mapToObj((i) -> DAY_FORMATTER.format(monday.plusDays(i)))
-            .collect(Collectors.toList());
-
-        return builder
-            .currentDay(now.getDayOfWeek().getValue() - 1)
-            .weekDates(weekDates)
-            .build();
+    @Override
+    public Calendar getCalendar(WeekId weekId) {
+        return toCalendar(toZonedDateTime(weekId));
     }
 
     public WeekId getWeekId(ZonedDateTime zonedDateTime) {
@@ -85,5 +77,18 @@ public class DateServiceImpl implements DateService {
             now = ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.ofHours( -timezoneOffset / 60)));
         }
         return now;
+    }
+
+    private Calendar toCalendar(ZonedDateTime now) {
+        ZonedDateTime monday = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+
+        List<String> weekDates = IntStream.range(0, 7)
+            .mapToObj((i) -> DAY_FORMATTER.format(monday.plusDays(i)))
+            .collect(Collectors.toList());
+
+        return Calendar.builder()
+            .currentDay(now.getDayOfWeek().getValue() - 1)
+            .weekDates(weekDates)
+            .build();
     }
 }
