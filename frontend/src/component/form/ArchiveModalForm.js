@@ -55,13 +55,13 @@ function ArchiveModalForm({isActive, toggle, actions}) {
                             <Form.Group as={Row} controlId="validationFormik00">
 
                                 <WeekerPicker name="weekId"
-                                              isInvalid={!!errors.week}
+                                              isInvalid={!!errors.year || !!errors.week}
                                               onChange={v => {
                                                   setErrors({})
                                                   handleChange(v)
                                               }}/>
 
-                                <div className={"invalid-feedback"}>{errors.week}</div>
+                                <div className={"invalid-feedback"}>{errors.year || errors.week}</div>
 
                             </Form.Group>
 

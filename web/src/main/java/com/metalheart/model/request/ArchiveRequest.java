@@ -1,12 +1,13 @@
 package com.metalheart.model.request;
 
+import com.metalheart.validation.constraint.NotFutureWeek;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 
 @Data
+@NotFutureWeek
 public class ArchiveRequest {
 
     @NotNull
