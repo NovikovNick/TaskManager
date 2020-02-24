@@ -120,6 +120,18 @@ export function archive(weekId) {
     return ajax(setting.API_URL + '/archive', settings);
 }
 
+export function getExistingArchivesWeekIds() {
+    const settings = {
+        method: 'GET',
+        cache: 'no-cache',
+        headers: {
+            'Accept': 'application/json',
+        },
+        credentials: 'include',
+    };
+    return ajax(setting.API_URL + '/archive', settings);
+}
+
 export function undo() {
     const settings = {
         method: 'DELETE',

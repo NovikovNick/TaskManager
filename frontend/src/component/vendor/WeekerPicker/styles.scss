@@ -39,6 +39,11 @@ $loginRegistrationBackground: linear-gradient(to top, #7d437b, #000000);
     background-color: #EFEFEF !important;
   }
 
+  .DayPicker-Day--existedArchives {
+    color: #ffc107;
+    background-color: #fffdee;
+  }
+
   .DayPicker-Day--selectedRange {
     background: $headerBackground;
   }

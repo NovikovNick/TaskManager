@@ -20,6 +20,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -71,6 +72,13 @@ public class RunningListController {
 
         return conversionService.convert(runningListService.getRunningList(user.getId(), timezoneOffset),
             RunningListViewModel.class);
+    }
+
+    @GetMapping(path = EndPoint.RUNNING_LIST_ARCHIVE, produces = APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get running list for current week", response = RunningListViewModel.class)
+    public List<WeekId>  getExistingArchivesWeekIds(@AuthenticationPrincipal User user) {
+
+        return archiveService.getExistingArchivesWeekIds(user.getId());
     }
 
     @PostMapping(

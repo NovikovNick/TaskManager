@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import PropTypes from 'prop-types';
@@ -10,10 +10,14 @@ import WeekerPicker from '../vendor/WeekerPicker/index'
 import * as Store from "../../store/ReduxActions";
 
 
-function ArchiveModalForm({isActive, toggle, actions}) {
+function ArchiveModalForm({isActive, toggle, actions, archives}) {
 
     const {t} = useTranslation();
     const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        actions.getExistingArchivesWeekIds();
+    }, []);
 
     const onSubmit = (values, {resetForm}) => {
 
@@ -55,6 +59,7 @@ function ArchiveModalForm({isActive, toggle, actions}) {
                             <Form.Group as={Row} controlId="validationFormik00">
 
                                 <WeekerPicker name="weekId"
+                                              archives={archives}
                                               isInvalid={!!errors.year || !!errors.week}
                                               onChange={v => {
                                                   setErrors({})
@@ -79,10 +84,16 @@ function ArchiveModalForm({isActive, toggle, actions}) {
 ArchiveModalForm.propTypes = {
     isActive: PropTypes.bool.isRequired,
     toggle: PropTypes.func.isRequired,
-    actions: PropTypes.object.isRequired
+    actions: PropTypes.object.isRequired,
+    archives: PropTypes.array.isRequired
 };
+
+
+const mapStateToProps = state => ({
+    archives: state.task.archives
+});
 
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(Store, dispatch)
 });
-export default connect(null, mapDispatchToProps)(ArchiveModalForm);
+export default connect(mapStateToProps, mapDispatchToProps)(ArchiveModalForm);

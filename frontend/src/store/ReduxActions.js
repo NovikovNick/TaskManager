@@ -3,6 +3,7 @@ import * as Service from "../service/service";
 
 export const setRunningList = (runningList) => ({type: types.SET_RUNNING_LIST, runningList : runningList});
 export const setUser = (user) => ({type: types.SET_USER, user : user});
+export const setArchives = (archives) => ({type: types.SET_ARCHIVES, archives : archives});
 
 
 export function getPrevTaskList(year, week) {
@@ -37,7 +38,10 @@ export function updateTask(task = {}) {
 
 export function archive(weekId = {}) {
     return (dispatch) => {
-        return Service.archive(weekId).then(res => dispatch(setRunningList(res)))
+        return Service.archive(weekId).then(res => {
+            dispatch(setRunningList(res));
+            Service.getExistingArchivesWeekIds().then(res => dispatch(setArchives(res)));
+        })
     };
 }
 
@@ -134,5 +138,11 @@ export function deleteTask(task) {
 export function changeTaskStatus(taskid, status, dayIndex) {
     return (dispatch) => {
         return Service.changeTaskStatus(taskid, status, dayIndex).then(res => dispatch(setRunningList(res)))
+    };
+}
+
+export function getExistingArchivesWeekIds() {
+    return (dispatch) => {
+        return Service.getExistingArchivesWeekIds().then(res => dispatch(setArchives(res)))
     };
 }

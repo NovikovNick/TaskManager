@@ -8,7 +8,9 @@ import com.metalheart.repository.jpa.RunningListArchiveJpaRepository;
 import com.metalheart.service.DateService;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListService;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -107,6 +109,13 @@ public class RunningListArchiveServiceImpl implements RunningListArchiveService 
         RunningListArchiveJpaPK pk = conversionService.convert(weekId, RunningListArchiveJpaPK.class);
         pk.setUserId(userId);
         runningListArchiveRepository.deleteById(pk);
+    }
+
+    @Override
+    public List<WeekId> getExistingArchivesWeekIds(Integer userId) {
+        return runningListArchiveRepository.findAllIdByUserId(userId).stream()
+            .map(pk -> conversionService.convert(pk, WeekId.class))
+            .collect(Collectors.toList());
     }
 
     private RunningList getRunningList(Integer userId, WeekId weekId) {

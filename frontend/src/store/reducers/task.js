@@ -13,7 +13,8 @@ const initialState = {
         tasks: [],
         selectedTags: [],
         allTags: []
-    }
+    },
+    archives: []
 };
 
 export default function task(state = initialState, action) {
@@ -29,6 +30,12 @@ export default function task(state = initialState, action) {
             return {
                 ...state,
                 user: action.user
+            }
+        }
+        case types.SET_ARCHIVES: {
+            return {
+                ...state,
+                archives: action.archives
             }
         }
         default:

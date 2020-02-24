@@ -2,6 +2,7 @@ package com.metalheart.service;
 
 import com.metalheart.model.RunningList;
 import com.metalheart.model.WeekId;
+import java.util.List;
 import java.util.Optional;
 
 public interface RunningListArchiveService {
@@ -19,4 +20,6 @@ public interface RunningListArchiveService {
     RunningList save(Integer userId, RunningList archiveToSave);
 
     void delete(Integer userId, WeekId weekId);
+
+    List<WeekId> getExistingArchivesWeekIds(Integer userId);
 }

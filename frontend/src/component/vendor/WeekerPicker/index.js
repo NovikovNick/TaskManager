@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import moment from 'moment';
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
@@ -31,93 +31,92 @@ function getWeekRange(date) {
     };
 }
 
-export default class WeekPicker extends Component {
+function getWeekRangeByWeekNumber(year, week) {
+    return {
+        from: moment(year + "-" + week, 'YYYY-w')
+            .startOf('week')
+            .toDate(),
+        to: moment(year + "-" + week, 'YYYY-w')
+            .endOf('week')
+            .toDate(),
+    };
+}
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            hoverRange: undefined,
-            selectedDays: [],
-            ...props
-        };
-    }
+function WeekPicker({isInvalid, name, onChange, archives}) {
 
-    handleDayChange = date => {
+    const [hoverRange, setHoverRange] = useState(undefined);
+    const [selectedDays, setSelectedDays] = useState([]);
 
 
-        this.state.onChange({
+    const handleDayChange = date => {
+
+        onChange({
             target: {
-                name: this.state.name,
+                name: name,
                 value: {
                     week: moment(date).week(),
                     year: moment(date).year(),
                 }
             }
-        })
-        this.setState({
-            selectedDays: getWeekDays(getWeekRange(date).from),
         });
+
+        setSelectedDays(getWeekDays(getWeekRange(date).from));
     };
 
-    handleDayEnter = date => {
-        this.setState({
-            hoverRange: getWeekRange(date),
-        });
+    const handleDayEnter = date => {
+        setHoverRange(getWeekRange(date))
     };
 
-    handleDayLeave = () => {
-        this.setState({
-            hoverRange: undefined,
-        });
+    const handleDayLeave = () => {
+        getWeekRange(undefined)
     };
 
-    handleWeekClick = (weekNumber, days, e) => {
-        this.setState({
-            selectedDays: days,
-        });
+    const handleWeekClick = (weekNumber, days, e) => {
+        setSelectedDays(days);
     };
 
-    render() {
+    const daysAreSelected = selectedDays.length > 0;
 
-        const {hoverRange, selectedDays} = this.state;
-        const {isInvalid} = this.props;
+    const existedArchives = archives.map((weekId) => {
+        return getWeekRangeByWeekNumber(weekId.year, weekId.week)
+    });
 
-        const daysAreSelected = selectedDays.length > 0;
+    const modifiers = {
+        hoverRange,
+        selectedRange: daysAreSelected && {
+            from: selectedDays[0],
+            to: selectedDays[6],
+        },
+        existedArchives,
+        hoverRangeStart: hoverRange && hoverRange.from,
+        hoverRangeEnd: hoverRange && hoverRange.to,
+        selectedRangeStart: daysAreSelected && selectedDays[0],
+        selectedRangeEnd: daysAreSelected && selectedDays[6]
+    };
 
-        const modifiers = {
-            hoverRange,
-            selectedRange: daysAreSelected && {
-                from: selectedDays[0],
-                to: selectedDays[6],
-            },
-            hoverRangeStart: hoverRange && hoverRange.from,
-            hoverRangeEnd: hoverRange && hoverRange.to,
-            selectedRangeStart: daysAreSelected && selectedDays[0],
-            selectedRangeEnd: daysAreSelected && selectedDays[6],
-        };
+    return (
+        <div className={"weeker_picker_wrapper " + (isInvalid ? " is-invalid" : "")}>
+            <DayPicker
 
-        return (
-            <div className={"weeker_picker_wrapper " + (isInvalid ? " is-invalid" : "")}>
-                <DayPicker
+                locale={navigator.language || navigator.userLanguage}
+                localeUtils={MomentLocaleUtils}
 
-                    locale={navigator.language || navigator.userLanguage}
-                    localeUtils={MomentLocaleUtils}
-
-                    selectedDays={selectedDays}
-                    showWeekNumbers
-                    showOutsideDays
-                    modifiers={modifiers}
-                    onDayClick={this.handleDayChange}
-                    onDayMouseEnter={this.handleDayEnter}
-                    onDayMouseLeave={this.handleDayLeave}
-                    onWeekClick={this.handleWeekClick}
-                />
-                {selectedDays.length === 7 && (
-                    <div className={"text-center"}>
-                        {moment(selectedDays[0]).format('LL')}{' '}–{' '}{moment(selectedDays[6]).format('LL')}
-                    </div>
-                )}
-            </div>
-        );
-    }
+                selectedDays={selectedDays}
+                showWeekNumbers
+                showOutsideDays
+                modifiers={modifiers}
+                onDayClick={handleDayChange}
+                onDayMouseEnter={handleDayEnter}
+                onDayMouseLeave={handleDayLeave}
+                onWeekClick={handleWeekClick}
+            />
+            {selectedDays.length === 7 && (
+                <div className={"text-center"}>
+                    {moment(selectedDays[0]).format('LL')}{' '}–{' '}{moment(selectedDays[6]).format('LL')}
+                </div>
+            )}
+        </div>
+    );
 }
+
+export default WeekPicker;
