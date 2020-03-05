@@ -140,10 +140,20 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
     @Override
     public void delete(Integer userId, Integer taskId) {
 
+        List<Task> tasks = taskService.getTasks(userId);
+        List<Task> previousTaskOrder = tasks.stream()
+            .map(Task::clone)
+            .collect(toList());
+
+        for (int i = 0; i < tasks.size(); i++) {
+            tasks.get(i).setPriority(i);
+        }
+
         runningListCommandManager.execute(userId, new RunningListAction<Void>() {
 
             @Override
             public Void execute() {
+                taskService.save(tasks);
                 taskService.remove(taskId);
                 log.info("Task has been removed ");
                 return null;
@@ -151,6 +161,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
 
             @Override
             public void redo() {
+                taskService.save(tasks);
                 taskService.remove(taskId);
                 log.info("Undone operation of task removing was redone");
             }
@@ -158,6 +169,7 @@ public class RunningListCommandServiceImpl implements RunningListCommandService 
             @Override
             public void undo() {
                 taskService.undoRemoving(taskId);
+                taskService.save(previousTaskOrder);
                 log.info("Operation of task removing was undone");
             }
         });
