@@ -35,3 +35,21 @@ npm run start
 run from ./app/src/main/java/com/metalheart/App.java
 ```
  
+ #### Production
+ 
+ ```.env
+ 
+ // build front
+ cd ./frontend
+ npm run build
+ docker build -t nicknovikov/running-list-front:latest .
+ cd ../
+ 
+ // build back
+ ./gradlew dockerBuildImage
+ 
+ // push to repository
+ docker push nicknovikov/running-list-front:latest
+ docker push nicknovikov/running-list-server:latest
+
+ ```
