@@ -219,7 +219,7 @@ $taskInputWidth: calc(100% - #{$taskTagsAndControlsWidth} - 10px);
           overflow: hidden;
           text-overflow: ellipsis;
           direction: ltr;
-          cursor: move;
+          cursor: default;
           display: inline-block;
           border: 1px solid black;
           border-radius: 10px;

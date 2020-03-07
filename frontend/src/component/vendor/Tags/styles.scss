@@ -1,45 +1,90 @@
 @import "../../../css/colors";
 
+@mixin tag {
+
+  -webkit-font-smoothing: auto;
+  font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
+  font-size: .75rem;
+  box-sizing: border-box;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  direction: ltr;
+
+  cursor: default !important;
+  padding: 1px 0 1px 5px;
+  pointer-events: none;
+
+  .ReactTags__remove {
+    pointer-events: auto;
+    cursor: pointer;
+    padding: 1px 7px 1px 4px;
+  }
+
+  &:hover {
+    border-color: red;
+    color: red;
+    background: rgba(255, 0, 0, 0.2);
+  }
+}
+
+@mixin suggestion {
+  .ReactTags__suggestions {
+    background: white;
+    border: $borderColor 1px solid;
+    border-top: none;
+    color: black;
+  }
+
+  .ReactTags__activeSuggestion {
+    background: $borderColor;
+    cursor: pointer;
+  }
+}
 
 .running-list-header-tag {
 
   display: inline-block;
 
+  .ReactTags__selected {
+    padding-top: 5px;
+  }
+
   .ReactTags__tag {
-    -webkit-font-smoothing: auto;
-    font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
-    font-size: .75rem;
-    letter-spacing: .3px;
+
+    vertical-align: top;
     -webkit-box-sizing: border-box;
-    box-sizing: border-box;
     color: $borderColor;
     font-weight: 500;
-    margin: 0;
     max-height: 20px;
 
-    overflow: hidden;
-    text-overflow: ellipsis;
-    direction: ltr;
-    cursor: move;
 
     border: 1px solid $borderColor;
     border-radius: 10px;
-    padding: 1px 10px 1px 5px;
+    margin: 0 5px 0 0;
 
-    margin-right: 5px;
+    @include tag;
+
   }
 
   .ReactTags__tagInput {
+
     display: inline-block;
+    vertical-align: top;
+    margin-top: -4px;
+
+    @include suggestion;
 
     input {
       background: transparent;
       color: $borderColor;
       border: none;
+
       &:focus {
         outline: none;
         border-bottom: 2px solid $borderColor;
       }
+
       &::placeholder {
         color: $borderColor;
         opacity: 0.8;
@@ -53,24 +98,15 @@
   .ReactTags__tag {
     background: $headerBackground;
     color: $borderColor;
-
     display: inline-block;
-    -webkit-font-smoothing: auto;
-    font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
-    font-size: .75rem;
-    box-sizing: border-box;
-    line-height: 22px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    direction: ltr;
+
+    line-height: 18px;
+
     border: 1px solid #435d7d;
-    border-radius: 3px;
-    padding: 0px 5px 0px 4px;
+    border-radius: 5px;
     margin: 0px 4px 0px 0px;
 
-    .ReactTags__remove {
-      padding-left: 4px;
-    }
+    @include tag;
   }
 
   .ReactTags__tagInput {
@@ -78,6 +114,8 @@
 
     padding-top: 15px;
     position: relative;
+
+    @include suggestion;
 
     &:before {
       content: '';
@@ -90,7 +128,6 @@
     }
 
     input {
-      // box-shadow: inset 0px 1px 2px 1px rgba(0, 0, 0, 0.5);
 
       background: transparent;
       color: grey;
@@ -110,11 +147,11 @@
       border-radius: .25rem;
 
 
-
       &:focus {
         outline: none;
         border-bottom: 2px solid $borderColor;
       }
+
       &::placeholder {
         color: $borderColor;
         opacity: 0.8;
