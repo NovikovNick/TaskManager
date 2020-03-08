@@ -1,22 +1,12 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-
-import * as Store from "../../store/ReduxActions";
 import {Dropdown} from "react-bootstrap";
-import {useTranslation} from "react-i18next";
-
-import ProfileModalForm from "../../component/form/ProfileModalForm";
-import {useHistory} from "react-router-dom";
-import useModal from "../../hook/useModal";
 import PropTypes from "prop-types";
 import "./styles.scss";
+import Signout from "../../component/menu/Signout";
+import Profile from "../../component/menu/Profile";
 
-function Menu({actions, user}) {
-
-    useEffect(() => {
-        actions.getUserProfile();
-    }, []);
+function Menu({user}) {
 
     return (
         <Dropdown className={"metalheart-menu w-100"}>
@@ -32,22 +22,6 @@ function Menu({actions, user}) {
     )
 }
 
-function Profile() {
-
-    const {isActive, toggle} = useModal();
-    const {t} = useTranslation();
-
-    return (
-        <span>
-            <Dropdown.Item onClick={toggle}>{t("Profile")}</Dropdown.Item>
-            <ProfileModalForm
-                isActive={isActive}
-                toggle={toggle}
-            />
-        </span>
-    );
-}
-
 Menu.propTypes = {
     actions: PropTypes.object.isRequired,
     user: PropTypes.shape({
@@ -60,16 +34,4 @@ const mapStateToProps = state => ({
     user: state.task.user
 });
 
-const mapDispatchToProps = dispatch => ({
-    actions: bindActionCreators(Store, dispatch)
-});
-
-const Signout = connect(null, mapDispatchToProps)(function Signout({actions}) {
-    const {t} = useTranslation();
-    const history = useHistory();
-    const signout = () => actions.signOut().then(() => history.push("/signin"))
-
-    return (<Dropdown.Item onClick={signout}>{t("signout")}</Dropdown.Item>);
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Menu);
+export default connect(mapStateToProps)(Menu);

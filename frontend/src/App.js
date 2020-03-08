@@ -9,9 +9,7 @@ import Loadable from 'react-loadable';
 import LoadingPanel from "./component/panel/LoadingPanel";
 import PopupMessages from "./component/vendor/PopupMessages";
 
-const store = createStore(combineReducers(reducers), applyMiddleware(thunk)
-/* , window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() */
-);
+const store = createStore(combineReducers(reducers), applyMiddleware(thunk));
 
 
 export default function App() {

@@ -1,6 +1,8 @@
 package com.metalheart.service;
 
+import com.metalheart.model.User;
+
 public interface AuthService {
 
-    void authenticate(String username, String password);
+    User authenticate(String username, String password);
 }

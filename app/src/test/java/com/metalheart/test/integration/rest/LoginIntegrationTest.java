@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
 
+import static com.metalheart.HTTPConstants.HEADER_TIMEZONE_OFFSET;
 import static io.restassured.RestAssured.given;
 
 
@@ -39,6 +40,7 @@ public class LoginIntegrationTest extends BaseIntegrationTest {
             .build();
 
         String sessionId = given()
+            .header(HEADER_TIMEZONE_OFFSET, 0)
             .port(port)
             .contentType(ContentType.JSON).accept(ContentType.JSON)
             .body(request)
@@ -52,7 +54,7 @@ public class LoginIntegrationTest extends BaseIntegrationTest {
 
         given()
             .cookie("JSESSIONID", sessionId)
-            .header("TIMEZONE_OFFSET", 0)
+            .header(HEADER_TIMEZONE_OFFSET, 0)
             .port(port)
         .when()
             .get(EndPoint.RUNNING_LIST)
@@ -67,7 +69,7 @@ public class LoginIntegrationTest extends BaseIntegrationTest {
 
         given()
             .port(port)
-            .header("TIMEZONE_OFFSET", 0)
+            .header(HEADER_TIMEZONE_OFFSET, 0)
         .when()
             .get(EndPoint.RUNNING_LIST)
         .then()
@@ -87,6 +89,7 @@ public class LoginIntegrationTest extends BaseIntegrationTest {
             .build();
 
         given()
+            .header(HEADER_TIMEZONE_OFFSET, 0)
             .port(port)
             .contentType(ContentType.JSON).accept(ContentType.JSON)
             .body(request)

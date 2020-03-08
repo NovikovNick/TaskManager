@@ -18,4 +18,6 @@ public interface UserService {
     void update(Integer userId, String newPassword);
 
     User update(User user);
+
+    void updateLastLogin(Integer id);
 }

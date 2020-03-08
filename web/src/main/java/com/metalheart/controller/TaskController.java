@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.metalheart.HTTPConstants.HEADER_TIMEZONE_OFFSET;
 import static com.metalheart.config.ServiceConfiguration.APP_CONVERSION_SERVICE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -55,7 +56,7 @@ public class TaskController {
     private ConversionService conversionService;
 
     @PostMapping(path = EndPoint.CREATE_TASK, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public RunningListViewModel createTask(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public RunningListViewModel createTask(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                            @AuthenticationPrincipal User user,
                                            @Valid @RequestBody CreateTaskRequest request) {
 
@@ -69,7 +70,7 @@ public class TaskController {
 
     @PostMapping(path = EndPoint.CHANGE_TASK_STATUS, consumes = APPLICATION_JSON_VALUE, produces =
         APPLICATION_JSON_VALUE)
-    public RunningListViewModel changeStatus(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public RunningListViewModel changeStatus(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                              @AuthenticationPrincipal User user,
                                              @Valid @RequestBody ChangeTaskStatusRequest request) {
 
@@ -84,7 +85,7 @@ public class TaskController {
         path = EndPoint.CHANGE_TASK_PRIORITY,
         consumes = APPLICATION_JSON_VALUE,
         produces = APPLICATION_JSON_VALUE)
-    public RunningListViewModel reorderTask(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public RunningListViewModel reorderTask(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                             @AuthenticationPrincipal User user,
                                             @Valid @RequestBody ChangeTaskPriorityRequest request) {
 
@@ -96,7 +97,7 @@ public class TaskController {
 
 
     @DeleteMapping(path = EndPoint.DELETE_TASK, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public RunningListViewModel delete(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public RunningListViewModel delete(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                        @AuthenticationPrincipal User user,
                                        @PathVariable("taskId") Integer taskId) {
 
@@ -110,7 +111,7 @@ public class TaskController {
         path = EndPoint.UPDATE_TASK,
         consumes = APPLICATION_JSON_VALUE,
         produces = APPLICATION_JSON_VALUE)
-    public RunningListViewModel updateTask(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public RunningListViewModel updateTask(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                            @AuthenticationPrincipal User user,
                                            @Valid @RequestBody UpdateTaskRequest request) {
 
@@ -125,7 +126,7 @@ public class TaskController {
         path = EndPoint.ADD_TAG_TO_TASK,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Add tag to task", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> addTaskTag(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public ResponseEntity<RunningListViewModel> addTaskTag(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                                            @AuthenticationPrincipal User user,
                                                            AddTagToTaskRequest request) {
 
@@ -139,7 +140,7 @@ public class TaskController {
         path = EndPoint.REMOVE_TAG_FROM_TASK,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Remove tag from task", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> removeTaskTag(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public ResponseEntity<RunningListViewModel> removeTaskTag(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                                               @AuthenticationPrincipal User user,
                                                               RemoveTagFromTaskRequest request) {
 

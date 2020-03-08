@@ -35,6 +35,7 @@ import static com.metalheart.EndPoint.CHANGE_PASSWORD;
 import static com.metalheart.EndPoint.SAVE_PROFILE;
 import static com.metalheart.EndPoint.SEND_CHANGE_PASSWORD_EMAIL;
 import static com.metalheart.EndPoint.USER_REGISTRATION;
+import static com.metalheart.HTTPConstants.HEADER_TIMEZONE_OFFSET;
 import static com.metalheart.config.ServiceConfiguration.APP_CONVERSION_SERVICE;
 
 @RestController
@@ -75,7 +76,7 @@ public class UserController {
     }
 
     @PostMapping(SAVE_PROFILE)
-    public RunningListViewModel updateProfile(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public RunningListViewModel updateProfile(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                         @AuthenticationPrincipal User user,
                                         @RequestBody @Valid UpdateProfileRequest request) {
 

@@ -107,7 +107,11 @@ export function sendChangePasswordEmail(request) {
 
 export function signIn(request) {
     return (dispatch) => {
-        return Service.signIn(request);
+        return Service.signIn(request).then(res => {
+            res.user && dispatch(setUser(res.user));
+            res.runningList && dispatch(setRunningList(res.runningList));
+            res.archives && dispatch(setArchives(res.archives));
+        })
     };
 }
 

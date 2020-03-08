@@ -206,6 +206,7 @@ export function signIn({username, password}) {
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
+            'TIMEZONE_OFFSET': new Date().getTimezoneOffset()
         },
         body: JSON.stringify({
             username: username,
@@ -217,6 +218,7 @@ export function signIn({username, password}) {
 
     return new Promise((resolve, reject) => {
         fetch(url, settings)
+            .then(parseJSON)
             .then(response => {
                 if (response.status === 403) {
                     reject()

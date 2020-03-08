@@ -23,6 +23,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
 
+import static com.metalheart.HTTPConstants.HEADER_TIMEZONE_OFFSET;
 import static io.restassured.RestAssured.given;
 import static io.restassured.config.RedirectConfig.redirectConfig;
 import static javax.mail.Message.RecipientType.TO;
@@ -86,6 +87,7 @@ public class RegistrationIntegrationTest extends BaseIntegrationTest {
             .build();
 
         String sessionId = given()
+            .header(HEADER_TIMEZONE_OFFSET, 0)
             .port(port)
             .contentType(ContentType.JSON).accept(ContentType.JSON)
             .body(authRequest)
@@ -99,7 +101,7 @@ public class RegistrationIntegrationTest extends BaseIntegrationTest {
 
         given()
             .cookie("JSESSIONID", sessionId)
-            .header("TIMEZONE_OFFSET", 0)
+            .header(HEADER_TIMEZONE_OFFSET, 0)
             .port(port)
         .when()
             .get(EndPoint.RUNNING_LIST)

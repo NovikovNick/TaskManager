@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
@@ -33,11 +33,8 @@ function RunningList({runningList, actions}) {
 
     const [task, setTask] = useState({});
     const [isUpdateTaskModalActive, setUpdateTaskModalActive] = useState(false);
-    const loadTaskList = () => {
-        actions.getTaskList();
-    }
 
-    useEffect(() => loadTaskList(), []);
+    const loadTaskList = () => actions.getTaskList()
 
     const toggleUpdateTaskForm = (task = {}) => {
         setTask(task);

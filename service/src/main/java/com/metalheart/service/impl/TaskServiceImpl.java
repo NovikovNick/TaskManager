@@ -1,5 +1,6 @@
 package com.metalheart.service.impl;
 
+import com.metalheart.log.LogContextField;
 import com.metalheart.log.LogOperationContext;
 import com.metalheart.model.Task;
 import com.metalheart.model.TaskStatus;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.metalheart.config.ServiceConfiguration.APP_CONVERSION_SERVICE;
+import static com.metalheart.log.LogContextField.Field.USER_ID;
 
 @Slf4j
 @Component
@@ -48,8 +50,9 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TagJpaRepository tagJpaRepository;
 
+    @LogOperationContext
     @Override
-    public void reorder(Integer userId) {
+    public void reorder(@LogContextField(USER_ID) Integer userId) {
 
         List<Task> taskList = getTasks(userId);
 
@@ -58,7 +61,7 @@ public class TaskServiceImpl implements TaskService {
         }
         save(taskList);
 
-        log.info("All task have been ordered for user id " + userId);
+        log.info("Tasks have been reordered");
     }
 
     @Override

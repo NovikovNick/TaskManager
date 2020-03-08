@@ -29,6 +29,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static com.metalheart.EndPoint.AUTH_SIGN_OUT;
+import static com.metalheart.HTTPConstants.HEADER_TIMEZONE_OFFSET;
 
 @Slf4j
 @Configuration
@@ -95,7 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(ImmutableList.of(appProperties.getRest().getFrontUrl()));
         configuration.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type", "TIMEZONE_OFFSET"));
+        configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type", HEADER_TIMEZONE_OFFSET));
         configuration.setExposedHeaders(ImmutableList.of("Set-Cookie"));
 
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import PropTypes from 'prop-types';
@@ -14,10 +14,6 @@ function ArchiveModalForm({isActive, toggle, actions, archives}) {
 
     const {t} = useTranslation();
     const [errors, setErrors] = useState({});
-
-    useEffect(() => {
-        actions.getExistingArchivesWeekIds();
-    }, []);
 
     const onSubmit = (values, {resetForm}) => {
 

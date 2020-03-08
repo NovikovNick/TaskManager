@@ -3,6 +3,7 @@ package com.metalheart.service.impl;
 import com.metalheart.model.User;
 import com.metalheart.model.jpa.UserJpa;
 import com.metalheart.repository.jpa.UserJpaRepository;
+import com.metalheart.service.DateService;
 import com.metalheart.service.UserService;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private PasswordEncoder encoder;
+
+    @Autowired
+    private DateService dateService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -98,5 +102,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         UserJpa userJpa = conversionService.convert(user, UserJpa.class);
         userJpa = repository.save(userJpa);
         return conversionService.convert(userJpa, User.class);
+    }
+
+    @Transactional
+    @Override
+    public void updateLastLogin(Integer id) {
+        repository.updateLastLogin(id, dateService.now());
+        log.info("Update user last login");
     }
 }

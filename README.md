@@ -19,7 +19,6 @@ Check actual version: https://runninglist.ru
     - BACK_URL=http://localhost:8080
     - FRONT_URL=http://localhost:3000
     - LOG_DIR=./runninglist-logs
- 
 
 ```.env
 
@@ -34,6 +33,11 @@ npm run start
 // backend
 run from ./app/src/main/java/com/metalheart/App.java
 ```
+ 
+ ```.env
+ tail -f ./runninglist-logs/runninglist.log | jq '.'
+ tail -f ./runninglist-logs/runninglist.log | jq '. | select(.level == "ERROR")'
+ ```
  
  #### Production
  

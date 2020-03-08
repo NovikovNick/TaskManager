@@ -1,7 +1,7 @@
 package com.metalheart.controller;
 
 import com.metalheart.EndPoint;
-import com.metalheart.RestConstants;
+import com.metalheart.HTTPConstants;
 import com.metalheart.exception.UnableToRedoException;
 import com.metalheart.exception.UnableToUndoException;
 import com.metalheart.model.RunningList;
@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.metalheart.HTTPConstants.HEADER_TIMEZONE_OFFSET;
 import static com.metalheart.config.ServiceConfiguration.APP_CONVERSION_SERVICE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -67,7 +68,7 @@ public class RunningListController {
 
     @GetMapping(path = EndPoint.RUNNING_LIST, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get running list for current week", response = RunningListViewModel.class)
-    public RunningListViewModel getTaskList(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public RunningListViewModel getTaskList(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                             @AuthenticationPrincipal User user) {
 
         return conversionService.convert(runningListService.getRunningList(user.getId(), timezoneOffset),
@@ -88,10 +89,10 @@ public class RunningListController {
     @ApiOperation(value = "Archive current week tasks", response = RunningListViewModel.class)
     @ApiResponses(value = {
         @ApiResponse(
-            code = RestConstants.HTTP_UNPROCESSABLE_ENTITY,
+            code = HTTPConstants.HTTP_UNPROCESSABLE_ENTITY,
             message = "If running list archive has already exist")
     })
-    public ResponseEntity<RunningListViewModel> archive(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public ResponseEntity<RunningListViewModel> archive(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                                         @AuthenticationPrincipal User user,
                                                         @Valid @RequestBody ArchiveRequest request) {
         try {
@@ -110,7 +111,7 @@ public class RunningListController {
         path = EndPoint.RUNNING_LIST_ARCHIVE_NEXT,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get archive for next week", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> getNextArchive(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public ResponseEntity<RunningListViewModel> getNextArchive(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                                                @AuthenticationPrincipal User user,
                                                                @Valid GetArchiveRequest request) {
 
@@ -128,7 +129,7 @@ public class RunningListController {
         path = EndPoint.RUNNING_LIST_ARCHIVE_PREV,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get archive for previous week", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> getPrevArchive(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public ResponseEntity<RunningListViewModel> getPrevArchive(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                                                @AuthenticationPrincipal User user,
                                                                @Valid GetArchiveRequest request) {
 
@@ -148,10 +149,10 @@ public class RunningListController {
     @ApiOperation(value = "Undo last operation", response = RunningListViewModel.class)
     @ApiResponses(value = {
         @ApiResponse(
-            code = RestConstants.HTTP_NOT_ACCEPTABLE,
+            code = HTTPConstants.HTTP_NOT_ACCEPTABLE,
             message = "If there are no previous operations to undo")
     })
-    public ResponseEntity<RunningListViewModel> undo(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public ResponseEntity<RunningListViewModel> undo(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                                      @AuthenticationPrincipal User user) {
 
         try {
@@ -171,10 +172,10 @@ public class RunningListController {
     @ApiOperation(value = "Redo undone operation", response = RunningListViewModel.class)
     @ApiResponses(value = {
         @ApiResponse(
-            code = RestConstants.HTTP_NOT_ACCEPTABLE,
+            code = HTTPConstants.HTTP_NOT_ACCEPTABLE,
             message = "If there are no undone operations to redo")
     })
-    public ResponseEntity<RunningListViewModel> redo(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public ResponseEntity<RunningListViewModel> redo(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                                      @AuthenticationPrincipal User user) {
 
         try {
@@ -193,7 +194,7 @@ public class RunningListController {
         consumes = APPLICATION_JSON_VALUE,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Add tag", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> addTaskTag(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public ResponseEntity<RunningListViewModel> addTaskTag(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                                            @AuthenticationPrincipal User user,
                                                            @Valid @RequestBody CRUDTagRequest tag) {
 
@@ -207,7 +208,7 @@ public class RunningListController {
         path = EndPoint.REMOVE_TASK_TAG,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Remove tag", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> removeTaskTag(@RequestHeader("TIMEZONE_OFFSET") Integer timezoneOffset,
+    public ResponseEntity<RunningListViewModel> removeTaskTag(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                                               @AuthenticationPrincipal User user,
                                                               @Valid @RequestBody CRUDTagRequest tag) {
 

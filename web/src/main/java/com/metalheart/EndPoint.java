@@ -21,6 +21,7 @@ public class EndPoint {
     public static final String RUNNING_LIST_UNDO = "/undo";
     public static final String RUNNING_LIST_REDO = "/redo";
     public static final String RUNNING_LIST = "/runninglist";
+    public static final String RUNNING_LIST_DATA = "/runninglist/data";
 
     public static final String AUTH_SIGN_IN = "/login";
     public static final String AUTH_SIGN_OUT = "/logout";
