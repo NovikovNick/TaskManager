@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class LoginResponseViewModel {
+public class RunningListDataViewModel {
 
     private UserViewModel user;
 

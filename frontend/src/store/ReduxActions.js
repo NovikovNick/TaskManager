@@ -61,8 +61,9 @@ export function undo() {
     return (dispatch) => {
         return Service.undo()
             .then(res => {
-                dispatch(setRunningList(res));
-                Service.getUserProfile().then(user =>  dispatch(setUser(user)));
+                dispatch(setUser(res.user));
+                dispatch(setRunningList(res.runningList));
+                dispatch(setArchives(res.archives));
             })
     };
 }
@@ -71,8 +72,9 @@ export function redo() {
     return (dispatch) => {
         return Service.redo()
             .then(res => {
-                dispatch(setRunningList(res));
-                Service.getUserProfile().then(user =>  dispatch(setUser(user)));
+                dispatch(setUser(res.user));
+                dispatch(setRunningList(res.runningList));
+                dispatch(setArchives(res.archives));
             })
     };
 }

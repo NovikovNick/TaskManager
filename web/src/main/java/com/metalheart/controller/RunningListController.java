@@ -10,12 +10,14 @@ import com.metalheart.model.WeekId;
 import com.metalheart.model.request.ArchiveRequest;
 import com.metalheart.model.request.CRUDTagRequest;
 import com.metalheart.model.request.GetArchiveRequest;
+import com.metalheart.model.response.RunningListDataViewModel;
 import com.metalheart.model.response.RunningListViewModel;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
 import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
+import com.metalheart.service.WebService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -65,6 +67,10 @@ public class RunningListController {
 
     @Autowired
     private TagService tagService;
+
+    @Autowired
+    private WebService webService;
+
 
     @GetMapping(path = EndPoint.RUNNING_LIST, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get running list for current week", response = RunningListViewModel.class)
@@ -152,14 +158,15 @@ public class RunningListController {
             code = HTTPConstants.HTTP_NOT_ACCEPTABLE,
             message = "If there are no previous operations to undo")
     })
-    public ResponseEntity<RunningListViewModel> undo(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
-                                                     @AuthenticationPrincipal User user) {
+    public ResponseEntity<RunningListDataViewModel> undo(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+                                                                   @AuthenticationPrincipal User user) {
 
         try {
+
             commandManager.undo(user.getId());
-            RunningList runningList = runningListService.getRunningList(user.getId(), timezoneOffset);
-            RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
-            return ResponseEntity.ok(viewModel);
+
+            return ResponseEntity.ok(webService.geRunningListDataViewModel(user, timezoneOffset));
+
         } catch (UnableToUndoException e) {
             log.warn(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
@@ -175,14 +182,15 @@ public class RunningListController {
             code = HTTPConstants.HTTP_NOT_ACCEPTABLE,
             message = "If there are no undone operations to redo")
     })
-    public ResponseEntity<RunningListViewModel> redo(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+    public ResponseEntity<RunningListDataViewModel> redo(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                                      @AuthenticationPrincipal User user) {
 
         try {
+
             commandManager.redo(user.getId());
-            RunningList runningList = runningListService.getRunningList(user.getId(), timezoneOffset);
-            RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
-            return ResponseEntity.ok(viewModel);
+
+            return ResponseEntity.ok(webService.geRunningListDataViewModel(user, timezoneOffset));
+
         } catch (UnableToRedoException e) {
             log.warn(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
