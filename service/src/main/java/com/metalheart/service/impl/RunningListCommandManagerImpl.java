@@ -5,10 +5,12 @@ import com.metalheart.exception.UnableToUndoException;
 import com.metalheart.model.RunningListAction;
 import com.metalheart.repository.inmemory.RunningListCommandRepository;
 import com.metalheart.service.RunningListCommandManager;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Component
 public class RunningListCommandManagerImpl implements RunningListCommandManager {
 
@@ -62,5 +64,6 @@ public class RunningListCommandManagerImpl implements RunningListCommandManager 
     @Override
     public void clear(Integer userId) {
         commandRepository.clear(userId);
+        log.info("Clear command stack");
     }
 }

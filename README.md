@@ -36,9 +36,9 @@ run from ./app/src/main/java/com/metalheart/App.java
  
  ```.env
  tail -f ./runninglist-logs/runninglist.log | jq '.'
- tail -f ./runninglist-logs/runninglist.log | jq '. | select(.level == "ERROR")'
+ tail -f ./runninglist-logs/runninglist.log | jq '. | select(.context.OPERATION_ID != null) | select(.context.OPERATION_ID | contains("551100ce-7fd5-47c3-ac46-4ef9719b6b7c"))'
  ```
- 
+
  #### Production
  
  ```.env

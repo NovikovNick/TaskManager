@@ -5,4 +5,6 @@ import com.metalheart.model.User;
 public interface AuthService {
 
     User authenticate(String username, String password);
+
+    void handleLogout(User user);
 }
