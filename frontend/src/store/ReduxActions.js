@@ -39,8 +39,9 @@ export function updateTask(task = {}) {
 export function archive(weekId = {}) {
     return (dispatch) => {
         return Service.archive(weekId).then(res => {
-            dispatch(setRunningList(res));
-            Service.getExistingArchivesWeekIds().then(res => dispatch(setArchives(res)));
+            dispatch(setUser(res.user));
+            dispatch(setRunningList(res.runningList));
+            dispatch(setArchives(res.archives));
         })
     };
 }
@@ -89,8 +90,9 @@ export function saveProfile(request) {
     return (dispatch) => {
         return Service.saveProfile(request)
             .then(res => {
-                dispatch(setRunningList(res));
-                Service.getUserProfile().then(user =>  dispatch(setUser(user)));
+                dispatch(setUser(res.user));
+                dispatch(setRunningList(res.runningList));
+                dispatch(setArchives(res.archives));
             })
     };
 }

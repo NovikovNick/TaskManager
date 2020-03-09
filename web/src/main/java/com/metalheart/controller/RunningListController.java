@@ -98,15 +98,16 @@ public class RunningListController {
             code = HTTPConstants.HTTP_UNPROCESSABLE_ENTITY,
             message = "If running list archive has already exist")
     })
-    public ResponseEntity<RunningListViewModel> archive(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
-                                                        @AuthenticationPrincipal User user,
-                                                        @Valid @RequestBody ArchiveRequest request) {
+    public ResponseEntity<RunningListDataViewModel> archive(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+                                                            @AuthenticationPrincipal User user,
+                                                            @Valid @RequestBody ArchiveRequest request) {
         try {
 
             runningListCommandService.archive(user.getId(), conversionService.convert(request, WeekId.class));
-            RunningList runningList = runningListService.getRunningList(user.getId(), timezoneOffset);
-            RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
-            return ResponseEntity.ok(viewModel);
+
+
+            RunningListDataViewModel data = webService.geRunningListDataViewModel(user, timezoneOffset);
+            return ResponseEntity.ok(data);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.unprocessableEntity().build();
