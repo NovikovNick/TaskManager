@@ -56,4 +56,6 @@ run from ./app/src/main/java/com/metalheart/App.java
  docker push nicknovikov/running-list-front:latest
  docker push nicknovikov/running-list-server:latest
 
+tail -f ./runninglist/logs/runninglist.log | jq '.'
  ```
+ 
