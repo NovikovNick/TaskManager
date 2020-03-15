@@ -1,7 +1,6 @@
 package com.metalheart.controller;
 
 import com.metalheart.EndPoint;
-import com.metalheart.model.RunningList;
 import com.metalheart.model.Task;
 import com.metalheart.model.User;
 import com.metalheart.model.request.AddTagToTaskRequest;
@@ -10,11 +9,12 @@ import com.metalheart.model.request.ChangeTaskStatusRequest;
 import com.metalheart.model.request.CreateTaskRequest;
 import com.metalheart.model.request.RemoveTagFromTaskRequest;
 import com.metalheart.model.request.UpdateTaskRequest;
+import com.metalheart.model.response.Response;
 import com.metalheart.model.response.RunningListViewModel;
 import com.metalheart.model.response.TagViewModel;
 import com.metalheart.service.RunningListCommandService;
-import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
+import com.metalheart.service.WebService;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,9 +43,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class TaskController {
 
     @Autowired
-    private RunningListService runningListService;
-
-    @Autowired
     private RunningListCommandService runningListCommandService;
 
     @Autowired
@@ -55,99 +52,109 @@ public class TaskController {
     @Qualifier(APP_CONVERSION_SERVICE)
     private ConversionService conversionService;
 
+    @Autowired
+    private WebService webService;
+
     @PostMapping(path = EndPoint.CREATE_TASK, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public RunningListViewModel createTask(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
-                                           @AuthenticationPrincipal User user,
-                                           @Valid @RequestBody CreateTaskRequest request) {
+    public ResponseEntity<Response> createTask(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+                                               @AuthenticationPrincipal User user,
+                                               @Valid @RequestBody CreateTaskRequest request) {
 
         Task task = conversionService.convert(request, Task.class);
         task.setUserId(user.getId());
         runningListCommandService.createTask(user.getId(), task);
 
-        return conversionService.convert(runningListService.getRunningList(user.getId(), timezoneOffset),
-            RunningListViewModel.class);
+        return webService.getResponseBuilder()
+            .runningList(user.getId(), timezoneOffset)
+            .build();
     }
 
     @PostMapping(path = EndPoint.CHANGE_TASK_STATUS, consumes = APPLICATION_JSON_VALUE, produces =
         APPLICATION_JSON_VALUE)
-    public RunningListViewModel changeStatus(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
-                                             @AuthenticationPrincipal User user,
-                                             @Valid @RequestBody ChangeTaskStatusRequest request) {
+    public ResponseEntity<Response> changeStatus(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+                                                 @AuthenticationPrincipal User user,
+                                                 @Valid @RequestBody ChangeTaskStatusRequest request) {
 
         runningListCommandService.changeTaskStatus(user.getId(), request.getTaskId(), request.getDayIndex(),
             request.getStatus());
 
-        return conversionService.convert(runningListService.getRunningList(user.getId(), timezoneOffset),
-            RunningListViewModel.class);
+        return webService.getResponseBuilder()
+            .runningList(user.getId(), timezoneOffset)
+            .build();
     }
 
     @PutMapping(
         path = EndPoint.CHANGE_TASK_PRIORITY,
         consumes = APPLICATION_JSON_VALUE,
         produces = APPLICATION_JSON_VALUE)
-    public RunningListViewModel reorderTask(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
-                                            @AuthenticationPrincipal User user,
-                                            @Valid @RequestBody ChangeTaskPriorityRequest request) {
+    public ResponseEntity<Response> reorderTask(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+                                                @AuthenticationPrincipal User user,
+                                                @Valid @RequestBody ChangeTaskPriorityRequest request) {
 
         runningListCommandService.reorderTask(user.getId(), request.getStartIndex(), request.getEndIndex());
 
-        return conversionService.convert(runningListService.getRunningList(user.getId(), timezoneOffset),
-            RunningListViewModel.class);
+        return webService.getResponseBuilder()
+            .runningList(user.getId(), timezoneOffset)
+            .build();
     }
 
 
     @DeleteMapping(path = EndPoint.DELETE_TASK, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public RunningListViewModel delete(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
-                                       @AuthenticationPrincipal User user,
-                                       @PathVariable("taskId") Integer taskId) {
+    public ResponseEntity<Response> delete(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+                                           @AuthenticationPrincipal User user,
+                                           @PathVariable("taskId") Integer taskId) {
 
         runningListCommandService.delete(user.getId(), taskId);
 
-        return conversionService.convert(runningListService.getRunningList(user.getId(), timezoneOffset),
-            RunningListViewModel.class);
+        return webService.getResponseBuilder()
+            .runningList(user.getId(), timezoneOffset)
+            .build();
     }
 
     @PutMapping(
         path = EndPoint.UPDATE_TASK,
         consumes = APPLICATION_JSON_VALUE,
         produces = APPLICATION_JSON_VALUE)
-    public RunningListViewModel updateTask(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
-                                           @AuthenticationPrincipal User user,
-                                           @Valid @RequestBody UpdateTaskRequest request) {
+    public ResponseEntity<Response> updateTask(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+                                               @AuthenticationPrincipal User user,
+                                               @Valid @RequestBody UpdateTaskRequest request) {
 
 
         runningListCommandService.update(user.getId(), conversionService.convert(request, Task.class));
 
-        return conversionService.convert(runningListService.getRunningList(user.getId(), timezoneOffset),
-            RunningListViewModel.class);
+        return webService.getResponseBuilder()
+            .runningList(user.getId(), timezoneOffset)
+            .build();
     }
 
     @PostMapping(
         path = EndPoint.ADD_TAG_TO_TASK,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Add tag to task", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> addTaskTag(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
-                                                           @AuthenticationPrincipal User user,
-                                                           AddTagToTaskRequest request) {
+    public ResponseEntity<Response> addTaskTag(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+                                               @AuthenticationPrincipal User user,
+                                               AddTagToTaskRequest request) {
 
         tagService.addTagToTask(request.getTag(), request.getTaskId());
-        RunningList runningList = runningListService.getRunningList(user.getId(), timezoneOffset);
-        RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
-        return ResponseEntity.ok(viewModel);
+
+        return webService.getResponseBuilder()
+            .runningList(user.getId(), timezoneOffset)
+            .build();
     }
 
     @DeleteMapping(
         path = EndPoint.REMOVE_TAG_FROM_TASK,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Remove tag from task", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> removeTaskTag(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
-                                                              @AuthenticationPrincipal User user,
-                                                              RemoveTagFromTaskRequest request) {
+    public ResponseEntity<Response> removeTaskTag(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+                                                  @AuthenticationPrincipal User user,
+                                                  RemoveTagFromTaskRequest request) {
 
         tagService.removeTagFromTask(request.getTag(), request.getTaskId());
-        RunningList runningList = runningListService.getRunningList(user.getId(), timezoneOffset);
-        RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
-        return ResponseEntity.ok(viewModel);
+
+        return webService.getResponseBuilder()
+            .runningList(user.getId(), timezoneOffset)
+            .build();
     }
 
     @GetMapping(

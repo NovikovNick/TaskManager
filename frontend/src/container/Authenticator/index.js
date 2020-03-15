@@ -29,20 +29,22 @@ function Authenticator({path, children, user, actions}) {
         };
         isAuthenticated || fetch(setting.API_URL + '/runninglist/data', settings)
             .then(response => {
-
-                setResponseReceived(true);
-
                 switch (response.status) {
                     case 200:
-                        new Promise((resolve) => response.json()
-                            .then((json) => resolve(json)))
+                        history.push(path)
+                        return new Promise((resolve) => response.json().then((json) => resolve(json)))
                             .then(res => {
                                 res.user && actions.setUser(res.user);
                                 res.runningList && actions.setRunningList(res.runningList);
                                 res.archives && actions.setArchives(res.archives);
-                            })
-                        history.push(path)
+                            });
+                    case 403:
+                        history.push("/signin")
                         break;
+                }
+            })
+            .catch(error => {
+                switch (error.status) {
                     case 403:
                         history.push("/signin")
                         break;
@@ -50,10 +52,7 @@ function Authenticator({path, children, user, actions}) {
                         history.push("/error")
                 }
             })
-            .catch(error => {
-                setResponseReceived(true);
-                history.push("/error")
-            });
+            .finally(() => setResponseReceived(true));
     }, [])
 
 

@@ -8,53 +8,57 @@ export const setArchives = (archives) => ({type: types.SET_ARCHIVES, archives : 
 
 export function getPrevTaskList(year, week) {
     return (dispatch) => {
-        return Service.getPrevTaskList(year, week).then(res => dispatch(setRunningList(res)));
+        return Service.getPrevTaskList(year, week)
+            .then(res => dispatch(setRunningList(res.runningList)));
     };
 }
 
 export function getNextTaskList(year, week) {
     return (dispatch) => {
-        return Service.getNextTaskList(year, week).then(res => dispatch(setRunningList(res)));
+        return Service.getNextTaskList(year, week)
+            .then(res => dispatch(setRunningList(res.runningList)));
     };
 }
 
 export function getTaskList() {
     return (dispatch) => {
-        return Service.getTaskList().then(res => dispatch(setRunningList(res)));
+        return Service.getTaskList()
+            .then(res => dispatch(setRunningList(res.runningList)));
     };
 }
 
 export function createTask(task = {}) {
     return (dispatch) => {
-        return Service.createTask(task).then(res => dispatch(setRunningList(res)))
+        return Service.createTask(task)
+            .then(res => dispatch(setRunningList(res.runningList)))
     };
 }
 
 export function updateTask(task = {}) {
     return (dispatch) => {
-        return Service.updateTask(task).then(res => dispatch(setRunningList(res)))
+        return Service.updateTask(task)
+            .then(res => dispatch(setRunningList(res.runningList)))
     };
 }
 
 export function archive(weekId = {}) {
     return (dispatch) => {
-        return Service.archive(weekId).then(res => {
-            dispatch(setUser(res.user));
-            dispatch(setRunningList(res.runningList));
-            dispatch(setArchives(res.archives));
-        })
+        return Service.archive(weekId)
+            .then(res => dispatch(setArchives(res.archives)))
     };
 }
 
 export function selectTag(text) {
     return (dispatch) => {
-        return Service.addTag(text).then(res => dispatch(setRunningList(res)))
+        return Service.addTag(text)
+            .then(res => dispatch(setRunningList(res.runningList)))
     };
 }
 
 export function unselectTag(text) {
     return (dispatch) => {
-        return Service.removeTag(text).then(res => dispatch(setRunningList(res)))
+        return Service.removeTag(text)
+            .then(res => dispatch(setRunningList(res.runningList)))
     };
 }
 
@@ -82,7 +86,8 @@ export function redo() {
 
 export function getUserProfile() {
     return (dispatch) => {
-        return Service.getUserProfile().then(res => dispatch(setUser(res)))
+        return Service.getUserProfile()
+            .then(res => dispatch(setUser(res.user)))
     };
 }
 
@@ -133,24 +138,28 @@ export function signUp(request) {
 
 export function changePriority(startIndex, endIndex) {
     return (dispatch) => {
-        return Service.changePriority(startIndex, endIndex).then(res => dispatch(setRunningList(res)))
+        return Service.changePriority(startIndex, endIndex)
+            .then(res => dispatch(setRunningList(res.runningList)))
     };
 }
 
 export function deleteTask(task) {
     return (dispatch) => {
-        return Service.deleteTask(task).then(res => dispatch(setRunningList(res)))
+        return Service.deleteTask(task)
+            .then(res => dispatch(setRunningList(res.runningList)))
     };
 }
 
 export function changeTaskStatus(taskid, status, dayIndex) {
     return (dispatch) => {
-        return Service.changeTaskStatus(taskid, status, dayIndex).then(res => dispatch(setRunningList(res)))
+        return Service.changeTaskStatus(taskid, status, dayIndex)
+            .then(res => dispatch(setRunningList(res.runningList)))
     };
 }
 
 export function getExistingArchivesWeekIds() {
     return (dispatch) => {
-        return Service.getExistingArchivesWeekIds().then(res => dispatch(setArchives(res)))
+        return Service.getExistingArchivesWeekIds()
+            .then(res => dispatch(setArchives(res.archives)))
     };
 }

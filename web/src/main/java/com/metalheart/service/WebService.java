@@ -1,8 +1,8 @@
 package com.metalheart.service;
 
-import com.metalheart.model.User;
-import com.metalheart.model.response.RunningListDataViewModel;
+import com.metalheart.service.impl.ResponseBuilder;
 
 public interface WebService {
-    RunningListDataViewModel geRunningListDataViewModel(User user, Integer timezoneOffset);
+
+    ResponseBuilder getResponseBuilder();
 }

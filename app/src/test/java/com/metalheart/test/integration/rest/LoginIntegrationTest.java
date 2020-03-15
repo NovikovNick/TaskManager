@@ -3,7 +3,7 @@ package com.metalheart.test.integration.rest;
 import com.metalheart.EndPoint;
 import com.metalheart.model.User;
 import com.metalheart.model.request.AuthenticationRequest;
-import com.metalheart.model.response.RunningListViewModel;
+import com.metalheart.model.response.Response;
 import com.metalheart.service.UserService;
 import com.metalheart.test.integration.BaseIntegrationTest;
 import io.restassured.http.ContentType;
@@ -60,7 +60,7 @@ public class LoginIntegrationTest extends BaseIntegrationTest {
             .get(EndPoint.RUNNING_LIST)
         .then()
             .statusCode(HttpURLConnection.HTTP_OK)
-            .extract().body().as(RunningListViewModel.class);
+            .extract().body().as(Response.class);
 
     }
 

@@ -6,12 +6,10 @@ import com.metalheart.model.request.StartChangePasswordPasswordRequest;
 import com.metalheart.model.request.UpdatePasswordRequest;
 import com.metalheart.model.request.UpdateProfileRequest;
 import com.metalheart.model.request.UserRegistrationRequest;
-import com.metalheart.model.response.RunningListDataViewModel;
-import com.metalheart.model.response.UserViewModel;
+import com.metalheart.model.response.Response;
 import com.metalheart.service.ChangePasswordService;
 import com.metalheart.service.RegistrationService;
 import com.metalheart.service.RunningListCommandService;
-import com.metalheart.service.RunningListService;
 import com.metalheart.service.UserService;
 import com.metalheart.service.WebService;
 import java.util.HashMap;
@@ -57,9 +55,6 @@ public class UserController {
     private RunningListCommandService commandService;
 
     @Autowired
-    private RunningListService runningListService;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
@@ -67,8 +62,10 @@ public class UserController {
 
 
     @GetMapping(USER_REGISTRATION)
-    public UserViewModel getUser(@AuthenticationPrincipal User user) {
-        return conversionService.convert(userService.get(user.getId()), UserViewModel.class);
+    public ResponseEntity<Response> getUser(@AuthenticationPrincipal User user) {
+        return webService.getResponseBuilder()
+            .user(user)
+            .build();
     }
 
     @PostMapping(USER_REGISTRATION)
@@ -81,7 +78,7 @@ public class UserController {
     }
 
     @PostMapping(SAVE_PROFILE)
-    public RunningListDataViewModel updateProfile(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+    public ResponseEntity<Response> updateProfile(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                                   @AuthenticationPrincipal User user,
                                                   @RequestBody @Valid UpdateProfileRequest request) {
 
@@ -91,8 +88,11 @@ public class UserController {
 
         commandService.updateProfile(user.getId(), request.getUsername(), request.getEmail(), tags);
 
-        RunningListDataViewModel data = webService.geRunningListDataViewModel(user, timezoneOffset);
-        return data;
+        return webService.getResponseBuilder()
+            .user(user.getId())
+            .runningList(user.getId(), timezoneOffset)
+            .archives(user.getId())
+            .build();
     }
 
     @PostMapping(SEND_CHANGE_PASSWORD_EMAIL)
@@ -107,7 +107,7 @@ public class UserController {
 
     @PostMapping(CHANGE_PASSWORD)
     public ResponseEntity changePassword(@AuthenticationPrincipal User user,
-                                         @RequestBody @Valid UpdatePasswordRequest request) {
+                                                   @RequestBody @Valid UpdatePasswordRequest request) {
 
         userService.update(user.getId(), request.getPassword());
         return ResponseEntity.status(HttpStatus.OK).body(new HashMap<>());

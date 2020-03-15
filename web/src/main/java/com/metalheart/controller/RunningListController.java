@@ -10,20 +10,19 @@ import com.metalheart.model.WeekId;
 import com.metalheart.model.request.ArchiveRequest;
 import com.metalheart.model.request.CRUDTagRequest;
 import com.metalheart.model.request.GetArchiveRequest;
-import com.metalheart.model.response.RunningListDataViewModel;
+import com.metalheart.model.response.Response;
 import com.metalheart.model.response.RunningListViewModel;
 import com.metalheart.service.RunningListArchiveService;
 import com.metalheart.service.RunningListCommandManager;
 import com.metalheart.service.RunningListCommandService;
-import com.metalheart.service.RunningListService;
 import com.metalheart.service.TagService;
 import com.metalheart.service.WebService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.util.List;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +40,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.metalheart.HTTPConstants.HEADER_TIMEZONE_OFFSET;
+import static com.metalheart.HTTPConstants.MSG_OPERATION_ARCHIVE;
+import static com.metalheart.HTTPConstants.MSG_OPERATION_REDONE;
 import static com.metalheart.config.ServiceConfiguration.APP_CONVERSION_SERVICE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -48,9 +49,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @Api(tags = "Running List")
 public class RunningListController {
-
-    @Autowired
-    private RunningListService runningListService;
 
     @Autowired
     private RunningListCommandManager commandManager;
@@ -74,18 +72,21 @@ public class RunningListController {
 
     @GetMapping(path = EndPoint.RUNNING_LIST, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get running list for current week", response = RunningListViewModel.class)
-    public RunningListViewModel getTaskList(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+    public ResponseEntity<Response> getTaskList(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                             @AuthenticationPrincipal User user) {
 
-        return conversionService.convert(runningListService.getRunningList(user.getId(), timezoneOffset),
-            RunningListViewModel.class);
+        return webService.getResponseBuilder()
+            .runningList(user.getId(), timezoneOffset)
+            .build();
     }
 
     @GetMapping(path = EndPoint.RUNNING_LIST_ARCHIVE, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get running list for current week", response = RunningListViewModel.class)
-    public List<WeekId>  getExistingArchivesWeekIds(@AuthenticationPrincipal User user) {
+    public ResponseEntity<Response> getExistingArchivesWeekIds(@AuthenticationPrincipal User user) {
 
-        return archiveService.getExistingArchivesWeekIds(user.getId());
+        return webService.getResponseBuilder()
+            .archives(user.getId())
+            .build();
     }
 
     @PostMapping(
@@ -98,16 +99,19 @@ public class RunningListController {
             code = HTTPConstants.HTTP_UNPROCESSABLE_ENTITY,
             message = "If running list archive has already exist")
     })
-    public ResponseEntity<RunningListDataViewModel> archive(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
-                                                            @AuthenticationPrincipal User user,
-                                                            @Valid @RequestBody ArchiveRequest request) {
+    public ResponseEntity<Response> archive(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+                                            @AuthenticationPrincipal User user,
+                                            @Valid @RequestBody ArchiveRequest request,
+                                            HttpServletRequest httpRequest) {
         try {
 
             runningListCommandService.archive(user.getId(), conversionService.convert(request, WeekId.class));
 
+            return webService.getResponseBuilder()
+                .message(MSG_OPERATION_ARCHIVE, httpRequest.getLocale())
+                .archives(user.getId())
+                .build();
 
-            RunningListDataViewModel data = webService.geRunningListDataViewModel(user, timezoneOffset);
-            return ResponseEntity.ok(data);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.unprocessableEntity().build();
@@ -118,7 +122,7 @@ public class RunningListController {
         path = EndPoint.RUNNING_LIST_ARCHIVE_NEXT,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get archive for next week", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> getNextArchive(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+    public ResponseEntity<Response> getNextArchive(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                                                @AuthenticationPrincipal User user,
                                                                @Valid GetArchiveRequest request) {
 
@@ -126,7 +130,9 @@ public class RunningListController {
         Optional<RunningList> runningList = archiveService.getNext(user.getId(), weekId, timezoneOffset);
 
         if (runningList.isPresent()) {
-            return ResponseEntity.ok(conversionService.convert(runningList.get(), RunningListViewModel.class));
+            return webService.getResponseBuilder()
+                .runningList(runningList.get())
+                .build();
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -136,7 +142,7 @@ public class RunningListController {
         path = EndPoint.RUNNING_LIST_ARCHIVE_PREV,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get archive for previous week", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> getPrevArchive(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+    public ResponseEntity<Response> getPrevArchive(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
                                                                @AuthenticationPrincipal User user,
                                                                @Valid GetArchiveRequest request) {
 
@@ -144,11 +150,14 @@ public class RunningListController {
         Optional<RunningList> runningList = archiveService.getPrev(user.getId(), weekId, timezoneOffset);
 
         if (runningList.isPresent()) {
-            return ResponseEntity.ok(conversionService.convert(runningList.get(), RunningListViewModel.class));
+            return webService.getResponseBuilder()
+                .runningList(runningList.get())
+                .build();
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     @DeleteMapping(
         path = EndPoint.RUNNING_LIST_UNDO,
@@ -159,14 +168,20 @@ public class RunningListController {
             code = HTTPConstants.HTTP_NOT_ACCEPTABLE,
             message = "If there are no previous operations to undo")
     })
-    public ResponseEntity<RunningListDataViewModel> undo(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
-                                                                   @AuthenticationPrincipal User user) {
+    public ResponseEntity<Response> undo(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+                                         @AuthenticationPrincipal User user,
+                                         HttpServletRequest httpRequest) {
 
         try {
 
             commandManager.undo(user.getId());
 
-            return ResponseEntity.ok(webService.geRunningListDataViewModel(user, timezoneOffset));
+            return webService.getResponseBuilder()
+                .message(HTTPConstants.MSG_OPERATION_UNDONE, httpRequest.getLocale())
+                .user(user.getId())
+                .runningList(user.getId(), timezoneOffset)
+                .archives(user.getId())
+                .build();
 
         } catch (UnableToUndoException e) {
             log.warn(e.getMessage(), e);
@@ -183,14 +198,20 @@ public class RunningListController {
             code = HTTPConstants.HTTP_NOT_ACCEPTABLE,
             message = "If there are no undone operations to redo")
     })
-    public ResponseEntity<RunningListDataViewModel> redo(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
-                                                     @AuthenticationPrincipal User user) {
+    public ResponseEntity<Response> redo(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+                                         @AuthenticationPrincipal User user,
+                                         HttpServletRequest httpRequest) {
 
         try {
 
             commandManager.redo(user.getId());
 
-            return ResponseEntity.ok(webService.geRunningListDataViewModel(user, timezoneOffset));
+            return webService.getResponseBuilder()
+                .message(MSG_OPERATION_REDONE, httpRequest.getLocale())
+                .user(user.getId())
+                .runningList(user.getId(), timezoneOffset)
+                .archives(user.getId())
+                .build();
 
         } catch (UnableToRedoException e) {
             log.warn(e.getMessage(), e);
@@ -203,27 +224,29 @@ public class RunningListController {
         consumes = APPLICATION_JSON_VALUE,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Add tag", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> addTaskTag(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
-                                                           @AuthenticationPrincipal User user,
-                                                           @Valid @RequestBody CRUDTagRequest tag) {
+    public ResponseEntity<Response> addTaskTag(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+                                               @AuthenticationPrincipal User user,
+                                               @Valid @RequestBody CRUDTagRequest tag) {
 
         tagService.selectTag(user.getId(), tag.getTag());
-        RunningList runningList = runningListService.getRunningList(user.getId(), timezoneOffset);
-        RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
-        return ResponseEntity.ok(viewModel);
+
+        return webService.getResponseBuilder()
+            .runningList(user.getId(), timezoneOffset)
+            .build();
     }
 
     @DeleteMapping(
         path = EndPoint.REMOVE_TASK_TAG,
         produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Remove tag", response = RunningListViewModel.class)
-    public ResponseEntity<RunningListViewModel> removeTaskTag(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
-                                                              @AuthenticationPrincipal User user,
-                                                              @Valid @RequestBody CRUDTagRequest tag) {
+    public ResponseEntity<Response> removeTaskTag(@RequestHeader(HEADER_TIMEZONE_OFFSET) Integer timezoneOffset,
+                                                  @AuthenticationPrincipal User user,
+                                                  @Valid @RequestBody CRUDTagRequest tag) {
 
         tagService.removeSelectedTag(user.getId(), tag.getTag());
-        RunningList runningList = runningListService.getRunningList(user.getId(), timezoneOffset);
-        RunningListViewModel viewModel = conversionService.convert(runningList, RunningListViewModel.class);
-        return ResponseEntity.ok(viewModel);
+
+        return webService.getResponseBuilder()
+            .runningList(user.getId(), timezoneOffset)
+            .build();
     }
 }

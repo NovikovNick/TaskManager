@@ -1,4 +1,6 @@
 import setting from "../config"
+import {toast} from "react-toastify";
+
 
 export function getTaskList() {
     const settings = {
@@ -198,6 +200,48 @@ export function signOut() {
     return ajax(setting.API_URL + '/logout', settings)
 }
 
+export function getUserProfile() {
+    const settings = {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-cache'
+    };
+    return ajax(setting.API_URL + '/user', settings);
+}
+
+export function saveProfile({tags, username, email}) {
+    const settings = {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            username: username,
+            email: email,
+            tags: tags
+        })
+    };
+    return ajax(setting.API_URL + '/profile', settings);
+}
+
+export function changePassword(request) {
+    const settings = {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            password: request.password,
+            confirmPassword: request.confirmPassword
+        })
+    };
+    return ajax(setting.API_URL + '/user/password', settings);
+}
+
 export function signIn({username, password}) {
 
     const settings = {
@@ -223,19 +267,31 @@ export function signIn({username, password}) {
                 if (response.status === 403) {
                     reject()
                 } else {
+
+                    if (response.json.message) {
+
+                        const toastSettings = {
+                            position: "top-right",
+                            autoClose: 1500,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: false
+                        };
+
+                        switch (response.json.message.type) {
+                            case "ERROR":
+                                toast.error(response.json.message.payload, toastSettings);
+                                break;
+                            default:
+                                toast.info(response.json.message.payload, toastSettings);
+                        }
+                    }
+
                     resolve(response.json)
                 }
             });
     });
-}
-
-export function getUserProfile() {
-    const settings = {
-        method: 'GET',
-        credentials: 'include',
-        cache: 'no-cache'
-    };
-    return ajax(setting.API_URL + '/user', settings);
 }
 
 export function signUp({username, email, password, confirmPassword}) {
@@ -281,39 +337,6 @@ export function signUp({username, email, password, confirmPassword}) {
     });
 }
 
-export function saveProfile({tags, username, email}) {
-    const settings = {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-            username: username,
-            email: email,
-            tags: tags
-        })
-    };
-    return ajax(setting.API_URL + '/profile', settings);
-}
-
-export function changePassword(request) {
-    const settings = {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-            password: request.password,
-            confirmPassword: request.confirmPassword
-        })
-    };
-    return ajax(setting.API_URL + '/user/password', settings);
-}
-
 export function sendChangePasswordEmail({email}) {
     const settings = {
         method: 'POST',
@@ -352,7 +375,6 @@ export function sendChangePasswordEmail({email}) {
     });
 }
 
-
 /* CONVENIENCE */
 
 /**
@@ -384,26 +406,41 @@ function ajax(url, options) {
     options.headers = options.headers || {};
     options.headers['TIMEZONE_OFFSET'] = new Date().getTimezoneOffset();
 
+    const toastSettings = {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false
+    };
+
     return new Promise((resolve, reject) => {
         fetch(url, options)
             .then(response => {
+                switch (response.status) {
+                    case 200:
+                        return new Promise(() => response.json().then((json) => {
 
-                if (response.status === 403) {
-                    window.location = "/signin";
-                    console.log("Unauthorised ", response)
+                            if (json.message) {
+                                toast.info(json.message.payload, toastSettings);
+                            }
+                            resolve(json)
+                        }));
+                    case 400:
+                        return new Promise(() => response.json().then((json) => {
+                            if (json.message) {
+                                toast.error(json.message.payload, toastSettings);
+                            }
+                            reject(json)
+                        }));
+                    case 403:
+                        window.location = "/signin";
+                        break;
                 }
-
-                return response;
             })
-            .then(parseJSON)
-            .then((response) => {
-
-                if (response.ok) {
-                    return resolve(response.json);
-                }
-                // extract the error from the server's json
-                return reject(response.json);
+            .catch(error => {
+                window.location = "/error";
             })
-            .catch((error) => reject(error));
     });
 }

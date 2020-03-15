@@ -23,7 +23,6 @@ function Menu({user}) {
 }
 
 Menu.propTypes = {
-    actions: PropTypes.object.isRequired,
     user: PropTypes.shape({
         id: PropTypes.number,
         username: PropTypes.string,
