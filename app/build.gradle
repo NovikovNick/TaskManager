@@ -1,20 +1,21 @@
-plugins {
-    id 'java'
-    id 'org.springframework.boot' version '2.0.3.RELEASE'
-    id 'com.bmuschko.docker-spring-boot-application' version '6.1.2'
-}
+apply plugin: 'com.bmuschko.docker-spring-boot-application'
 
 dependencies {
 
+    implementation project(":db")
     compile project(":web")
 
     implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
     implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
+    implementation "org.apache.commons:commons-collections4"
 
-    testCompile("io.rest-assured:rest-assured:$restAssuredVersion")
-    testCompile "org.testcontainers:postgresql:$testContainersVersion"
-    testCompile("org.jsoup:jsoup:$jsoupVersion")
-    testCompile("org.apache.commons:commons-email:$apacheCommonsMail")
+    testImplementation("io.rest-assured:rest-assured:$restAssuredVersion")
+    testImplementation "org.testcontainers:postgresql:$testContainersVersion"
+    testImplementation("org.jsoup:jsoup:$jsoupVersion")
+    testImplementation("org.apache.commons:commons-email:$apacheCommonsMail")
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.flywaydb:flyway-core"
 }
 
 docker {

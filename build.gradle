@@ -3,17 +3,31 @@ buildscript {
 }
 
 plugins {
+    id 'java'
+    id 'java-library'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+
     id "net.ltgt.apt" version "0.21"
     id "net.ltgt.apt-idea" version "0.21"
+
+    id 'org.springframework.boot' version '2.2.8.RELEASE' // '2.3.1.RELEASE
+    id 'com.bmuschko.docker-spring-boot-application' version '6.1.2'
+    id "org.flywaydb.flyway" version "5.2.4"
 }
 
 allprojects {
     group 'com.metalheart'
     version '0.9.0'
 
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
+
+    apply plugin: 'org.springframework.boot'
     apply plugin: 'net.ltgt.apt'
     apply plugin: 'net.ltgt.apt-idea'
-    apply plugin: 'java'
+
+    apply plugin: "org.flywaydb.flyway"
 
     repositories {
         mavenLocal()
@@ -22,28 +36,37 @@ allprojects {
 
     sourceCompatibility = "11"
     targetCompatibility = "11"
+
+    dependencyManagement {
+        dependencies {
+
+            dependency "org.projectlombok:lombok:$lombokVersion"
+
+            dependency "org.mapstruct:mapstruct-jdk8:$mapstructVersion"
+            dependency "org.mapstruct:mapstruct-processor:$mapstructVersion"
+
+            dependency "org.flywaydb:flyway-core:$flywayDbVersion"
+
+
+            dependency "org.apache.commons:commons-lang3:$commonsLangVersion"
+            dependency "org.apache.commons:commons-collections4:$commonsCollectionsVersion"
+
+            dependency "org.springframework.integration:spring-integration-core:5.2.8.RELEASE"
+            dependency "org.springframework.security:spring-security-oauth2-client:5.2.5.RELEASE"
+            dependency "org.springframework.security:spring-security-oauth2-jose:5.2.5.RELEASE"
+
+        }
+    }
 }
 
 subprojects {
+
     dependencies {
 
-        compile group: "org.springframework", name: "spring-context", version: "$springVersion"
-        testCompile (group: "org.springframework.boot", name: "spring-boot-starter-test", version: "$springBootVersion") {
-            exclude(module: "spring-boot-starter-logging")
-        }
-
         // lombok
-        annotationProcessor("org.projectlombok:lombok:$lombokVersion")
-        compile group: "org.projectlombok", name: "lombok", version: "$lombokVersion"
-        
-        testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
-        testCompileOnly "org.projectlombok:lombok:$lombokVersion"
-        
-        // mapstruct
-        implementation "org.mapstruct:mapstruct-jdk8:${mapstructVersion}"
-        annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-        testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-
+        implementation "org.projectlombok:lombok"
+        annotationProcessor "org.projectlombok:lombok"
+        testAnnotationProcessor "org.projectlombok:lombok"
     }
 }
 

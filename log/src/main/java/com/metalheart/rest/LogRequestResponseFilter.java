@@ -160,14 +160,14 @@ public class LogRequestResponseFilter implements Filter {
                 String payload = new String(buf, 0, length, characterEncoding);
                 return escapePassword(payload);
 
-            } catch (UnsupportedEncodingException | JsonProcessingException ex) {
+            } catch (Exception ex) {
                 return "[unknown]";
             }
         }
         return null;
     }
 
-    private String escapePassword(String payload) throws JsonProcessingException {
+    private String escapePassword(String payload) throws Exception {
         Map<String, Object> map = mapper.readValue(payload, Map.class);
         map.forEach((key, value) -> {
 
