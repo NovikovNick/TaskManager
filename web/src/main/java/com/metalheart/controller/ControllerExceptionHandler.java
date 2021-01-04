@@ -1,9 +1,9 @@
 package com.metalheart.controller;
 
-import com.google.common.collect.Lists;
 import com.metalheart.model.response.FormValidationErrorViewModel;
 import com.metalheart.model.response.Response;
 import com.metalheart.service.WebService;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class ControllerExceptionHandler {
 
         final BindingResult bindingResult = exception.getBindingResult();
         final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        final List<FormValidationErrorViewModel.ParameterValidationError> errors = Lists.newArrayList();
+        final List<FormValidationErrorViewModel.ParameterValidationError> errors = new ArrayList<>();
 
         Map<String, List<String>> res = new HashMap<>();
 

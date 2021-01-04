@@ -14,7 +14,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@Import(SwaggerConfiguration.class)
+@Import({
+    SwaggerConfiguration.class
+})
 @EnableWebMvc
 @ComponentScan( {
     "com.metalheart.controller",

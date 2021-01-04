@@ -2,15 +2,15 @@ package com.metalheart.model.request;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 
 @Data
 public class RemoveTagFromTaskRequest {
 
     @NotNull
     @NotEmpty
-    @Length(min = 3, max = 30)
+    @Size(min = 3, max = 30)
     private String tag;
 
     @NotNull

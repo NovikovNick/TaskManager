@@ -1,10 +1,13 @@
 package com.metalheart.config;
 
+import com.metalheart.model.User;
+import com.metalheart.service.UserService;
 import java.util.Set;
 import javax.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +28,12 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
 public class ServiceConfiguration {
 
     public static final String APP_CONVERSION_SERVICE = "APP_CONVERSION_SERVICE";
+
+    @Autowired
+    private AppProperties properties;
+
+    @Autowired
+    private UserService userService;
 
     @Bean
     public MethodValidationPostProcessor methodValidationPostProcessor(Validator validator) {
@@ -50,5 +59,20 @@ public class ServiceConfiguration {
         bean.afterPropertiesSet();
         ConversionService object = bean.getObject();
         return object;
+    }
+
+    @Bean
+    public ApplicationRunner applicationRunner() {
+        return arg -> {
+
+            if (!userService.isUserExistByEmail(properties.getSecurity().getDefaultEmail())) {
+
+                userService.createUser(User.builder()
+                    .email(properties.getSecurity().getDefaultEmail())
+                    .username(properties.getSecurity().getDefaultUsername())
+                    .password(properties.getSecurity().getDefaultPassword())
+                    .build());
+            }
+        };
     }
 }

@@ -1,21 +1,24 @@
 dependencies {
-    compile project(":repository")
 
-    compile group: "org.springframework.boot", name: "spring-boot-starter-security"
+    implementation project(":log")
+    implementation project(":repository")
+
+    //spring
+    implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
-    compile group: "org.springframework.boot", name: "spring-boot-starter-mail"
-    compile group: "org.springframework.boot", name: "spring-boot-starter-data-jpa"
-    
-    compile "org.springframework.integration:spring-integration-core"
-
-
-    implementation "org.apache.commons:commons-lang3"
-    implementation "org.apache.commons:commons-collections4"
+    implementation "org.springframework.boot:spring-boot-starter-mail"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.integration:spring-integration-core"
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 
-    // mapstruct
-    implementation "org.mapstruct:mapstruct-jdk8"
-    annotationProcessor "org.mapstruct:mapstruct-processor"
-    testAnnotationProcessor "org.mapstruct:mapstruct-processor"
+    //apache
+    implementation "org.apache.commons:commons-lang3"
+    implementation "org.apache.commons:commons-collections4"
+
+    //other
+    implementation "com.fasterxml.jackson.core:jackson-databind"
+    implementation "com.fasterxml.jackson.module:jackson-module-jaxb-annotations"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
 }

@@ -10,9 +10,8 @@ plugins {
     id "net.ltgt.apt" version "0.21"
     id "net.ltgt.apt-idea" version "0.21"
 
-    id 'org.springframework.boot' version '2.2.8.RELEASE' // '2.3.1.RELEASE
+    id 'org.springframework.boot' version '2.3.3.RELEASE'
     id 'com.bmuschko.docker-spring-boot-application' version '6.1.2'
-    id "org.flywaydb.flyway" version "5.2.4"
 }
 
 allprojects {
@@ -27,8 +26,6 @@ allprojects {
     apply plugin: 'net.ltgt.apt'
     apply plugin: 'net.ltgt.apt-idea'
 
-    apply plugin: "org.flywaydb.flyway"
-
     repositories {
         mavenLocal()
         mavenCentral()
@@ -40,21 +37,34 @@ allprojects {
     dependencyManagement {
         dependencies {
 
+            //all spring boot dependencies omitted, because applied 'org.springframework.boot' plugin
+
+            dependency "org.springframework.integration:spring-integration-core:$springIntegrationVersion"
+            dependency "org.springframework.security:spring-security-oauth2-client:5.2.5.RELEASE"
+            dependency "org.springframework.security:spring-security-oauth2-jose:5.2.5.RELEASE"
+
+            dependency "io.springfox:springfox-boot-starter:$swaggerUiVersion"
+
+            // apache
+            dependency "org.apache.commons:commons-lang3:$commonsLangVersion"
+            dependency "org.apache.commons:commons-collections4:$commonsCollectionsVersion"
+
+            //other
             dependency "org.projectlombok:lombok:$lombokVersion"
 
             dependency "org.mapstruct:mapstruct-jdk8:$mapstructVersion"
             dependency "org.mapstruct:mapstruct-processor:$mapstructVersion"
 
-            dependency "org.flywaydb:flyway-core:$flywayDbVersion"
+            dependency group: "org.postgresql", name: "postgresql", version: "$postgreSqlVersion"
 
+            dependency 'javax.validation:validation-api:2.0.1.Final'
 
-            dependency "org.apache.commons:commons-lang3:$commonsLangVersion"
-            dependency "org.apache.commons:commons-collections4:$commonsCollectionsVersion"
+            dependency group: 'ch.qos.logback', name: 'logback-classic', version: "$logbackVersion"
+            dependency group: 'ch.qos.logback', name: 'logback-core', version: "$logbackVersion"
 
-            dependency "org.springframework.integration:spring-integration-core:5.2.8.RELEASE"
-            dependency "org.springframework.security:spring-security-oauth2-client:5.2.5.RELEASE"
-            dependency "org.springframework.security:spring-security-oauth2-jose:5.2.5.RELEASE"
-
+            dependency "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+            dependency "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:$jacksonVersion"
+            dependency "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
         }
     }
 }
@@ -67,6 +77,11 @@ subprojects {
         implementation "org.projectlombok:lombok"
         annotationProcessor "org.projectlombok:lombok"
         testAnnotationProcessor "org.projectlombok:lombok"
+
+        // mapstruct
+        implementation "org.mapstruct:mapstruct-jdk8"
+        annotationProcessor "org.mapstruct:mapstruct-processor"
+        testAnnotationProcessor "org.mapstruct:mapstruct-processor"
     }
 }
 

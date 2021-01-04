@@ -22,8 +22,6 @@ spring:
     properties.mail.smtp:
       auth: true
       starttls.enable: true
-  flyway:
-    locations: 'classpath:/db/migration'
 runninglist:
   taskTimeout: 1h
   removeExpiredTaskJobDelayInMs: 3600000 # 1h

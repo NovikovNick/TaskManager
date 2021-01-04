@@ -1,10 +1,10 @@
 package com.metalheart.config;
 
-import com.google.common.collect.ImmutableList;
 import com.metalheart.EndPoint;
 import com.metalheart.security.DelayedTaskFilter;
 import com.metalheart.security.LogoutHandler;
 import com.metalheart.security.OAuth2Registration;
+import java.util.List;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,11 +93,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(ImmutableList.of(appProperties.getRest().getFrontUrl()));
-        configuration.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
+        configuration.setAllowedOrigins(List.of(appProperties.getRest().getFrontUrl()));
+        configuration.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type", HEADER_TIMEZONE_OFFSET));
-        configuration.setExposedHeaders(ImmutableList.of("Set-Cookie"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", HEADER_TIMEZONE_OFFSET));
+        configuration.setExposedHeaders(List.of("Set-Cookie"));
 
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

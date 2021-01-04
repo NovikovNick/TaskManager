@@ -3,7 +3,13 @@ apply plugin: 'com.bmuschko.docker-spring-boot-application'
 dependencies {
 
     implementation project(":db")
-    compile project(":web")
+    implementation project(":log")
+    implementation project(":repository")
+    implementation project(":service")
+    implementation project(":web")
+
+
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
 
     implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
     implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
